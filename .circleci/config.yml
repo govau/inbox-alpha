@@ -1,6 +1,10 @@
 version: 2
 
 references:
+  node: &node
+    docker:
+      - image: circleci/node:10-stretch
+
   cf_install: &cf_install
     run:
       command: |
@@ -32,13 +36,48 @@ references:
           - master
 
 jobs:
-  build:
-    docker:
-      - image: circleci/node:10-stretch
+  setup-and-build:
+    <<: *node
     steps:
         - checkout
         - *cf_install
         - run: make setup
         - run: make -j build
+        - persist_to_workspace:
+            root: .
+            paths:
+              - directory
+              - example
+  deploy-dev:
+    <<: *node
+    steps:
+        - attach_workspace:
+            at: .
         - *cf_login
         - run: make -j deploy
+  deploy-prod:
+    <<: *node
+    steps:
+        - attach_workspace:
+            at: .
+        - *cf_login
+        - run: make -j deploy
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - setup-and-build
+      - deploy-dev:
+          <<: *not_master_branch
+          requires:
+            - setup-and-build
+      - unlock-prod-deploy:
+          <<: *master_branch
+          type: approval
+          requires:
+            - setup-and-build
+      - deploy-prod:
+          <<: *master_branch
+          requires:
+            - unlock-prod-deploy
