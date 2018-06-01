@@ -46,6 +46,7 @@ jobs:
         - persist_to_workspace:
             root: .
             paths:
+              - Makefile
               - directory
               - example
   deploy-dev:
