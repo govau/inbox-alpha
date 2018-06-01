@@ -34,7 +34,7 @@ references:
 jobs:
   build:
     docker:
-      - image: circleci/node:10
+      - image: circleci/node:10-stretch
     steps:
         - checkout
         - *cf_install
