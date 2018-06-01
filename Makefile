@@ -1,3 +1,4 @@
+CF     ?= cf
 DIRS    = directory example
 TARGETS = setup build deploy clean
 BUILDS  = $(TARGETS:%=\%.%)
@@ -9,5 +10,13 @@ $(TARGETS):
 
 $(BUILDS):
 	$(MAKE) -C $* $(@:$*.%=%)
+ 
+cf-login:
+	@$(CF) login\
+		-a "${CF_API}"\
+		-u "${CF_USERNAME}"\
+		-p "${CF_PASSWORD}"\
+		-o "${CF_ORG}"\
+		-s "${CF_SPACE}"
 
-.PHONY: $(TARGETS) $(BUILDS)
+.PHONY: cf-login $(TARGETS) $(BUILDS)
