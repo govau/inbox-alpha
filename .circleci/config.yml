@@ -38,7 +38,7 @@ jobs:
     steps:
         - checkout
         - *cf_install
-        - run: make -j setup
-        - run: make -j build
+        - run: make setup
+        - run: make build
         - *cf_login
-        - run: make -j deploy
+        - run: make deploy
