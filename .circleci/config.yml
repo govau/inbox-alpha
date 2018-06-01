@@ -32,7 +32,7 @@ references:
           - master
 
 jobs:
-  setup:
+  build:
     docker:
       - image: circleci/node:10
     steps:
