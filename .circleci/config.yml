@@ -40,7 +40,6 @@ jobs:
     <<: *node
     steps:
         - checkout
-        - *cf_install
         - run: make setup
         - run: make -j build
         - persist_to_workspace:
@@ -54,6 +53,7 @@ jobs:
     steps:
         - attach_workspace:
             at: .
+        - *cf_install
         - *cf_login
         - run: make -j deploy
   deploy-prod:
@@ -61,6 +61,7 @@ jobs:
     steps:
         - attach_workspace:
             at: .
+        - *cf_install
         - *cf_login
         - run: make -j deploy
 
