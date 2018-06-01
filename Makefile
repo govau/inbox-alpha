@@ -1,4 +1,9 @@
-CF     ?= cf
+CLD_HOST ?= y.cld.gov.au
+CF_API   ?= https://api.system.$(CLD_HOST)
+CF_ORG   ?= dta
+CF_SPACE ?= notifications
+CF       ?= cf
+
 DIRS    = directory example
 TARGETS = setup build deploy clean
 BUILDS  = $(TARGETS:%=\%.%)
