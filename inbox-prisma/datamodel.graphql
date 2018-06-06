@@ -1,0 +1,44 @@
+type User {
+  id: ID! @unique
+  name: String!
+}
+
+type Image {
+  url: String!
+  title: String!
+  description: String
+}
+
+type Agency {
+  id: ID! @unique
+  name: String!
+  logo: Image
+}
+
+type Service {
+  agency: Agency!
+  name: String!
+  description: String
+}
+
+interface Feature {
+  id: ID! @unique
+}
+
+type Expires implements Feature {
+  id: ID! @unique
+  at: String!
+}
+
+type PaymentRequired implements Feature {
+  id: ID! @unique
+  amountInCents: Int!
+}
+
+type Message {
+  id: ID! @unique
+  sender: Service!
+  recipient: User!
+  subject: String
+  body: String
+}
