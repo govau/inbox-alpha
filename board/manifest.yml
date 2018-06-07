@@ -1,0 +1,9 @@
+---
+defaults: &defaults
+  buildpack: staticfile_buildpack
+  memory: 64M
+
+applications:
+- name: inbox-board
+  <<: *defaults
+  path: build

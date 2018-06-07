@@ -4,7 +4,7 @@ CF_ORG   ?= dta
 CF_SPACE ?= notifications
 CF       ?= cf
 
-DIRS    = directory example
+DIRS    = directory example board
 TARGETS = setup build deploy clean
 BUILDS  = $(TARGETS:%=\%.%)
 

@@ -1,2 +1,2 @@
-endpoint: https://us1.prisma.sh/peter-eb07be/inbox-prisma/dev
+endpoint: http://localhost:4466
 datamodel: datamodel.graphql
