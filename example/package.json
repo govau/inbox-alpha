@@ -3,12 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "apollo-boost": "^0.1.7",
-    "apollo-client": "^2.3.2",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "react": "^16.4.0",
-    "react-apollo": "^2.1.4",
     "react-dom": "^16.4.0",
     "react-scripts-ts": "2.16.0"
   },
