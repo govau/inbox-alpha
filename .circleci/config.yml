@@ -48,6 +48,7 @@ jobs:
               - Makefile
               - directory
               - example
+              - board
   deploy-dev:
     <<: *node
     steps:
