@@ -1,12 +1,22 @@
 import * as React from 'react'
 import './App.css'
 
-const Pages = props => <div>thanks for taking a look.</div>
+import logo from './logo.svg'
 
-const App = props => <Pages />
-
-export default class ClientApp extends Component {
-  render() {
-    return <App />
+class App extends React.Component {
+  public render() {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h1 className="App-title">Welcome to React.tsx!</h1>
+        </header>
+        <p className="App-intro">
+          To get started, edit <code>src/App.tsx</code> and save to reload.
+        </p>
+      </div>
+    )
   }
 }
+
+export default App
