@@ -1,0 +1,83 @@
+@value desktop from '../../../breakpoints.css';
+
+@value colour-white #fff;
+@value colour-active-outline #d6e872;
+@value colour-inverted-background #0c643f;
+
+body header[role='banner'] {
+  background-color: colour-inverted-background;
+}
+
+header[role='banner'] .wrapper {
+  /*
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    */
+  color: colour-white;
+}
+
+header[role='banner'] a {
+  color: colour-white;
+  text-decoration: none;
+}
+
+header[role='banner'] .header__trigger {
+  cursor: pointer;
+  position: relative;
+}
+
+header[role='banner'] .header__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header[role='banner'] .header__nav ul {
+  list-style: none;
+  padding: 0;
+}
+
+header[role='banner'] .header__nav .nav__navitem {
+  margin: 0;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  padding: 1rem 2rem;
+}
+
+header[role='banner'] .header__nav .nav__navitem--active {
+  border-left: 6px solid colour-active-outline;
+}
+
+/*
+ *
+ * SHOWING, HIDING
+ *
+ */
+header[role='banner'] .header__toolbar {
+  width: 100%;
+  max-height: 100vh;
+  transition: max-height 0.3s ease-out;
+}
+
+header[role='banner'] .header__toolbar.hidden {
+  max-height: 0;
+  padding: 0;
+}
+
+header[role='banner'] .header__toolbar .header__nav {
+  padding: 1em 0;
+  transition: opacity 0.2s ease-out 0.1s, visibility 0.2s ease-out;
+}
+
+header[role='banner'] .header__toolbar.hidden .header__nav {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media desktop {
+  header[role='banner'] h1 {
+    font-size: 2.6rem;
+  }
+}

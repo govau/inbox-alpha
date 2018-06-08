@@ -52,6 +52,7 @@ body main,
 .wrap-sides {
   max-width: 92rem;
   margin: 0 auto;
+  padding: 0 2rem;
 }
 
 body main,
@@ -65,7 +66,7 @@ body main {
   width: 100%;
 }
 
-.react-root {
+#root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -104,6 +105,7 @@ ul {
 }
 
 main * + *,
+header * + *,
 footer * + * {
   margin-top: 1em;
 }

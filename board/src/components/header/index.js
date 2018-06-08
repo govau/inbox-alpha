@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import styled, { css, ThemeProvider } from 'styled-components'
 
@@ -46,10 +46,21 @@ const Navlist = styled.ul`
   }
 `
 
-const Hamburger = styled(Icon)`
+const SecondaryNavlist = Navlist.extend`
+  padding: 1rem 0;
+  margin: 0;
+
   @media screen and (min-width: 768px) {
-    display: none;
+    justify-content: flex-start;
+
+    ${Navitem}:first-child {
+      padding-left: 0;
+    }
   }
+`
+
+const Hamburger = styled(Icon)`
+  cursor: pointer;
 `
 
 const Header = styled.header`
@@ -59,6 +70,12 @@ const Header = styled.header`
 
   a {
     color: ${props => props.theme.copyColour};
+  }
+
+  @media screen and (min-width: 768px) {
+    ${Hamburger} {
+      display: none;
+    }
   }
 `
 
@@ -94,40 +111,66 @@ const Navlink = props => (
 )
 
 const StickyHeader = ({ active, toggleActive, deactivate, globals, pages }) => (
-  <ThemeProvider theme={header}>
+  <Fragment>
+    <ThemeProvider theme={header}>
+      <Header>
+        <HeaderWrapper className="wrap-sides">
+          <Controls>
+            <Link onClick={deactivate} to="/">
+              <img
+                src={logo}
+                style={{ height: '4rem', marginTop: '1rem' }}
+                alt="myGov logo"
+              />
+            </Link>
+            {active ? (
+              <Hamburger onClick={toggleActive}>close</Hamburger>
+            ) : (
+              <Hamburger onClick={toggleActive}>menu</Hamburger>
+            )}
+          </Controls>
+
+          <Nav active={active}>
+            <Navlist>
+              <Navlink onClick={deactivate} to="/todo">
+                Help
+              </Navlink>
+              <Navlink onClick={deactivate} to="/todo">
+                Sign out
+              </Navlink>
+            </Navlist>
+          </Nav>
+        </HeaderWrapper>
+      </Header>
+    </ThemeProvider>
+
     <Header>
       <HeaderWrapper className="wrap-sides">
-        <Controls>
-          <Link onClick={deactivate} to="/">
-            <img
-              src={logo}
-              style={{ height: '4rem', marginTop: '1rem' }}
-              alt="myGov logo"
-            />
-          </Link>
-          {active ? (
-            <Hamburger onClick={toggleActive}>close</Hamburger>
-          ) : (
-            <Hamburger onClick={toggleActive}>menu</Hamburger>
-          )}
-        </Controls>
-
         <Nav active={active}>
-          <Navlist>
+          <SecondaryNavlist>
             <Navlink onClick={deactivate} to="/">
               Home
             </Navlink>
-            <Navlink onClick={deactivate} to="/loading">
-              Loading
+            <Navlink onClick={deactivate} to="/todo">
+              Profile
             </Navlink>
-            <Navlink onClick={deactivate} to="/help">
-              Help
+            <Navlink onClick={deactivate} to="/todo">
+              Permissions
             </Navlink>
-          </Navlist>
+            <Navlink onClick={deactivate} to="/todo">
+              Payments
+            </Navlink>
+            <Navlink onClick={deactivate} to="/todo">
+              Activity
+            </Navlink>
+            <Navlink onClick={deactivate} to="/todo">
+              Messages
+            </Navlink>
+          </SecondaryNavlist>
         </Nav>
       </HeaderWrapper>
     </Header>
-  </ThemeProvider>
+  </Fragment>
 )
 
 class ClickyHeader extends React.Component {

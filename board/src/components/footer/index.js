@@ -31,7 +31,10 @@ export default props => (
       <section className="footer__aus">
         <img className="footer__coat" src={coat} alt="coat of arms" />
         <p>
-          © Commonwealth of Australia, <a href="#">MIT licensed</a>
+          © Commonwealth of Australia,{' '}
+          <a href="https://github.com/govau/inbox-alpha/blob/master/LICENSE">
+            MIT licensed
+          </a>
         </p>
       </section>
     </div>

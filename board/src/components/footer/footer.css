@@ -1,4 +1,4 @@
-@value desktop from '../breakpoints.css';
+@value desktop from '../../breakpoints.css';
 
 footer {
     font-size: 1.4rem;
