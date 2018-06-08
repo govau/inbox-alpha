@@ -1,9 +1,6 @@
 import React, { Fragment } from 'react'
-import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
-
-import withData from '../components/with-data'
 
 const createNewUser = gql`
   mutation($username: String!) {
