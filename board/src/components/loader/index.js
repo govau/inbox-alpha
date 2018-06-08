@@ -90,17 +90,4 @@ export default props => {
       <Overlay />
     </Container>
   )
-
-  const classes = classnames('loading__contents', className)
-
-  return (
-    <div className="loading__container">
-      <Icon className="loading__lock">lock</Icon>
-      <div className="loading__spinner" />
-      <div {...rest} className={classes}>
-        {children}
-      </div>
-      <div className="loading__overlay" />
-    </div>
-  )
 }
