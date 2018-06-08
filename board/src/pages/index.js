@@ -1,62 +1,31 @@
-import React, { Fragment } from 'react'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
-import { Mutation } from 'react-apollo'
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { ThemeProvider } from 'styled-components'
 
-import withData from '../components/with-data'
+import Home from './home'
+import Err from '../components/error'
+import Loading from '../components/loading'
+import Header from '../components/header'
+import Footer from '../components/footer'
+import ScrollToTop from '../components/scroll-to-top'
+import { theme } from '../components/mygov'
 
-const queryUsers = gql`
-  {
-    users {
-      name
-      id
-    }
-  }
-`
-
-const createNewUser = gql`
-  mutation {
-    createUser(data: { name: "Samantha" }) {
-      name
-      id
-    }
-  }
-`
-
-const Homepage = ({ users }) => (
-  <Fragment>
-    <ul>
-      {users.map((user, i) => (
-        <li key={i}>
-          {user.name} - {user.id}
-        </li>
-      ))}
-    </ul>
-
-    <Mutation
-      mutation={createNewUser}
-      update={(cache, { data: { createUser } }) => {
-        const { users } = cache.readQuery({ query: queryUsers })
-
-        cache.writeQuery({
-          query: queryUsers,
-          data: { users: users.concat([createUser]) },
-        })
-      }}
-    >
-      {(create, { loading, error, data }) =>
-        loading ? (
-          <div>loading ... </div>
-        ) : error ? (
-          <div>{error}</div>
-        ) : (
-          <button onClick={create}>create another</button>
-        )
-      }
-    </Mutation>
-  </Fragment>
+const IndexPage = props => (
+  <Router>
+    <ThemeProvider theme={theme}>
+      <ScrollToTop>
+        <Header />
+        <main role="main">
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/loading" component={Loading} />
+            <Route component={Err} />
+          </Switch>
+        </main>
+        <Footer />
+      </ScrollToTop>
+    </ThemeProvider>
+  </Router>
 )
 
-const withUsers = graphql(queryUsers)(withData(Homepage))
-
-export { withUsers as default, Homepage }
+export { IndexPage as default, IndexPage }

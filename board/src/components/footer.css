@@ -1,0 +1,58 @@
+@value desktop from '../breakpoints.css';
+
+footer {
+    font-size: 1.4rem;
+    color: white;
+    background-color: gray;
+    border-top: 4px solid black;
+}
+
+footer a {
+    color: white;
+    text-decoration: underline;
+}
+
+footer hr {
+    border-width: 0 0 1px;
+    border-color: white;
+    border-style: solid;
+    opacity: 0.38;
+}
+
+footer .wrapper > * + * {
+    margin-top: 2em;
+}
+
+footer nav a:active,
+footer nav a:focus,
+footer nav a:hover {
+    background-color: black;
+}
+
+footer nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+footer .footer__coat {
+    height: 8em;
+}
+
+/* shove links to the right when non-mobile */
+@media desktop {
+    /* swap axiom to be lateral */
+    footer nav * + * {
+        margin-top: 0;
+        margin-left: 1em;
+    }
+
+    /* pull links to the right */
+    footer nav {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    footer nav li {
+        display: inline-block;
+    }
+}

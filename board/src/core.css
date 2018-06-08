@@ -1,0 +1,132 @@
+@value desktop from './breakpoints.css';
+
+html {
+  font-size: 62.5%;
+  color: black;
+  line-height: 1.6;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* resets */
+body,
+p,
+ul,
+ol,
+li,
+dd,
+dl,
+dt,
+hr,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+form label,
+form input label,
+form fieldset,
+form legend,
+form p {
+  margin: 0;
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box;
+}
+
+/* styles */
+body {
+  font-size: 1.6em;
+}
+
+body main,
+.wrapper,
+.wrap-sides {
+  max-width: 92rem;
+  margin: 0 auto;
+}
+
+body main,
+.wrapper {
+  padding: 3rem 2rem;
+  padding-bottom: 6rem;
+}
+
+body main {
+  flex: 1 0 auto;
+  width: 100%;
+}
+
+.react-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+body header[role='banner'],
+body footer[role='contentinfo'] {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+h1 {
+  font-size: 2.6rem;
+}
+h2 {
+  font-size: 2.2rem;
+}
+h3 {
+  font-size: 1.8rem;
+}
+h4 {
+  font-size: 1.6rem;
+}
+
+ul {
+  padding-left: 2rem;
+}
+
+main * + *,
+footer * + * {
+  margin-top: 1em;
+}
+
+main [type='hidden'] + * {
+  margin-top: 0;
+}
+
+@media desktop {
+  body {
+    font-size: 1.8em;
+  }
+
+  h1 {
+    font-size: 3.6rem;
+  }
+  h2 {
+    font-size: 2.7rem;
+  }
+  h3 {
+    font-size: 2.4rem;
+  }
+  h4 {
+    font-size: 2rem;
+  }
+}

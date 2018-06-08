@@ -4,6 +4,7 @@ import ApolloClient from 'apollo-boost'
 
 import config from './config'
 import Pages from './pages'
+import './app.css'
 
 const client = new ApolloClient({
   uri: config.graphqlHost,
