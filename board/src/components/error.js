@@ -10,7 +10,7 @@ const generic = (
   </Fragment>
 )
 
-const Error = ({ message = 'bugger.', children = generic }) => (
+const Error = ({ message = 'whoops.', children = generic }) => (
   <div>
     <div>{message}</div>
     <section>{children}</section>
