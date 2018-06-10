@@ -1,7 +1,7 @@
 YARN ?= yarn
 NODE ?= node
 CF   ?= cf
-APP  ?= inbox-board
+APP  ?= inbox-msg
 CONF  = src/config/index.json
 SRC   = $(CONF) $(shell find src -type f)
 PUB   = $(shell find public -type f)
