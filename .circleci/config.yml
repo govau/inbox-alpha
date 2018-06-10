@@ -49,6 +49,7 @@ jobs:
               - directory
               - example
               - board
+              - inbox-prisma
   deploy-dev:
     <<: *node
     steps:
