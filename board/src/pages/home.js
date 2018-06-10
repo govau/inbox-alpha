@@ -50,7 +50,7 @@ const Homepage = ({ users }) => (
         ) : error ? (
           <div>{error}</div>
         ) : (
-          <button onClick={create}>create another</button>
+          <button onClick={create}>create another user</button>
         )
       }
     </Mutation>
