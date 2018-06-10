@@ -19,8 +19,7 @@ setup: yarn.lock node_modules
 
 src/config/index.json:
 	@mkdir -p $(@D)
-	#GRAPHQL_HOST=$(GRAPHQL_HOST) $(NODE) create-config.js > $@
-	$(NODE) create-config.js > $@
+	GRAPHQL_HOST=$(GRAPHQL_HOST) $(NODE) create-config.js > $@
 
 build: build/index.html
 
