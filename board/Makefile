@@ -29,7 +29,7 @@ deploy: build
 clean:
 	-rm -r build
 
-start:
+start: public/index.html $(SRC) $(PUB)
 	$(YARN) start
 
 .PHONY: deploy clean start

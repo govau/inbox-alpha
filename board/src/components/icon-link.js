@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import classnames from 'classnames'
 import styled, { css } from 'styled-components'
 
 const styles = css`

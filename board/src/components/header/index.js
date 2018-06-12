@@ -135,7 +135,7 @@ const StickyHeader = ({ active, toggleActive, deactivate, globals, pages }) => (
               <Navlink onClick={deactivate} to="/todo">
                 Help
               </Navlink>
-              <Navlink onClick={deactivate} to="/todo">
+              <Navlink onClick={deactivate} to="/logout">
                 Sign out
               </Navlink>
             </Navlist>
