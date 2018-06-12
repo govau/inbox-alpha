@@ -9,9 +9,10 @@ import Header from '../components/header'
 import Footer from '../components/footer'
 import ScrollToTop from '../components/scroll-to-top'
 import { theme } from '../components/mygov'
+import { AuthenticatedRoute } from '../components/auth'
 
-import Home from './home'
-import Login from './login'
+import Home from './messages'
+import Login, { Logout } from './login'
 
 const IndexPage = props => (
   <Router>
@@ -20,8 +21,9 @@ const IndexPage = props => (
         <Header />
         <main role="main">
           <Switch>
-            <Route exact path="/" component={Home} />
+            <AuthenticatedRoute exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
+            <Route exact path="/logout" component={Logout} />
             <Route exact path="/loading" component={Loading} />
             <Route component={Err} />
           </Switch>
