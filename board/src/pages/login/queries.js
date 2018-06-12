@@ -8,7 +8,7 @@ const createNewUser = gql`
         messages: {
           create: [
             {
-              subject: "Tax Assesment"
+              subject: "Tax Assessment 2017"
               body: "you blew it. we really need that tax $$$"
               sender: { connect: { id: $taxID } }
               notices: {
@@ -45,8 +45,8 @@ const createNewUser = gql`
               }
             }
             {
-              subject: "Tax Assesment 2017"
-              body: "fill out your tax assesment. thanks"
+              subject: "Tax Assessment 2017"
+              body: "fill out your tax assessment. thanks"
               sender: { connect: { id: $taxID } }
               notices: {
                 create: {

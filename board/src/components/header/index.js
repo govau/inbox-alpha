@@ -4,9 +4,39 @@ import styled, { css, ThemeProvider } from 'styled-components'
 
 import logo from './mygov.svg'
 import Icon from '../icon'
-import { header } from '../mygov'
+import { header as headerTheme, button as buttonTheme } from '../mygov'
 
-const Navitem = styled.li``
+const Hamburger = styled(Icon)`
+  cursor: pointer;
+`
+
+const Header = styled.header`
+  background-color: ${props => props.theme.backgroundColour};
+  color: ${props => props.theme.copyColour};
+  margin-top: 0;
+
+  a {
+    color: ${props => props.theme.copyColour};
+    text-decoration: none;
+  }
+
+  @media screen and (min-width: 768px) {
+    ${Hamburger} {
+      display: none;
+    }
+  }
+`
+
+const ButtonLink = styled(Link)`
+  padding: 1rem 1em;
+`
+
+const Navitem = styled.li`
+  ${ButtonLink} {
+    color: ${props => props.theme.copyColour};
+    background-color: ${props => props.theme.backgroundColour};
+  }
+`
 
 const Nav = styled.nav`
   margin-top: 0;
@@ -59,26 +89,6 @@ const SecondaryNavlist = Navlist.extend`
   }
 `
 
-const Hamburger = styled(Icon)`
-  cursor: pointer;
-`
-
-const Header = styled.header`
-  background-color: ${props => props.theme.backgroundColour};
-  color: ${props => props.theme.copyColour};
-  margin-top: 0;
-
-  a {
-    color: ${props => props.theme.copyColour};
-  }
-
-  @media screen and (min-width: 768px) {
-    ${Hamburger} {
-      display: none;
-    }
-  }
-`
-
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -104,15 +114,15 @@ const Controls = styled.div`
   }
 `
 
-const Navlink = props => (
+const Navlink = ({ link: Component = Link, ...props }) => (
   <Navitem>
-    <Link {...props} />
+    <Component {...props} />
   </Navitem>
 )
 
 const StickyHeader = ({ active, toggleActive, deactivate, globals, pages }) => (
   <Fragment>
-    <ThemeProvider theme={header}>
+    <ThemeProvider theme={headerTheme}>
       <Header>
         <HeaderWrapper className="wrap-sides">
           <Controls>
@@ -135,9 +145,11 @@ const StickyHeader = ({ active, toggleActive, deactivate, globals, pages }) => (
               <Navlink onClick={deactivate} to="/todo">
                 Help
               </Navlink>
-              <Navlink onClick={deactivate} to="/logout">
-                Sign out
-              </Navlink>
+              <ThemeProvider theme={buttonTheme}>
+                <Navlink link={ButtonLink} onClick={deactivate} to="/logout">
+                  Sign out
+                </Navlink>
+              </ThemeProvider>
             </Navlist>
           </Nav>
         </HeaderWrapper>
