@@ -22,16 +22,6 @@ export const Subject = styled.strong``
 
 export const Sender = styled.span``
 
-export const Features = styled.div`
-  .lozenge + .lozenge {
-    margin-left: 1em;
-  }
-`
-
-export const FlexFeatures = styled(Features)`
-  display: flex;
-`
-
 const lozengeColour = ({ overdue, important }) => {
   if (overdue) {
     return css`
@@ -55,10 +45,11 @@ const lozengeColour = ({ overdue, important }) => {
 export const Lozenge = styled(({ overdue, important, className, ...props }) => (
   <span className={classnames('lozenge', className)} {...props} />
 ))`
+  display: inline-block;
   font-weight: bold;
   font-size: 0.8em;
   border-radius: 1em;
-  padding: 0.5rem 1rem;
+  padding: 0.2rem 0.8rem;
   ${lozengeColour};
 `
 
@@ -67,19 +58,37 @@ export const Document = styled(IconLink)`
   color: #246add;
   font-size: 0.8em;
   border-radius: 3px;
-  padding: 0.5rem 1rem;
-  margin: 0;
-
-  & + & {
-    margin-left: 1em;
-  }
+  padding: 0.5rem 0.5rem;
 
   & span {
     margin-left: 0.5em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 20rem;
+  }
+
+  @media screen and (min-width: 768px) {
+    & span {
+      max-width: 20rem;
+    }
+  }
+`
+
+export const Features = styled.div`
+  margin-top: 0;
+  display: flex;
+  flex-flow: column nowrap;
+
+  ${Document}, ${Lozenge} {
+    margin-top: 1em;
+  }
+
+  @media screen and (min-width: 768px) {
+    flex-flow: row wrap;
+
+    ${Document}, ${Lozenge} {
+      margin-right: 1em;
+    }
   }
 `
 

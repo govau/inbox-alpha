@@ -24,18 +24,28 @@ type Service {
   messages: [Message!]!
 }
 
-interface Feature {
-  id: ID! @unique
+enum Severity {
+    Critical
+    Important
+    Error
+    Information
 }
 
-type Expires implements Feature {
+type Notice {
   id: ID! @unique
-  at: String!
+  description: String!
+  severity: Severity
+  before: String
+  after: String
+  message: Message
 }
 
-type PaymentRequired implements Feature {
+type Document {
   id: ID! @unique
-  amountInCents: Int!
+  filename: String!
+  kind: String
+  location: String
+  message: Message
 }
 
 type Message {
@@ -44,4 +54,6 @@ type Message {
   recipient: User!
   subject: String
   body: String
+  notices: [Notice!]!
+  documents: [Document!]!
 }

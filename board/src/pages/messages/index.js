@@ -1,8 +1,9 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import withData from '../../components/with-data'
+import Master from '../../components/layout'
 import Icon from '../../components/icon'
 import {
   Messages,
@@ -11,7 +12,6 @@ import {
   Subject,
   Sender,
   Features,
-  FlexFeatures,
   Lozenge,
   Document,
   Prompt,
@@ -28,10 +28,20 @@ const queryMe = gql`
         subject
         body
 
+        documents {
+          filename
+          kind
+          location
+        }
+
+        notices {
+          description
+          severity
+        }
+
         sender {
           name
           description
-
           agency {
             name
           }
@@ -42,7 +52,7 @@ const queryMe = gql`
 `
 
 const Homepage = ({ name, id, messages }) => (
-  <Fragment>
+  <Master>
     <h1>Messages</h1>
 
     <Messages>
@@ -54,22 +64,28 @@ const Homepage = ({ name, id, messages }) => (
           </About>
 
           <Features>
-            <Lozenge overdue>Payment overdue!</Lozenge>
-            <Lozenge important>Lodge form by 29 June 2018</Lozenge>
-            <Lozenge important>Provide more documents</Lozenge>
+            {msg.notices.map((notice, i) => (
+              <Lozenge
+                overdue={notice.severity === 'Critical'}
+                important={notice.severity === 'Important'}
+                key={i}
+              >
+                {notice.description}
+              </Lozenge>
+            ))}
           </Features>
 
-          <FlexFeatures>
-            <Document to="/todo" icon={<Icon>book</Icon>}>
-              2017 Notice of Assesment
-            </Document>
-            <Document to="/todo" icon={<Icon>calendar_today</Icon>}>
-              Click to download calendar invite
-            </Document>
-            <Document to="/todo" icon={<Icon>book</Icon>}>
-              2017 Notice of Assesment
-            </Document>
-          </FlexFeatures>
+          <Features>
+            {msg.documents.map((doc, i) => (
+              <Document
+                key={i}
+                to={doc.location || '/todo'}
+                icon={<Icon>{doc.kind || 'book'}</Icon>}
+              >
+                {doc.filename}
+              </Document>
+            ))}
+          </Features>
 
           <Prompt>
             <Attachment />
@@ -78,7 +94,7 @@ const Homepage = ({ name, id, messages }) => (
         </Message>
       ))}
     </Messages>
-  </Fragment>
+  </Master>
 )
 
 const withUserMessages = graphql(queryMe, {
