@@ -29,6 +29,12 @@ const Header = styled.header`
 
 const ButtonLink = styled(Link)`
   padding: 1rem 1em;
+  text-align: center;
+  display: block;
+
+  @media screen and (min-width: 768px) {
+    display: auto;
+  }
 `
 
 const Navitem = styled.li`
