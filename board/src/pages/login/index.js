@@ -25,7 +25,7 @@ const Login = ({ services }) => {
                 variables: {
                   username: input.value,
                   taxID: services.find(
-                    service => service.agency.name === 'Australian Tax Office'
+                    service => service.agency.name === 'Australian Taxation Office'
                   ).id,
                   centrelinkID: services.find(
                     service => service.agency.name === 'Centrelink'
