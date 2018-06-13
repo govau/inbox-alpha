@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   flex-direction: column-reverse;
 
   @media screen and (min-width: 768px) {
-    flex-flow: row-reverse nowrap;
+    flex-flow: row nowrap;
 
     ${Side}, ${Master} {
       margin-top: 0;

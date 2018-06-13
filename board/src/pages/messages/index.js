@@ -1,23 +1,14 @@
 import React from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
+import styled, { css } from 'styled-components'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
 import Icon from '../../components/icon'
-import {
-  Messages,
-  Message,
-  About,
-  Subject,
-  Sender,
-  Features,
-  Lozenge,
-  Document,
-  Prompt,
-  Attachment,
-  Timestamp,
-} from './components'
+import IconLink from '../../components/icon-link'
+import Message from './message'
+import { Messages } from './components'
 
 const queryMe = gql`
   query($userID: ID!) {
@@ -44,6 +35,10 @@ const queryMe = gql`
           description
           agency {
             name
+            logo {
+              url
+              title
+            }
           }
         }
       }
@@ -51,48 +46,58 @@ const queryMe = gql`
   }
 `
 
+const Navlist = styled.ul`
+  list-style: none;
+  padding: 0;
+`
+
+const Navlink = styled(IconLink)`
+  color: ${props => props.theme.copyColour};
+
+  ${props =>
+    props.active
+      ? css`
+          font-weight: bold;
+        `
+      : ``} & span {
+    margin-left: 0.5em;
+  }
+
+  span {
+    text-decoration: none;
+  }
+`
+
+const Navitem = styled.li``
+
+const Sidenav = props => (
+  <nav {...props}>
+    <Navlist>
+      <Navitem>
+        <Navlink active to="/todo" icon={<Icon>inbox</Icon>}>
+          Messages
+        </Navlink>
+      </Navitem>
+      <Navitem>
+        <Navlink to="/todo" icon={<Icon>done</Icon>}>
+          Done
+        </Navlink>
+      </Navitem>
+      <Navitem>
+        <Navlink to="/todo" icon={<Icon>flag</Icon>}>
+          Priority
+        </Navlink>
+      </Navitem>
+    </Navlist>
+  </nav>
+)
+
 const Homepage = ({ name, id, messages }) => (
-  <Master>
+  <Master side={<Sidenav />}>
     <h1>Messages</h1>
 
     <Messages>
-      {messages.map((msg, i) => (
-        <Message key={i}>
-          <About>
-            <Subject>{msg.subject}</Subject>{' '}
-            <Sender>{msg.sender.agency.name}</Sender>
-          </About>
-
-          <Features>
-            {msg.notices.map((notice, i) => (
-              <Lozenge
-                overdue={notice.severity === 'Critical'}
-                important={notice.severity === 'Important'}
-                key={i}
-              >
-                {notice.description}
-              </Lozenge>
-            ))}
-          </Features>
-
-          <Features>
-            {msg.documents.map((doc, i) => (
-              <Document
-                key={i}
-                to={doc.location || '/todo'}
-                icon={<Icon>{doc.kind || 'book'}</Icon>}
-              >
-                {doc.filename}
-              </Document>
-            ))}
-          </Features>
-
-          <Prompt>
-            <Attachment />
-            <Timestamp>09:48 AM</Timestamp>
-          </Prompt>
-        </Message>
-      ))}
+      {messages.map((msg, i) => <Message key={i} msg={msg} />)}
     </Messages>
   </Master>
 )

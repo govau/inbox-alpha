@@ -9,11 +9,43 @@ export const Messages = styled.ul`
   padding: 0;
 `
 
+export const SenderInfo = styled.div``
+
+export const SenderCircle = styled.div`
+  background-color: #d5d5d5;
+  color: white;
+  border-radius: 50%;
+  margin: 0 1rem;
+  margin-right: 3rem;
+  padding: 0.4em;
+`
+
+export const MessageContentWrapper = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1;
+
+  @media screen and (min-width: 768px) {
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+`
+
+export const MessageContent = styled.div`
+  display: flex;
+  flex-flow: column nowrap;
+  flex: 1;
+`
+
 export const Message = styled.li`
   border-top: 1px solid #d5d5d5;
   padding: 1em 0;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
+
+  * + * {
+    margin-top: 0;
+  }
 `
 
 export const About = styled.header``
@@ -46,10 +78,8 @@ export const Lozenge = styled(({ overdue, important, className, ...props }) => (
   <span className={classnames('lozenge', className)} {...props} />
 ))`
   display: inline-block;
-  font-weight: bold;
-  font-size: 0.8em;
   border-radius: 1em;
-  padding: 0.2rem 0.8rem;
+  padding: 0.2rem 1.5rem;
   ${lozengeColour};
 `
 
@@ -79,9 +109,22 @@ export const Features = styled.div`
   display: flex;
   flex-flow: column nowrap;
 
-  ${Document}, ${Lozenge} {
+  ${props =>
+    props.lozenges
+      ? css`
+          margin-left: -1.5rem;
+        `
+      : css``}
+  }
+
+  ${Lozenge} {
+    margin-top: 1rem;
+  }
+
+  ${Document} {
     margin-top: 1em;
   }
+
 
   @media screen and (min-width: 768px) {
     flex-flow: row wrap;
@@ -93,7 +136,12 @@ export const Features = styled.div`
 `
 
 export const Prompt = styled.div`
-  align-self: flex-end;
+  display: flex;
+  flex-flow: row nowrap;
+
+  * + * {
+    margin-top: 0;
+  }
 `
 
 export const Attachment = styled.div``
