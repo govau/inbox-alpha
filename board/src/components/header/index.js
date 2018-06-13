@@ -4,6 +4,7 @@ import styled, { css, ThemeProvider } from 'styled-components'
 
 import logo from './mygov.svg'
 import Icon from '../icon'
+import Toggle from '../toggle'
 import { header as headerTheme, button as buttonTheme } from '../mygov'
 
 const Hamburger = styled(Icon)`
@@ -126,98 +127,77 @@ const Navlink = ({ link: Component = Link, ...props }) => (
   </Navitem>
 )
 
-const StickyHeader = ({ active, toggleActive, deactivate, globals, pages }) => (
-  <Fragment>
-    <ThemeProvider theme={headerTheme}>
-      <Header>
-        <HeaderWrapper className="wrap-sides">
-          <Controls>
-            <Link onClick={deactivate} to="/">
-              <img
-                src={logo}
-                style={{ height: '4rem', marginTop: '1rem' }}
-                alt="myGov logo"
-              />
-            </Link>
-            {active ? (
-              <Hamburger onClick={toggleActive}>close</Hamburger>
-            ) : (
-              <Hamburger onClick={toggleActive}>menu</Hamburger>
-            )}
-          </Controls>
+const StickyHeader = ({ globals, pages }) => (
+  <Toggle>
+    {({ on, toggle, deactivate }) => (
+      <Fragment>
+        <ThemeProvider theme={headerTheme}>
+          <Header>
+            <HeaderWrapper className="wrap-sides">
+              <Controls>
+                <Link onClick={deactivate} to="/">
+                  <img
+                    src={logo}
+                    style={{ height: '4rem', marginTop: '1rem' }}
+                    alt="myGov logo"
+                  />
+                </Link>
+                {on ? (
+                  <Hamburger onClick={toggle}>close</Hamburger>
+                ) : (
+                  <Hamburger onClick={toggle}>menu</Hamburger>
+                )}
+              </Controls>
 
-          <Nav active={active}>
-            <Navlist>
-              <Navlink onClick={deactivate} to="/todo">
-                Help
-              </Navlink>
-              <ThemeProvider theme={buttonTheme}>
-                <Navlink link={ButtonLink} onClick={deactivate} to="/logout">
-                  Sign out
+              <Nav active={on}>
+                <Navlist>
+                  <Navlink onClick={deactivate} to="/todo">
+                    Help
+                  </Navlink>
+                  <ThemeProvider theme={buttonTheme}>
+                    <Navlink
+                      link={ButtonLink}
+                      onClick={deactivate}
+                      to="/logout"
+                    >
+                      Sign out
+                    </Navlink>
+                  </ThemeProvider>
+                </Navlist>
+              </Nav>
+            </HeaderWrapper>
+          </Header>
+        </ThemeProvider>
+
+        <Header>
+          <HeaderWrapper className="wrap-sides">
+            <Nav active={on}>
+              <SecondaryNavlist>
+                <Navlink onClick={deactivate} to="/">
+                  Home
                 </Navlink>
-              </ThemeProvider>
-            </Navlist>
-          </Nav>
-        </HeaderWrapper>
-      </Header>
-    </ThemeProvider>
-
-    <Header>
-      <HeaderWrapper className="wrap-sides">
-        <Nav active={active}>
-          <SecondaryNavlist>
-            <Navlink onClick={deactivate} to="/">
-              Home
-            </Navlink>
-            <Navlink onClick={deactivate} to="/todo">
-              Profile
-            </Navlink>
-            <Navlink onClick={deactivate} to="/todo">
-              Permissions
-            </Navlink>
-            <Navlink onClick={deactivate} to="/todo">
-              Payments
-            </Navlink>
-            <Navlink onClick={deactivate} to="/todo">
-              Activity
-            </Navlink>
-            <Navlink onClick={deactivate} to="/todo">
-              Messages
-            </Navlink>
-          </SecondaryNavlist>
-        </Nav>
-      </HeaderWrapper>
-    </Header>
-  </Fragment>
+                <Navlink onClick={deactivate} to="/todo">
+                  Profile
+                </Navlink>
+                <Navlink onClick={deactivate} to="/todo">
+                  Permissions
+                </Navlink>
+                <Navlink onClick={deactivate} to="/todo">
+                  Payments
+                </Navlink>
+                <Navlink onClick={deactivate} to="/todo">
+                  Activity
+                </Navlink>
+                <Navlink onClick={deactivate} to="/todo">
+                  Messages
+                </Navlink>
+              </SecondaryNavlist>
+            </Nav>
+          </HeaderWrapper>
+        </Header>
+      </Fragment>
+    )}
+  </Toggle>
 )
 
-class ClickyHeader extends React.Component {
-  state = { active: false }
-
-  toggleNav = e => {
-    this.setState({
-      ...this.state,
-      active: !this.state.active,
-    })
-  }
-
-  deactivate = e => {
-    this.setState({
-      ...this.state,
-      active: false,
-    })
-  }
-
-  render() {
-    return (
-      <StickyHeader
-        active={this.state.active}
-        toggleActive={this.toggleNav}
-        deactivate={this.deactivate}
-        {...this.props}
-      />
-    )
-  }
-}
-
-export { ClickyHeader as default, Header, Controls, ClickyHeader, StickyHeader }
+export { StickyHeader as default, Header, Controls, StickyHeader }
