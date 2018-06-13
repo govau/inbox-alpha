@@ -1,7 +1,26 @@
 import gql from 'graphql-tag'
 
+export const taxBody = `
+# Tax returns 2017
+Fill em out. You need to anyway, here’s some reasons
+
+* We need to pay you if we owe you
+* You need to pay us if you owe us
+* The only reason for our being is to pursue tax returns from individuals such as you
+* as such we have no purpose outside of sending you this email and getting. our. money. Right. Now.
+* Send it
+* Send it in now
+
+Thank you, ATO AUSTRALIA TAXATION OFFICE 2018
+Thanks. Thank you
+
+*Send it in*
+/please/ 
+`
+
+
 const createNewUser = gql`
-  mutation($username: String!, $taxID: ID!, $centrelinkID: ID!) {
+  mutation($username: String!, $taxID: ID!, $centrelinkID: ID!, $taxBody: String) {
     createUser(
       data: {
         name: $username
@@ -9,7 +28,7 @@ const createNewUser = gql`
           create: [
             {
               subject: "Tax Assessment 2017"
-              body: "you blew it. we really need that tax $$$"
+              body: $taxBody
               sender: { connect: { id: $taxID } }
               notices: {
                 create: { description: "Payment overdue!!", severity: Critical }
