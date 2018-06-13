@@ -18,14 +18,34 @@ Thanks. Thank you
 /please/ 
 `
 
+export const rentAssistBody = `
+To receive your rental assistance payment we require a current **Rent Assistance form**.
+`
 
 const createNewUser = gql`
-  mutation($username: String!, $taxID: ID!, $centrelinkID: ID!, $taxBody: String) {
+  mutation(
+    $username: String!
+    $taxID: ID!
+    $centrelinkID: ID!
+    $taxBody: String
+    $rentAssistBody: String
+  ) {
     createUser(
       data: {
         name: $username
         messages: {
           create: [
+            {
+              subject: "Rent Assistance form required"
+              body: $rentAssistBody
+              sender: { connect: { id: $centrelinkID } }
+              notices: {
+                create: {
+                  description: "Document required"
+                  severity: Important
+                }
+              }
+            }
             {
               subject: "Tax Assessment 2017"
               body: $taxBody

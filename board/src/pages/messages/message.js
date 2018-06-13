@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import Icon from '../../components/icon'
 import Toggle from '../../components/toggle'
@@ -19,6 +20,11 @@ import {
   Timestamp,
 } from './components'
 
+const AddAttachment = styled.div`
+  background-color: #eee;
+  padding: 2em 4em;
+`
+
 const Msg = ({ msg, ...props }) => (
   <Toggle>
     {({ on, toggle, activate, deactivate }) =>
@@ -30,6 +36,17 @@ const Msg = ({ msg, ...props }) => (
           </About>
 
           <Markdown source={msg.body} />
+
+          <AddAttachment>
+            Drag a document here to add it as an attachment
+          </AddAttachment>
+          <button>or click here to upload</button>
+
+          <h3>Having trouble?</h3>
+          <p>
+            Just call us at <a href="/">0423222111</a> and we can
+            sort you out straight away. Go on, give us a jingle
+          </p>
 
           <Features lozenges>
             {msg.notices.map((notice, i) => (

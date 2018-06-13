@@ -4,7 +4,7 @@ import { graphql, Mutation } from 'react-apollo'
 
 import { Authenticated, setSession, unsetSession } from '../../components/auth'
 import withData from '../../components/with-data'
-import { createNewUser, queryServices, taxBody } from './queries'
+import { createNewUser, queryServices, taxBody, rentAssistBody } from './queries'
 
 const Login = ({ services }) => {
   let input
@@ -32,6 +32,7 @@ const Login = ({ services }) => {
                     service => service.agency.name === 'Centrelink'
                   ).id,
                   taxBody,
+                  rentAssistBody,
                 },
               })
               input.value = ''
