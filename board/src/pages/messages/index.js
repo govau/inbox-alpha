@@ -113,6 +113,10 @@ const Heading = styled.header`
       margin-top: 0;
     }
   }
+
+  & + ${Messages} {
+    margin-top: 2em;
+  }
 `
 
 const H1 = styled.h1`
@@ -149,9 +153,7 @@ const Homepage = ({ name, id, messages }) => (
     />
 
     <Messages>
-      {messages.map((msg, i) => (
-        <Message key={i} msg={msg} />
-      ))}
+      {messages.map((msg, i) => <Message key={i} msg={msg} />)}
     </Messages>
   </Master>
 )

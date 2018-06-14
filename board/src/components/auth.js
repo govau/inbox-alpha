@@ -22,12 +22,18 @@ const isAuthenticated = () => {
   return user ? (user.id ? true : false) : false
 }
 
-const AuthenticatedRoute = ({ component: Component, ...rest }) => (
+const AuthenticatedRoute = ({
+  component: Component,
+  alternative: Alternative,
+  ...rest
+}) => (
   <Route
     {...rest}
     render={props =>
       isAuthenticated() ? (
         <Component {...props} user={getCurrentUser()} />
+      ) : Alternative ? (
+        <Alternative />
       ) : (
         <Redirect to="/login" />
       )

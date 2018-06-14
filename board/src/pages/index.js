@@ -5,7 +5,7 @@ import { ThemeProvider } from 'styled-components'
 import Err from '../components/error'
 import Loading from '../components/loading'
 //import Header from '../components/header/mygov'
-import Header from '../components/header'
+import Header, { LoggedOutHeader } from '../components/header'
 import Footer from '../components/footer'
 import ScrollToTop from '../components/scroll-to-top'
 import { theme } from '../components/mygov'
@@ -18,7 +18,7 @@ const IndexPage = props => (
   <Router>
     <ThemeProvider theme={theme}>
       <ScrollToTop>
-        <Header />
+        <AuthenticatedRoute component={Header} alternative={LoggedOutHeader} />
         <main role="main">
           <Switch>
             <AuthenticatedRoute exact path="/" component={Home} />

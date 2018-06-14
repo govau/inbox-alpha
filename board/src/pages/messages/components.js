@@ -7,7 +7,6 @@ import IconLink from '../../components/icon-link'
 export const Messages = styled.ul`
   list-style: none;
   padding: 0;
-  margin-top: 2em;
 `
 
 export const SenderInfo = styled.div``
@@ -38,10 +37,7 @@ export const MessageContent = styled.div`
 
   /* hide marked content for testing easter-egg */
   .more-information strong {
-    background-color: black;
-    a {
-      color: black;
-    }
+    background-color: ${props => props.theme.copyColour};
   }
 `
 

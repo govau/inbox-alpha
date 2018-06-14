@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 import styled, { css, ThemeProvider } from 'styled-components'
 
 import logo from './mygov.svg'
@@ -16,7 +18,8 @@ const Header = styled.header`
   color: ${props => props.theme.copyColour};
   margin-top: 0;
 
-  a {
+  a,
+  a:visited {
     color: ${props => props.theme.copyColour};
     text-decoration: none;
   }
@@ -46,9 +49,27 @@ const Navitem = styled.li`
         `
       : css``};
 
-  ${ButtonLink} {
+  ${ButtonLink}, ${ButtonLink}:visited {
     color: ${props => props.theme.copyColour};
     background-color: ${props => props.theme.backgroundColour};
+  }
+`
+
+const IndicatorLink = styled(Link)`
+  position: relative;
+  z-index: 1;
+
+  &::after {
+    position: absolute;
+    z-index: -1;
+    border-radius: 50%;
+    background-color: #ff5d81;
+    color: #fff;
+    font-size: 0.65em;
+    top: -0.5em;
+    right: -1.8em;
+    padding: 0 0.5em;
+    content: attr(data-count);
   }
 `
 
@@ -128,13 +149,63 @@ const Controls = styled.div`
   }
 `
 
-const Navlink = ({ active, link: Component = Link, ...props }) => (
-  <Navitem active={active}>
+const Navlink = ({ link: Component = Link, ...props }) => (
+  <Navitem active={false}>
     <Component {...props} />
   </Navitem>
 )
 
-const StickyHeader = ({ globals, pages }) => (
+const queryMessages = gql`
+  query($userID: ID!) {
+    user(where: { id: $userID }) {
+      messages {
+        readStatus
+      }
+    }
+  }
+`
+
+const LoggedOutHeader = () => (
+  <Toggle>
+    {({ on, toggle, deactivate }) => (
+      <ThemeProvider theme={headerTheme}>
+        <Header>
+          <HeaderWrapper className="wrap-sides">
+            <Controls>
+              <Link onClick={deactivate} to="/">
+                <img
+                  src={logo}
+                  style={{ height: '4rem', marginTop: '1rem' }}
+                  alt="myGov logo"
+                />
+              </Link>
+              {on ? (
+                <Hamburger onClick={toggle}>close</Hamburger>
+              ) : (
+                <Hamburger onClick={toggle}>menu</Hamburger>
+              )}
+            </Controls>
+
+            <Nav active={on}>
+              <Navlist>
+                <Navlink onClick={deactivate} to="/todo">
+                  Help
+                </Navlink>
+                <ThemeProvider theme={buttonTheme}>
+                  <Navlink link={ButtonLink} onClick={deactivate} to="/login">
+                    Sign in
+                  </Navlink>
+                </ThemeProvider>
+              </Navlist>
+            </Nav>
+          </HeaderWrapper>
+        </Header>
+      </ThemeProvider>
+    )}
+  </Toggle>
+)
+
+const StickyHeader = ({ user }) => (
   <Toggle>
     {({ on, toggle, deactivate }) => (
       <Fragment>
@@ -192,9 +263,28 @@ const StickyHeader = ({ globals, pages }) => (
                 <Navlink onClick={deactivate} to="/todo">
                   Activity
                 </Navlink>
-                <Navlink active onClick={deactivate} to="/messages">
-                  Messages (HOOK ME UP PLEASE)
-                </Navlink>
+                <Query query={queryMessages} variables={{ userID: user.id }}>
+                  {({ loading, error, data: { user } }) => {
+                    const count = ((user && user.messages) || []).filter(
+                      msg => msg.readStatus === 'Unread'
+                    ).length
+
+                    return user ? (
+                      <Navlink
+                        onClick={deactivate}
+                        to="/messages"
+                        link={IndicatorLink}
+                        data-count={count ? count : ''}
+                      >
+                        Messages
+                      </Navlink>
+                    ) : (
+                      <Navlink onClick={deactivate} to="/messages">
+                        Messages
+                      </Navlink>
+                    )
+                  }}
+                </Query>
               </SecondaryNavlist>
             </Nav>
           </HeaderWrapper>
@@ -204,4 +294,4 @@ const StickyHeader = ({ globals, pages }) => (
   </Toggle>
 )
 
-export { StickyHeader as default, Header, Controls, StickyHeader }
+export { StickyHeader as default, Header, Controls, LoggedOutHeader }
