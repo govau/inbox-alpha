@@ -1,13 +1,15 @@
 import React from 'react'
 import { Route, Switch, Link } from 'react-router-dom'
 import styled from 'styled-components'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 
-import { Button } from '../../components/button'
 import Icon from '../../components/icon'
 import Markdown from '../../components/markdown'
-import FileInput from '../../components/file-input'
+import Task from '../../components/task'
 import {
   Message,
+  ReadMessage,
   About,
   Subject,
   Sender,
@@ -22,18 +24,35 @@ import {
   Timestamp,
 } from './components'
 
-const Hr = styled.hr`
-  border-style: dashed;
-  border-color: #aaa;
-  border-width: 1px;
-  border-top: 0;
-  margin-top: 2em;
-`
-
 const Actionables = styled.div`
-  background-color: #eee;
+  background-color: #f3f5f5;
   padding: 2em;
 `
+
+const markAsRead = gql`
+  mutation($messageID: ID!) {
+    updateMessage(where: { id: $messageID }, data: { readStatus: Read }) {
+      id
+      subject
+      body
+      readStatus
+    }
+  }
+`
+
+const MaybeReadMessage = ({ read, ...props }) =>
+  read ? <ReadMessage {...props} /> : <Message {...props} />
+
+/*
+   *
+          update={(cache, { data: { updateMessage } }) => {
+            const { users } = cache.readQuery({ query: queryUsers })
+
+            cache.writeQuery({
+              query: queryUsers,
+              data: { users: users.concat([createUser]) },
+            })
+            */
 
 const Msg = ({ msg, ...props }) => (
   <Switch>
@@ -62,6 +81,7 @@ const Msg = ({ msg, ...props }) => (
                   <Lozenge
                     overdue={notice.severity === 'Critical'}
                     important={notice.severity === 'Important'}
+                    information={notice.severity === 'Information'}
                     key={i}
                   >
                     {notice.description}
@@ -71,33 +91,24 @@ const Msg = ({ msg, ...props }) => (
 
               <Actionables>
                 <Markdown source={msg.body} />
-                <FileInput name="attachment" />
-                <Button>Send</Button>
+                <Features>
+                  {msg.documents.map((doc, i) => (
+                    <Document
+                      key={i}
+                      to={doc.location || '/todo'}
+                      icon={<Icon>{doc.kind || 'book'}</Icon>}
+                    >
+                      {doc.filename}
+                    </Document>
+                  ))}
+                </Features>
+
+                {msg.tasks.map((task, i) => <Task key={i} {...task} />)}
               </Actionables>
-
-              <Features>
-                {msg.documents.map((doc, i) => (
-                  <Document
-                    key={i}
-                    to={doc.location || '/todo'}
-                    icon={<Icon>{doc.kind || 'book'}</Icon>}
-                  >
-                    {doc.filename}
-                  </Document>
-                ))}
-              </Features>
-              <Hr />
-
-              <h3>Having trouble?</h3>
-              <p>
-                Just call us at <a href="/">0423222111</a> and we can sort you
-                out straight away. Go on, give us a jingle
-              </p>
-              <p>ref: 201747573772</p>
+              <Markdown source={msg.moreInformation || ''} />
             </MessageContent>
 
             <Prompt>
-              {msg.documents.find(doc => true) && <Icon>attachment</Icon>}
               <Timestamp>09:48 AM</Timestamp>
             </Prompt>
           </MessageContentWrapper>
@@ -108,55 +119,66 @@ const Msg = ({ msg, ...props }) => (
       exact
       path="/messages"
       render={() => (
-        <Message {...props}>
-          <SenderInfo>
-            <SenderCircle image={msg.sender.agency.logo}>
-              {msg.sender.agency.name.substring(0, 3)}
-            </SenderCircle>
-          </SenderInfo>
+        <Mutation mutation={markAsRead}>
+          {(markAsRead, { loading, error, data }) => (
+            <MaybeReadMessage read={msg.readStatus === 'Read'} {...props}>
+              <SenderInfo>
+                <SenderCircle image={msg.sender.agency.logo}>
+                  {msg.sender.agency.name.substring(0, 3)}
+                </SenderCircle>
+              </SenderInfo>
 
-          <MessageContentWrapper>
-            <MessageContent>
-              <About>
-                <Link to={`/messages/${msg.id}`}>
-                  <Subject status={msg.readStatus}>{msg.subject}</Subject>
-                  <Sender status={msg.readStatus}>
-                    {msg.sender.agency.name}
-                  </Sender>
-                </Link>
-              </About>
+              <MessageContentWrapper>
+                <MessageContent>
+                  <About>
+                    <Link
+                      onClick={e => {
+                        markAsRead({
+                          variables: { messageID: msg.id },
+                        })
+                      }}
+                      to={`/messages/${msg.id}`}
+                    >
+                      <Subject status={msg.readStatus}>{msg.subject}</Subject>
+                      <Sender status={msg.readStatus}>
+                        {msg.sender.agency.name}
+                      </Sender>
+                    </Link>
+                  </About>
 
-              <Features>
-                {msg.notices.map((notice, i) => (
-                  <Lozenge
-                    overdue={notice.severity === 'Critical'}
-                    important={notice.severity === 'Important'}
-                    key={i}
-                  >
-                    {notice.description}
-                  </Lozenge>
-                ))}
-              </Features>
+                  <Features>
+                    {msg.notices.map((notice, i) => (
+                      <Lozenge
+                        overdue={notice.severity === 'Critical'}
+                        important={notice.severity === 'Important'}
+                        information={notice.severity === 'Information'}
+                        key={i}
+                      >
+                        {notice.description}
+                      </Lozenge>
+                    ))}
+                  </Features>
 
-              <Features>
-                {msg.documents.map((doc, i) => (
-                  <Document
-                    key={i}
-                    to={doc.location || '/todo'}
-                    icon={<Icon>{doc.kind || 'book'}</Icon>}
-                  >
-                    {doc.filename}
-                  </Document>
-                ))}
-              </Features>
-            </MessageContent>
+                  <Features>
+                    {msg.documents.map((doc, i) => (
+                      <Document
+                        key={i}
+                        to={doc.location || '/todo'}
+                        icon={<Icon>{doc.kind || 'book'}</Icon>}
+                      >
+                        {doc.filename}
+                      </Document>
+                    ))}
+                  </Features>
+                </MessageContent>
 
-            <Prompt>
-              {msg.documents.find(doc => true) && <Icon>attachment</Icon>}
-              <Timestamp>09:48 AM</Timestamp>
-            </Prompt>
-          </MessageContentWrapper>
-        </Message>
+                <Prompt>
+                  <Timestamp>09:48 AM</Timestamp>
+                </Prompt>
+              </MessageContentWrapper>
+            </MaybeReadMessage>
+          )}
+        </Mutation>
       )}
     />
   </Switch>

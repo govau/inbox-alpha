@@ -7,6 +7,7 @@ import IconLink from '../../components/icon-link'
 export const Messages = styled.ul`
   list-style: none;
   padding: 0;
+  margin-top: 2em;
 `
 
 export const SenderInfo = styled.div``
@@ -16,7 +17,6 @@ export const SenderCircle = styled.div`
   color: white;
   border-radius: 50%;
   margin: 0 1rem;
-  margin-right: 3rem;
   padding: 0.4em;
 `
 
@@ -38,21 +38,23 @@ export const MessageContent = styled.div`
 `
 
 export const Message = styled.li`
-  border-top: 1px solid #d5d5d5;
+  margin-top: 0;
   padding: 1em 0;
   display: flex;
   flex-flow: row nowrap;
+  border-top: 3px solid #d5d5d5;
+
+  & + & {
+    border-top: 1px solid #d5d5d5;
+  }
 
   > * + * {
     margin-top: 0;
   }
 `
 
-export const About = styled.header`
-  ${Subject} a, ${Sender} a {
-    color: ${props => props.theme.copyColour};
-    text-decoration: none;
-  }
+export const ReadMessage = styled(Message)`
+  background-color: #f3f5f5;
 `
 
 export const Subject = styled.span`
@@ -66,7 +68,28 @@ export const Sender = styled.span`
   font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
 `
 
-const lozengeColour = ({ overdue, important }) => {
+export const About = styled.header`
+  a {
+    color: ${props => props.theme.copyColour};
+    text-decoration: none;
+  }
+`
+
+const lozengeColour = ({ overdue, important, information }) => {
+  if (information) {
+    return css`
+      padding: 0;
+      border-radius: 0;
+    `
+  }
+
+  if (true) {
+    return css`
+      background-color: transparent;
+      border: 1px solid #bbb;
+    `
+  }
+
   if (overdue) {
     return css`
       background-color: #f4d0d6;
@@ -86,9 +109,12 @@ const lozengeColour = ({ overdue, important }) => {
   `
 }
 
-export const Lozenge = styled(({ overdue, important, className, ...props }) => (
-  <span className={classnames('lozenge', className)} {...props} />
-))`
+export const Lozenge = styled(
+  ({ overdue, important, information, className, ...props }) => (
+    <span className={classnames('lozenge', className)} {...props} />
+  )
+)`
+  font-size: 0.8em;
   display: inline-block;
   border-radius: 1em;
   padding: 0.2rem 1.5rem;
@@ -150,6 +176,7 @@ export const Features = styled.div`
 export const Prompt = styled.div`
   display: flex;
   flex-flow: row nowrap;
+  margin: 0 1rem;
 
   * + * {
     margin-top: 0;
@@ -158,4 +185,6 @@ export const Prompt = styled.div`
 
 export const Attachment = styled.div``
 
-export const Timestamp = styled.div``
+export const Timestamp = styled.div`
+  font-size: 0.8em;
+`

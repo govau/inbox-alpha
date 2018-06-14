@@ -20,7 +20,15 @@ const queryMe = gql`
         id
         subject
         body
+        moreInformation
         readStatus
+
+        tasks {
+          id
+          instruction
+          task
+          paymentAmount
+        }
 
         documents {
           filename
@@ -96,15 +104,39 @@ const Sidenav = props => (
   </nav>
 )
 
+const Heading = styled.header`
+  @media screen and (min-width: 768px) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    * + * {
+      margin-top: 0;
+    }
+  }
+`
+
+const H1 = styled.h1`
+  @media screen and (min-width: 768px) {
+    flex: 1;
+  }
+`
+
 const Search = styled.input`
   width: 100%;
   font-size: 1em;
-  padding: 0.5rem 1rem;
+  padding: 1rem;
+
+  @media screen and (min-width: 768px) {
+    flex: 2;
+  }
 `
 
 const Homepage = ({ name, id, messages }) => (
   <Master side={null && <Sidenav />}>
-    <Search type="text" placeholder="Begin typing to search..." />
+    <Heading>
+      <H1>Messages</H1>
+      <Search type="text" placeholder="Begin typing to search..." />
+    </Heading>
 
     <Route
       exact
@@ -117,7 +149,9 @@ const Homepage = ({ name, id, messages }) => (
     />
 
     <Messages>
-      {messages.map((msg, i) => <Message key={i} msg={msg} />)}
+      {messages.map((msg, i) => (
+        <Message key={i} msg={msg} />
+      ))}
     </Messages>
   </Master>
 )

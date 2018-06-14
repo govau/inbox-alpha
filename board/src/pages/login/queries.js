@@ -23,16 +23,41 @@ Hi Alex,
 
 We have received new address information from you, which may impact your Rent Assistance payments.
 
-We need a copy of your new **Rental Contract** to update your new address and confirm your payments.
+**You need to:**
 `
+
+export const rentAssistHelp = `
+## Need help?
+
+If you need help submitting your documents, [book a time](https://google.com) and we'll call you back.
+`
+
+export const centrelinkBody = `
+Hi Alex,
+
+  Transaction ID: 22X4423181
+
+Your change of name request has been successfully processed.
+
+If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)
+`
+
+export const assessmentBody = `
+Hi Alex,
+
+Your income tax return has been processed. View your income tax notice of assessment for more information.
+`
+
 
 const createNewUser = gql`
   mutation(
     $username: String!
     $taxID: ID!
     $centrelinkID: ID!
-    $taxBody: String
+    $assessmentBody: String
+    $centrelinkBody: String
     $rentAssistBody: String
+    $rentAssistHelp: String
   ) {
     createUser(
       data: {
@@ -42,24 +67,24 @@ const createNewUser = gql`
             {
               subject: "Rent Assistance form required"
               body: $rentAssistBody
+              moreInformation: $rentAssistHelp
               readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
                 create: {
-                  description: "Document required"
+                  description: "Further information needed"
                   severity: Important
                 }
               }
-            }
-            {
-              subject: "Tax Assessment 2017"
-              body: $taxBody
-              readStatus: Read
-              sender: { connect: { id: $taxID } }
-              notices: {
-                create: { description: "Payment overdue!!", severity: Critical }
+              tasks: {
+                create: [
+                  {
+                    instruction: "Attach a copy of your new **Rental Contract** to update your new address and confirm your payments."
+                    task: Upload
+                  }
+                  { task: Submit }
+                ]
               }
-              documents: { create: { filename: "2017 Notice of Assessment" } }
             }
             {
               subject: "Rent Assistance"
@@ -69,22 +94,25 @@ const createNewUser = gql`
               notices: {
                 create: {
                   description: "Lodge form by 29 June 2018"
-                  severity: Information
+                  severity: Important
                 }
               }
             }
             {
               subject: "Name update"
-              body: "update your name, thanks."
+              body: $centrelinkBody
               readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
-                create: { description: "Transaction complete: 2248123xX3" }
+                create: {
+                  description: "Request completed"
+                  severity: Information
+                }
               }
             }
             {
               subject: "Tax Assessment 2017"
-              body: "fill out your tax assessment. thanks"
+              body: $assessmentBody
               readStatus: Read
               sender: { connect: { id: $taxID } }
               notices: {
@@ -94,6 +122,15 @@ const createNewUser = gql`
                 }
               }
               documents: { create: { filename: "2017 Notice of Assessment" } }
+              tasks: {
+                create: [
+                  {
+                    instruction: ""
+                    paymentAmount: "$1086.24"
+                    task: SendPayment
+                  }
+                ]
+              }
             }
           ]
         }
