@@ -19,7 +19,11 @@ Thanks. Thank you
 `
 
 export const rentAssistBody = `
-To receive your rental assistance payment we require a current **Rent Assistance form**.
+Hi Alex,
+
+We have received new address information from you, which may impact your Rent Assistance payments.
+
+We need a copy of your new **Rental Contract** to update your new address and confirm your payments.
 `
 
 const createNewUser = gql`

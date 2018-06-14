@@ -6,6 +6,7 @@ import { Button } from '../../components/button'
 import Icon from '../../components/icon'
 import IconLink from '../../components/icon-link'
 import Markdown from '../../components/markdown'
+import FileInput from '../../components/file-input'
 import {
   Message,
   About,
@@ -22,9 +23,17 @@ import {
   Timestamp,
 } from './components'
 
-const AddAttachment = styled.div`
+const Hr = styled.hr`
+  border-style: dashed;
+  border-color: #aaa;
+  border-width: 1px;
+  border-top: 0;
+  margin-top: 2em;
+`
+
+const Actionables = styled.div`
   background-color: #eee;
-  padding: 2em 4em;
+  padding: 2em;
 `
 
 const Msg = ({ msg, ...props }) => (
@@ -33,49 +42,68 @@ const Msg = ({ msg, ...props }) => (
       exact
       path={`/messages/${msg.id}`}
       render={() => (
-        <MessageContent>
-          <About>
-            <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-              Back
-            </IconLink>
-            <Subject>{msg.subject}</Subject>{' '}
-            <Sender>{msg.sender.agency.name}</Sender>
-          </About>
+        <Message {...props}>
+          <SenderInfo>
+            <SenderCircle image={msg.sender.agency.logo}>
+              {msg.sender.agency.name.substring(0, 3)}
+            </SenderCircle>
+          </SenderInfo>
 
-          <Markdown source={msg.body} />
+          <MessageContentWrapper>
+            <MessageContent>
+              <About>
+                <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+                  Back
+                </IconLink>
+                <Subject>{msg.subject}</Subject>{' '}
+                <Sender>{msg.sender.agency.name}</Sender>
+              </About>
 
-          <AddAttachment>
-            Drag a document here to add it as an attachment
-          </AddAttachment>
-          <Button>or click here to upload</Button>
+              <Features lozenges>
+                {msg.notices.map((notice, i) => (
+                  <Lozenge
+                    overdue={notice.severity === 'Critical'}
+                    important={notice.severity === 'Important'}
+                    key={i}
+                  >
+                    {notice.description}
+                  </Lozenge>
+                ))}
+              </Features>
 
-          <h3>Having trouble?</h3>
-          <p>
-            Just call us at <a href="/">0423222111</a> and we can sort you out
-            straight away. Go on, give us a jingle
-          </p>
+              <Actionables>
+                <Markdown source={msg.body} />
+                <FileInput name="attachment" />
+                <Button>Send</Button>
+              </Actionables>
 
-          <Features lozenges>
-            {msg.notices.map((notice, i) => (
-              <Lozenge
-                overdue={notice.severity === 'Critical'}
-                important={notice.severity === 'Important'}
-                key={i}
-              >
-                {notice.description}
-              </Lozenge>
-            ))}
-            {msg.documents.map((doc, i) => (
-              <Document
-                key={i}
-                to={doc.location || '/todo'}
-                icon={<Icon>{doc.kind || 'book'}</Icon>}
-              >
-                {doc.filename}
-              </Document>
-            ))}
-          </Features>
-        </MessageContent>
+              <Features>
+                {msg.documents.map((doc, i) => (
+                  <Document
+                    key={i}
+                    to={doc.location || '/todo'}
+                    icon={<Icon>{doc.kind || 'book'}</Icon>}
+                  >
+                    {doc.filename}
+                  </Document>
+                ))}
+              </Features>
+              <Hr />
+
+              <h3>Having trouble?</h3>
+              <p>
+                Just call us at <a href="/">0423222111</a> and we can sort you
+                out straight away. Go on, give us a jingle
+              </p>
+              <p>ref: 201747573772</p>
+            </MessageContent>
+
+            <Prompt>
+              {msg.documents.find(doc => true) && <Icon>attachment</Icon>}
+              <Timestamp>09:48 AM</Timestamp>
+            </Prompt>
+          </MessageContentWrapper>
+        </Message>
       )}
     />
     <Route

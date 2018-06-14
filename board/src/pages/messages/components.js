@@ -43,7 +43,7 @@ export const Message = styled.li`
   display: flex;
   flex-flow: row nowrap;
 
-  * + * {
+  > * + * {
     margin-top: 0;
   }
 `

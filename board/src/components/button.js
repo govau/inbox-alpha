@@ -20,7 +20,10 @@ const style = css`
 
 const Button = styled.button`
   ${style};
-  font-weight: bold;
+
+  &:focus {
+    font-weight: bold;
+  }
 `
 
 const ButtonLink = styled(Link)`

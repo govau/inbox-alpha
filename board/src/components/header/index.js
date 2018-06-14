@@ -190,13 +190,10 @@ const StickyHeader = ({ globals, pages }) => (
                   Permissions
                 </Navlink>
                 <Navlink onClick={deactivate} to="/todo">
-                  Payments
-                </Navlink>
-                <Navlink onClick={deactivate} to="/todo">
                   Activity
                 </Navlink>
                 <Navlink active onClick={deactivate} to="/messages">
-                  Messages
+                  Messages (HOOK ME UP PLEASE)
                 </Navlink>
               </SecondaryNavlist>
             </Nav>

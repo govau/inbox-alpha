@@ -21,14 +21,20 @@ type Service {
   agency: Agency!
   name: String!
   description: String
+  contactNo: String
   messages: [Message!]!
 }
 
 enum Severity {
-    Critical
-    Important
-    Error
-    Information
+  Critical
+  Important
+  Error
+  Information
+}
+
+enum ReadStatus {
+    Read
+    Unread
 }
 
 type Notice {
@@ -54,6 +60,7 @@ type Message {
   recipient: User!
   subject: String
   body: String
+  readStatus: ReadStatus
   notices: [Notice!]!
   documents: [Document!]!
 }
