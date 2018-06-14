@@ -32,8 +32,8 @@ references:
   not_master_branch: &not_master_branch
     filters:
       branches:
-        ignore:
-          - master
+        only:
+          - this-will-never-be-a-branch
 
 jobs:
   setup-and-build:

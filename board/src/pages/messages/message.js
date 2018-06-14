@@ -105,7 +105,10 @@ const Msg = ({ msg, ...props }) => (
 
                 {msg.tasks.map((task, i) => <Task key={i} {...task} />)}
               </Actionables>
-              <Markdown source={msg.moreInformation || ''} />
+              <Markdown
+                className="more-information"
+                source={msg.moreInformation || ''}
+              />
             </MessageContent>
 
             <Prompt>

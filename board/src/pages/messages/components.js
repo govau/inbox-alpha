@@ -35,6 +35,14 @@ export const MessageContent = styled.div`
   display: flex;
   flex-flow: column nowrap;
   flex: 1;
+
+  /* hide marked content for testing easter-egg */
+  .more-information strong {
+    background-color: black;
+    a {
+      color: black;
+    }
+  }
 `
 
 export const Message = styled.li`
