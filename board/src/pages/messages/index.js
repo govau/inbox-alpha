@@ -23,6 +23,7 @@ const queryMe = gql`
         body
         moreInformation
         readStatus
+        sent
 
         tasks {
           id

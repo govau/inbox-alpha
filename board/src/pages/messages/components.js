@@ -127,10 +127,14 @@ export const Lozenge = styled(
 
 export const Document = styled(IconLink)`
   background-color: #f3f5f5;
-  color: #246add;
   font-size: 0.8em;
   border-radius: 3px;
   padding: 0.5rem 0.5rem;
+
+  &,
+  &:visited {
+    color: #246add;
+  }
 
   & span {
     margin-left: 0.5em;

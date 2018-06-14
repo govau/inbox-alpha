@@ -112,7 +112,7 @@ const Msg = ({ msg, ...props }) => (
             </MessageContent>
 
             <Prompt>
-              <Timestamp>09:48 AM</Timestamp>
+              <Timestamp>{msg.sent}</Timestamp>
             </Prompt>
           </MessageContentWrapper>
         </Message>
@@ -176,7 +176,7 @@ const Msg = ({ msg, ...props }) => (
                 </MessageContent>
 
                 <Prompt>
-                  <Timestamp>09:48 AM</Timestamp>
+                  <Timestamp>{msg.sent}</Timestamp>
                 </Prompt>
               </MessageContentWrapper>
             </MaybeReadMessage>

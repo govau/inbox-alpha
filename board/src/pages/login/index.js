@@ -63,6 +63,9 @@ const Login = ({ services }) => {
                   centrelinkID: services.find(
                     service => service.agency.name === 'Centrelink'
                   ).id,
+                  medicareID: services.find(
+                    service => service.agency.name === 'Medicare'
+                  ).id,
                   taxBody,
                   assessmentBody,
                   rentAssistBody,

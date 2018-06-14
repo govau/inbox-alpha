@@ -61,6 +61,7 @@ const Navitem = styled.li`
   ${props =>
     props.active
       ? css`
+          font-weight: bold;
           border-left: 6px solid ${props => props.theme.highlight};
           padding-left: calc(2rem - 6px);
         `
@@ -179,7 +180,7 @@ const HeaderLink = ({ link: Component = Link, ...props }) => (
 const Navlink = ({ link: Component = Link, to, ...props }) => (
   <Switch>
     <Route
-      exact
+      exact={to === '/'}
       path={to}
       render={() => (
         <Navitem active>

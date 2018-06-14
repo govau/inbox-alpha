@@ -54,6 +54,7 @@ const createNewUser = gql`
     $username: String!
     $taxID: ID!
     $centrelinkID: ID!
+    $medicareID: ID!
     $assessmentBody: String
     $centrelinkBody: String
     $rentAssistBody: String
@@ -70,6 +71,7 @@ const createNewUser = gql`
               moreInformation: $rentAssistHelp
               readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
+              sent: "10:34 AM"
               notices: {
                 create: {
                   description: "Further information needed"
@@ -87,22 +89,11 @@ const createNewUser = gql`
               }
             }
             {
-              subject: "Rent Assistance"
-              body: "here's your rent assistance ey"
-              readStatus: Unread
-              sender: { connect: { id: $centrelinkID } }
-              notices: {
-                create: {
-                  description: "Lodge form by 29 June 2018"
-                  severity: Important
-                }
-              }
-            }
-            {
               subject: "Name update"
               body: $centrelinkBody
               readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
+              sent: "9:15 AM"
               notices: {
                 create: {
                   description: "Request completed"
@@ -111,10 +102,19 @@ const createNewUser = gql`
               }
             }
             {
+              subject: "Benefit statement"
+              body: "Your benefits have been transferred by EFT to your nominated account. View the attached statement for full details."
+              readStatus: Unread
+              sender: { connect: { id: $medicareID } }
+              sent: "13 June"
+              documents: { create: { filename: "Benefit EFT statement" } }
+            }
+            {
               subject: "Tax Assessment 2017"
               body: $assessmentBody
               readStatus: Read
               sender: { connect: { id: $taxID } }
+              sent: "8 June"
               notices: {
                 create: {
                   description: "Payment due 29 Jun 2018"

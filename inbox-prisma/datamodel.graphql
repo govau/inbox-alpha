@@ -80,6 +80,7 @@ type Message {
   body: String
   moreInformation: String
   readStatus: ReadStatus
+  sent: String
   notices: [Notice!]!
   documents: [Document!]!
   tasks: [Task!]!
