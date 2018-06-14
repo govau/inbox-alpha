@@ -18,54 +18,102 @@ Thanks. Thank you
 /please/ 
 `
 
+export const rentAssistBody = `
+Hi Alex,
+
+We have received new address information from you, which may impact your Rent Assistance payments.
+
+**You need to:**
+`
+
+export const rentAssistHelp = `
+## Need help?
+
+If you need help submitting your documents, **[book a time](https://google.com) and we'll call you back.**
+`
+
+export const centrelinkBody = `
+Hi Alex,
+
+  Transaction ID: 22X4423181
+
+Your change of name request has been successfully processed.
+
+If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)
+`
+
+export const assessmentBody = `
+Hi Alex,
+
+Your income tax return has been processed. View your income tax notice of assessment for more information.
+`
+
 
 const createNewUser = gql`
-  mutation($username: String!, $taxID: ID!, $centrelinkID: ID!, $taxBody: String) {
+  mutation(
+    $username: String!
+    $taxID: ID!
+    $centrelinkID: ID!
+    $assessmentBody: String
+    $centrelinkBody: String
+    $rentAssistBody: String
+    $rentAssistHelp: String
+  ) {
     createUser(
       data: {
         name: $username
         messages: {
           create: [
             {
-              subject: "Tax Assessment 2017"
-              body: $taxBody
-              sender: { connect: { id: $taxID } }
+              subject: "Rental Contract required"
+              body: $rentAssistBody
+              moreInformation: $rentAssistHelp
+              readStatus: Unread
+              sender: { connect: { id: $centrelinkID } }
               notices: {
-                create: { description: "Payment overdue!!", severity: Critical }
+                create: {
+                  description: "Further information needed"
+                  severity: Important
+                }
               }
-              documents: { create: { filename: "2017 Notice of Assessment" } }
+              tasks: {
+                create: [
+                  {
+                    instruction: "Attach a copy of your new **Rental Contract** to update your new address and confirm your payments."
+                    task: Upload
+                  }
+                  { task: Submit }
+                ]
+              }
             }
             {
               subject: "Rent Assistance"
               body: "here's your rent assistance ey"
+              readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
                 create: {
                   description: "Lodge form by 29 June 2018"
-                  severity: Information
+                  severity: Important
                 }
               }
             }
             {
               subject: "Name update"
-              body: "update your name, thanks."
+              body: $centrelinkBody
+              readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
                 create: {
-                  description: "Provide more documents"
-                  severity: Important
-                }
-              }
-              documents: {
-                create: {
-                  filename: "Click to download calendar invite"
-                  kind: "calendar_today"
+                  description: "Request completed"
+                  severity: Information
                 }
               }
             }
             {
               subject: "Tax Assessment 2017"
-              body: "fill out your tax assessment. thanks"
+              body: $assessmentBody
+              readStatus: Read
               sender: { connect: { id: $taxID } }
               notices: {
                 create: {
@@ -74,6 +122,15 @@ const createNewUser = gql`
                 }
               }
               documents: { create: { filename: "2017 Notice of Assessment" } }
+              tasks: {
+                create: [
+                  {
+                    instruction: ""
+                    paymentAmount: "$1086.24"
+                    task: SendPayment
+                  }
+                ]
+              }
             }
           ]
         }

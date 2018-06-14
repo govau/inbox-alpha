@@ -2,6 +2,7 @@ import React from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled, { css } from 'styled-components'
+import { Route } from 'react-router-dom'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
@@ -16,8 +17,18 @@ const queryMe = gql`
       name
       id
       messages {
+        id
         subject
         body
+        moreInformation
+        readStatus
+
+        tasks {
+          id
+          instruction
+          task
+          paymentAmount
+        }
 
         documents {
           filename
@@ -33,6 +44,7 @@ const queryMe = gql`
         sender {
           name
           description
+          contactNo
           agency {
             name
             logo {
@@ -92,12 +104,54 @@ const Sidenav = props => (
   </nav>
 )
 
+const Heading = styled.header`
+  @media screen and (min-width: 768px) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    * + * {
+      margin-top: 0;
+    }
+  }
+`
+
+const H1 = styled.h1`
+  @media screen and (min-width: 768px) {
+    flex: 1;
+  }
+`
+
+const Search = styled.input`
+  width: 100%;
+  font-size: 1em;
+  padding: 1rem;
+
+  @media screen and (min-width: 768px) {
+    flex: 2;
+  }
+`
+
 const Homepage = ({ name, id, messages }) => (
-  <Master side={<Sidenav />}>
-    <h1>Messages</h1>
+  <Master side={null && <Sidenav />}>
+    <Heading>
+      <H1>Messages</H1>
+      <Search type="text" placeholder="Begin typing to search..." />
+    </Heading>
+
+    <Route
+      exact
+      path="/messages/:id"
+      render={() => (
+        <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+          Back
+        </IconLink>
+      )}
+    />
 
     <Messages>
-      {messages.map((msg, i) => <Message key={i} msg={msg} />)}
+      {messages.map((msg, i) => (
+        <Message key={i} msg={msg} />
+      ))}
     </Messages>
   </Master>
 )

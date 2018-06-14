@@ -22,6 +22,7 @@ const IndexPage = props => (
         <main role="main">
           <Switch>
             <AuthenticatedRoute exact path="/" component={Home} />
+            <AuthenticatedRoute path="/messages" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />
             <Route exact path="/loading" component={Loading} />
