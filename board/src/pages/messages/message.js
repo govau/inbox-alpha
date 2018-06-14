@@ -1,8 +1,10 @@
 import React from 'react'
+import { Route, Switch, Link } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { Button } from '../../components/button'
 import Icon from '../../components/icon'
-import Toggle from '../../components/toggle'
+import IconLink from '../../components/icon-link'
 import Markdown from '../../components/markdown'
 import {
   Message,
@@ -26,12 +28,17 @@ const AddAttachment = styled.div`
 `
 
 const Msg = ({ msg, ...props }) => (
-  <Toggle>
-    {({ on, toggle, activate, deactivate }) =>
-      on ? (
+  <Switch>
+    <Route
+      exact
+      path={`/messages/${msg.id}`}
+      render={() => (
         <MessageContent>
           <About>
-            <Subject onClick={deactivate}>{msg.subject}</Subject>{' '}
+            <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+              Back
+            </IconLink>
+            <Subject>{msg.subject}</Subject>{' '}
             <Sender>{msg.sender.agency.name}</Sender>
           </About>
 
@@ -40,12 +47,12 @@ const Msg = ({ msg, ...props }) => (
           <AddAttachment>
             Drag a document here to add it as an attachment
           </AddAttachment>
-          <button>or click here to upload</button>
+          <Button>or click here to upload</Button>
 
           <h3>Having trouble?</h3>
           <p>
-            Just call us at <a href="/">0423222111</a> and we can
-            sort you out straight away. Go on, give us a jingle
+            Just call us at <a href="/">0423222111</a> and we can sort you out
+            straight away. Go on, give us a jingle
           </p>
 
           <Features lozenges>
@@ -69,7 +76,12 @@ const Msg = ({ msg, ...props }) => (
             ))}
           </Features>
         </MessageContent>
-      ) : (
+      )}
+    />
+    <Route
+      exact
+      path="/messages"
+      render={() => (
         <Message {...props}>
           <SenderInfo>
             <SenderCircle image={msg.sender.agency.logo}>
@@ -80,8 +92,10 @@ const Msg = ({ msg, ...props }) => (
           <MessageContentWrapper>
             <MessageContent>
               <About>
-                <Subject onClick={activate}>{msg.subject}</Subject>{' '}
-                <Sender>{msg.sender.agency.name}</Sender>
+                <Link to={`/messages/${msg.id}`}>
+                  <Subject>{msg.subject}</Subject>{' '}
+                  <Sender>{msg.sender.agency.name}</Sender>
+                </Link>
               </About>
 
               <Features lozenges>
@@ -115,9 +129,9 @@ const Msg = ({ msg, ...props }) => (
             </Prompt>
           </MessageContentWrapper>
         </Message>
-      )
-    }
-  </Toggle>
+      )}
+    />
+  </Switch>
 )
 
 export { Msg as default }

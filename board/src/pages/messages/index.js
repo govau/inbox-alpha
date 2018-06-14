@@ -2,6 +2,7 @@ import React from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled, { css } from 'styled-components'
+import { Route } from 'react-router-dom'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
@@ -16,6 +17,7 @@ const queryMe = gql`
       name
       id
       messages {
+        id
         subject
         body
 
@@ -92,9 +94,21 @@ const Sidenav = props => (
   </nav>
 )
 
+const Search = styled.input`
+  width: 100%;
+  font-size: 1em;
+  padding: 0.5rem 1rem;
+`
+
 const Homepage = ({ name, id, messages }) => (
-  <Master side={<Sidenav />}>
-    <h1>Messages</h1>
+  <Master side={null && <Sidenav />}>
+    <Route
+      exact
+      path="/messages"
+      render={() => (
+        <Search type="text" placeholder="Begin typing to search..." />
+      )}
+    />
 
     <Messages>
       {messages.map((msg, i) => <Message key={i} msg={msg} />)}

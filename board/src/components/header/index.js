@@ -39,6 +39,13 @@ const ButtonLink = styled(Link)`
 `
 
 const Navitem = styled.li`
+  ${props =>
+    props.active
+      ? css`
+          font-weight: bold;
+        `
+      : css``};
+
   ${ButtonLink} {
     color: ${props => props.theme.copyColour};
     background-color: ${props => props.theme.backgroundColour};
@@ -121,8 +128,8 @@ const Controls = styled.div`
   }
 `
 
-const Navlink = ({ link: Component = Link, ...props }) => (
-  <Navitem>
+const Navlink = ({ active, link: Component = Link, ...props }) => (
+  <Navitem active={active}>
     <Component {...props} />
   </Navitem>
 )
@@ -188,7 +195,7 @@ const StickyHeader = ({ globals, pages }) => (
                 <Navlink onClick={deactivate} to="/todo">
                   Activity
                 </Navlink>
-                <Navlink onClick={deactivate} to="/todo">
+                <Navlink active onClick={deactivate} to="/messages">
                   Messages
                 </Navlink>
               </SecondaryNavlist>
