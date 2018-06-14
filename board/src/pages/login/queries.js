@@ -42,6 +42,7 @@ const createNewUser = gql`
             {
               subject: "Rent Assistance form required"
               body: $rentAssistBody
+              readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
                 create: {
@@ -53,6 +54,7 @@ const createNewUser = gql`
             {
               subject: "Tax Assessment 2017"
               body: $taxBody
+              readStatus: Read
               sender: { connect: { id: $taxID } }
               notices: {
                 create: { description: "Payment overdue!!", severity: Critical }
@@ -62,6 +64,7 @@ const createNewUser = gql`
             {
               subject: "Rent Assistance"
               body: "here's your rent assistance ey"
+              readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
                 create: {
@@ -73,23 +76,16 @@ const createNewUser = gql`
             {
               subject: "Name update"
               body: "update your name, thanks."
+              readStatus: Unread
               sender: { connect: { id: $centrelinkID } }
               notices: {
-                create: {
-                  description: "Provide more documents"
-                  severity: Important
-                }
-              }
-              documents: {
-                create: {
-                  filename: "Click to download calendar invite"
-                  kind: "calendar_today"
-                }
+                create: { description: "Transaction complete: 2248123xX3" }
               }
             }
             {
               subject: "Tax Assessment 2017"
               body: "fill out your tax assessment. thanks"
+              readStatus: Read
               sender: { connect: { id: $taxID } }
               notices: {
                 create: {

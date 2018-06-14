@@ -4,7 +4,6 @@ import styled from 'styled-components'
 
 import { Button } from '../../components/button'
 import Icon from '../../components/icon'
-import IconLink from '../../components/icon-link'
 import Markdown from '../../components/markdown'
 import FileInput from '../../components/file-input'
 import {
@@ -52,14 +51,13 @@ const Msg = ({ msg, ...props }) => (
           <MessageContentWrapper>
             <MessageContent>
               <About>
-                <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-                  Back
-                </IconLink>
-                <Subject>{msg.subject}</Subject>{' '}
-                <Sender>{msg.sender.agency.name}</Sender>
+                <Subject status={msg.readStatus}>{msg.subject}</Subject>
+                <Sender status={msg.readStatus}>
+                  {msg.sender.agency.name}
+                </Sender>
               </About>
 
-              <Features lozenges>
+              <Features>
                 {msg.notices.map((notice, i) => (
                   <Lozenge
                     overdue={notice.severity === 'Critical'}
@@ -121,12 +119,14 @@ const Msg = ({ msg, ...props }) => (
             <MessageContent>
               <About>
                 <Link to={`/messages/${msg.id}`}>
-                  <Subject>{msg.subject}</Subject>{' '}
-                  <Sender>{msg.sender.agency.name}</Sender>
+                  <Subject status={msg.readStatus}>{msg.subject}</Subject>
+                  <Sender status={msg.readStatus}>
+                    {msg.sender.agency.name}
+                  </Sender>
                 </Link>
               </About>
 
-              <Features lozenges>
+              <Features>
                 {msg.notices.map((notice, i) => (
                   <Lozenge
                     overdue={notice.severity === 'Critical'}

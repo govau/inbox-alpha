@@ -2,6 +2,7 @@ import React from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled, { css } from 'styled-components'
+import { Route } from 'react-router-dom'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
@@ -104,6 +105,16 @@ const Search = styled.input`
 const Homepage = ({ name, id, messages }) => (
   <Master side={null && <Sidenav />}>
     <Search type="text" placeholder="Begin typing to search..." />
+
+    <Route
+      exact
+      path="/messages/:id"
+      render={() => (
+        <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+          Back
+        </IconLink>
+      )}
+    />
 
     <Messages>
       {messages.map((msg, i) => <Message key={i} msg={msg} />)}

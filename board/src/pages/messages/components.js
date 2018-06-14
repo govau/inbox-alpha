@@ -48,11 +48,23 @@ export const Message = styled.li`
   }
 `
 
-export const About = styled.header``
+export const About = styled.header`
+  ${Subject} a, ${Sender} a {
+    color: ${props => props.theme.copyColour};
+    text-decoration: none;
+  }
+`
 
-export const Subject = styled.strong``
+export const Subject = styled.span`
+  font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
+  border-right: 1px solid ${props => props.theme.copyColour};
+  margin-right: 1rem;
+  padding-right: 1rem;
+`
 
-export const Sender = styled.span``
+export const Sender = styled.span`
+  font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
+`
 
 const lozengeColour = ({ overdue, important }) => {
   if (overdue) {
