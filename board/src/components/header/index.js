@@ -206,6 +206,27 @@ const queryMessages = gql`
     }
   }
 `
+const MinimalHeader = () => (
+  <ThemeProvider theme={headerTheme}>
+    <Header>
+      <HeaderWrapper
+        style={{
+          padding: '2em',
+          flexDirection: 'row',
+          justifyContent: 'center',
+        }}
+      >
+        <Link to="/">
+          <img
+            src={logo}
+            style={{ height: '4rem', marginTop: '1rem' }}
+            alt="myGov logo"
+          />
+        </Link>
+      </HeaderWrapper>
+    </Header>
+  </ThemeProvider>
+)
 
 const LoggedOutHeader = () => (
   <Toggle>
@@ -340,4 +361,10 @@ const StickyHeader = ({ user }) => (
   </Toggle>
 )
 
-export { StickyHeader as default, Header, Controls, LoggedOutHeader }
+export {
+  StickyHeader as default,
+  Header,
+  Controls,
+  LoggedOutHeader,
+  MinimalHeader,
+}

@@ -8,6 +8,7 @@ import withData from '../../components/with-data'
 import Master from '../../components/layout'
 import Icon from '../../components/icon'
 import IconLink from '../../components/icon-link'
+import { Text } from '../../components/forms'
 import Message from './message'
 import { Messages } from './components'
 
@@ -125,11 +126,7 @@ const H1 = styled.h1`
   }
 `
 
-const Search = styled.input`
-  width: 100%;
-  font-size: 1em;
-  padding: 1rem;
-
+const Search = styled(Text)`
   @media screen and (min-width: 768px) {
     flex: 2;
   }
@@ -139,7 +136,7 @@ const Homepage = ({ name, id, messages }) => (
   <Master side={null && <Sidenav />}>
     <Heading>
       <H1>Messages</H1>
-      <Search type="text" placeholder="Begin typing to search..." />
+      <Search placeholder="Begin typing to search..." />
     </Heading>
 
     <Route

@@ -1,7 +1,10 @@
 import React, { Fragment } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { graphql, Mutation } from 'react-apollo'
+import styled from 'styled-components'
 
+import { MinimalHeader } from '../../components/header'
+import { Text, Password, Submit } from '../../components/forms'
 import { Authenticated, setSession, unsetSession } from '../../components/auth'
 import withData from '../../components/with-data'
 import {
@@ -14,11 +17,32 @@ import {
   rentAssistHelp,
 } from './queries'
 
+const Panel = styled.div`
+  background-color: white;
+  border-radius: 3px;
+  max-width: 50rem;
+  padding: 1em 2em;
+  margin: 0 auto;
+  text-align: center;
+
+  h1 {
+    font-weight: normal;
+  }
+
+  ${Text}:valid ~ ${Password}:valid ~ ${Submit} {
+    background-color: #D1E65F;
+  }
+`
+
 const Login = ({ services }) => {
   let input
 
   return (
-    <Fragment>
+    <Panel>
+      <header>
+        <h1>Log in</h1>
+      </header>
+
       <Mutation
         mutation={createNewUser}
         onCompleted={({ createUser: user }) => {
@@ -49,11 +73,15 @@ const Login = ({ services }) => {
               input.value = ''
             }}
           >
-            <input
-              ref={node => {
+            <Text
+              required
+              placeholder="Username or email"
+              reference={node => {
                 input = node
               }}
             />
+
+            <Password required placeholder="Password" />
 
             {loading ? (
               <div>loading ... </div>
@@ -62,9 +90,13 @@ const Login = ({ services }) => {
                 <Authenticated user={data}>
                   <Redirect to="/messages" />
                 </Authenticated>
-                <button type="submit">log in</button>
+                <Submit>Log in</Submit>
               </Fragment>
             )}
+
+            <div>
+              <Link to="/">Forgot password?</Link>
+            </div>
 
             {error ? (
               <details>
@@ -75,15 +107,31 @@ const Login = ({ services }) => {
           </form>
         )}
       </Mutation>
-    </Fragment>
+    </Panel>
   )
 }
 
-const loginWithServices = graphql(queryServices)(withData(Login))
+const LoginWithServices = graphql(queryServices)(withData(Login))
+
+const StandaloneWrapper = styled.div`
+  background-color: #0c643f;
+  min-height: 100vh;
+`
+
+const StandaloneMain = styled.main``
+
+const StandaloneLogin = () => (
+  <StandaloneWrapper>
+    <MinimalHeader />
+    <StandaloneMain role="main">
+      <LoginWithServices />
+    </StandaloneMain>
+  </StandaloneWrapper>
+)
 
 const Logout = ({ props }) => {
   unsetSession()
   return <Redirect to="/" />
 }
 
-export { loginWithServices as default, Login, Logout }
+export { LoginWithServices as default, Login, Logout, StandaloneLogin }

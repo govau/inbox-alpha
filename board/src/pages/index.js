@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 
@@ -10,26 +10,38 @@ import { theme } from '../components/mygov'
 import { AuthenticatedRoute } from '../components/auth'
 
 import Home from './messages'
-import Login, { Logout } from './login'
+import Login, { Logout, StandaloneLogin } from './login'
 
 const IndexPage = props => (
   <Router>
     <ThemeProvider theme={theme}>
       <ScrollToTop>
-        <AuthenticatedRoute component={Header} alternative={LoggedOutHeader} />
-        <main role="main">
-          <Switch>
-            <AuthenticatedRoute exact path="/" component={Home} />
-            <AuthenticatedRoute path="/messages" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/logout" component={Logout} />
-            <Route exact path="/profile" component={Err} />
-            <Route exact path="/permissions" component={Err} />
-            <Route exact path="/activity" component={Err} />
-            <Route component={Err} />
-          </Switch>
-        </main>
-        <Footer />
+        <Switch>
+          <Route exact path="/login" component={StandaloneLogin} />
+          <Route
+            render={() => (
+              <Fragment>
+                <AuthenticatedRoute
+                  component={Header}
+                  alternative={LoggedOutHeader}
+                />
+                <main role="main">
+                  <Switch>
+                    <AuthenticatedRoute exact path="/" component={Home} />
+                    <AuthenticatedRoute path="/messages" component={Home} />
+                    <Route exact path="/loginx" component={Login} />
+                    <Route exact path="/logout" component={Logout} />
+                    <Route exact path="/profile" component={Err} />
+                    <Route exact path="/permissions" component={Err} />
+                    <Route exact path="/activity" component={Err} />
+                    <Route component={Err} />
+                  </Switch>
+                </main>
+                <Footer />
+              </Fragment>
+            )}
+          />
+        </Switch>
       </ScrollToTop>
     </ThemeProvider>
   </Router>
