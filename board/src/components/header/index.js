@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Route, Switch } from 'react-router-dom'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled, { css, ThemeProvider } from 'styled-components'
@@ -42,12 +42,32 @@ const ButtonLink = styled(Link)`
 `
 
 const Navitem = styled.li`
+  margin: 0;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  padding: 1rem 2rem;
+
   ${props =>
     props.active
       ? css`
-          font-weight: bold;
+          border-left: 6px solid ${props => props.theme.highlight};
+          padding-left: calc(2rem - 6px);
         `
       : css``};
+
+  @media screen and (min-width: 768px) {
+    margin: 0;
+    padding: 2rem;
+
+    ${props =>
+      props.active
+        ? css`
+            border-left: none;
+            border-top: 6px solid ${props => props.theme.highlight};
+            padding-top: calc(2rem - 6px);
+          `
+        : css``};
+  }
 
   ${ButtonLink}, ${ButtonLink}:visited {
     color: ${props => props.theme.copyColour};
@@ -100,11 +120,6 @@ const Navlist = styled.ul`
     flex-direction: row;
     justify-content: flex-end;
 
-    ${Navitem} {
-      margin-top: 0;
-      padding: 0 2rem;
-    }
-
     ${Navitem}:last-child {
       padding-right: 0;
     }
@@ -112,14 +127,18 @@ const Navlist = styled.ul`
 `
 
 const SecondaryNavlist = Navlist.extend`
-  padding: 1rem 0;
   margin: 0;
 
   @media screen and (min-width: 768px) {
+    padding: 0;
     justify-content: flex-start;
 
     ${Navitem}:first-child {
       padding-left: 0;
+    }
+
+    ${Navitem}:last-child {
+      padding-right: 2rem;
     }
   }
 `
@@ -149,10 +168,31 @@ const Controls = styled.div`
   }
 `
 
-const Navlink = ({ link: Component = Link, ...props }) => (
-  <Navitem active={false}>
+const HeaderLink = ({ link: Component = Link, ...props }) => (
+  <Navitem>
     <Component {...props} />
   </Navitem>
+)
+
+const Navlink = ({ link: Component = Link, to, ...props }) => (
+  <Switch>
+    <Route
+      exact
+      path={to}
+      render={() => (
+        <Navitem active>
+          <Component to={to} {...props} />
+        </Navitem>
+      )}
+    />
+    <Route
+      render={() => (
+        <Navitem>
+          <Component to={to} {...props} />
+        </Navitem>
+      )}
+    />
+  </Switch>
 )
 
 const queryMessages = gql`
@@ -188,13 +228,17 @@ const LoggedOutHeader = () => (
 
             <Nav active={on}>
               <Navlist>
-                <Navlink onClick={deactivate} to="/todo">
+                <HeaderLink onClick={deactivate} to="/todo">
                   Help
-                </Navlink>
+                </HeaderLink>
                 <ThemeProvider theme={buttonTheme}>
-                  <Navlink link={ButtonLink} onClick={deactivate} to="/login">
+                  <HeaderLink
+                    link={ButtonLink}
+                    onClick={deactivate}
+                    to="/login"
+                  >
                     Sign in
-                  </Navlink>
+                  </HeaderLink>
                 </ThemeProvider>
               </Navlist>
             </Nav>
@@ -229,17 +273,17 @@ const StickyHeader = ({ user }) => (
 
               <Nav active={on}>
                 <Navlist>
-                  <Navlink onClick={deactivate} to="/todo">
+                  <HeaderLink onClick={deactivate} to="/todo">
                     Help
-                  </Navlink>
+                  </HeaderLink>
                   <ThemeProvider theme={buttonTheme}>
-                    <Navlink
+                    <HeaderLink
                       link={ButtonLink}
                       onClick={deactivate}
                       to="/logout"
                     >
                       Sign out
-                    </Navlink>
+                    </HeaderLink>
                   </ThemeProvider>
                 </Navlist>
               </Nav>
