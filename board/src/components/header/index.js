@@ -40,6 +40,17 @@ const ButtonLink = styled(Link)`
     display: auto;
   }
 `
+const Headeritem = styled.li`
+  ${ButtonLink}, ${ButtonLink}:visited {
+    color: ${props => props.theme.copyColour};
+    background-color: ${props => props.theme.backgroundColour};
+  }
+
+  @media screen and (min-width: 768px) {
+    margin: 0;
+    padding: 1rem 2rem;
+  }
+`
 
 const Navitem = styled.li`
   margin: 0;
@@ -67,11 +78,6 @@ const Navitem = styled.li`
             padding-top: calc(2rem - 6px);
           `
         : css``};
-  }
-
-  ${ButtonLink}, ${ButtonLink}:visited {
-    color: ${props => props.theme.copyColour};
-    background-color: ${props => props.theme.backgroundColour};
   }
 `
 
@@ -120,7 +126,7 @@ const Navlist = styled.ul`
     flex-direction: row;
     justify-content: flex-end;
 
-    ${Navitem}:last-child {
+    ${Headeritem}:last-child {
       padding-right: 0;
     }
   }
@@ -135,10 +141,6 @@ const SecondaryNavlist = Navlist.extend`
 
     ${Navitem}:first-child {
       padding-left: 0;
-    }
-
-    ${Navitem}:last-child {
-      padding-right: 2rem;
     }
   }
 `
@@ -169,9 +171,9 @@ const Controls = styled.div`
 `
 
 const HeaderLink = ({ link: Component = Link, ...props }) => (
-  <Navitem>
+  <Headeritem>
     <Component {...props} />
-  </Navitem>
+  </Headeritem>
 )
 
 const Navlink = ({ link: Component = Link, to, ...props }) => (
@@ -298,13 +300,13 @@ const StickyHeader = ({ user }) => (
                 <Navlink onClick={deactivate} to="/">
                   Home
                 </Navlink>
-                <Navlink onClick={deactivate} to="/todo">
+                <Navlink onClick={deactivate} to="/profile">
                   Profile
                 </Navlink>
-                <Navlink onClick={deactivate} to="/todo">
+                <Navlink onClick={deactivate} to="/permissions">
                   Permissions
                 </Navlink>
-                <Navlink onClick={deactivate} to="/todo">
+                <Navlink onClick={deactivate} to="/activity">
                   Activity
                 </Navlink>
                 <Query query={queryMessages} variables={{ userID: user.id }}>

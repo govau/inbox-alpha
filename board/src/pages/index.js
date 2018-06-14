@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 
 import Err from '../components/error'
-import Loading from '../components/loading'
-//import Header from '../components/header/mygov'
 import Header, { LoggedOutHeader } from '../components/header'
 import Footer from '../components/footer'
 import ScrollToTop from '../components/scroll-to-top'
@@ -25,7 +23,9 @@ const IndexPage = props => (
             <AuthenticatedRoute path="/messages" component={Home} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/logout" component={Logout} />
-            <Route exact path="/loading" component={Loading} />
+            <Route exact path="/profile" component={Err} />
+            <Route exact path="/permissions" component={Err} />
+            <Route exact path="/activity" component={Err} />
             <Route component={Err} />
           </Switch>
         </main>
