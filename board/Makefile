@@ -1,7 +1,7 @@
 YARN ?= yarn
 NODE ?= node
 CF   ?= cf
-APP  ?= inbox-msg
+APP  ?= inbox-msgx
 CONF  = src/config/index.json
 SRC   = $(CONF) $(shell find src -type f)
 PUB   = $(shell find public -type f)
@@ -24,7 +24,7 @@ src/config/index.json:
 build: build/index.html
 
 deploy: build
-	$(CF) push $(APP)
+	$(CF) zero-downtime-push $(APP) -f manifest.yml
 
 clean:
 	-rm -r build
