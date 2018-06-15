@@ -29,7 +29,7 @@ We have received new address information from you, which may impact your Rent As
 export const rentAssistHelp = `
 ## Need help?
 
-If you need help submitting your documents, **[book a time](https://google.com) and we'll call you back.**
+If you need help submitting your documents, [book a time](/) and we'll call you back.
 `
 
 export const centrelinkBody = `

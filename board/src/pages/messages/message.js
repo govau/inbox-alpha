@@ -121,10 +121,20 @@ const Msg = ({ msg, ...props }) => (
     <Route
       exact
       path="/messages"
-      render={() => (
+      render={({ history }) => (
         <Mutation mutation={markAsRead}>
           {(markAsRead, { loading, error, data }) => (
-            <MaybeReadMessage read={msg.readStatus === 'Read'} {...props}>
+            <MaybeReadMessage
+              {...props}
+              style={{ cursor: 'pointer' }}
+              read={msg.readStatus === 'Read'}
+              onClick={e => {
+                markAsRead({
+                  variables: { messageID: msg.id },
+                })
+                history.push(`/messages/${msg.id}`)
+              }}
+            >
               <SenderInfo>
                 <SenderCircle image={msg.sender.agency.logo}>
                   {msg.sender.agency.name.substring(0, 3)}
