@@ -15,7 +15,6 @@ export const SenderCircle = styled.div`
   background-color: #d5d5d5;
   color: white;
   border-radius: 50%;
-  margin: 0 1rem;
   padding: 0.4em;
 `
 
@@ -34,11 +33,6 @@ export const MessageContent = styled.div`
   display: flex;
   flex-flow: column nowrap;
   flex: 1;
-
-  /* hide marked content for testing easter-egg */
-  .more-information strong {
-    background-color: ${props => props.theme.copyColour};
-  }
 `
 
 export const Message = styled.li`
@@ -47,6 +41,10 @@ export const Message = styled.li`
   display: flex;
   flex-flow: row nowrap;
   border-top: 3px solid #d5d5d5;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
 
   & + & {
     border-top: 1px solid #d5d5d5;
@@ -54,6 +52,7 @@ export const Message = styled.li`
 
   > * + * {
     margin-top: 0;
+    margin-left: 1em;
   }
 `
 
@@ -184,9 +183,12 @@ export const Features = styled.div`
 export const Prompt = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  margin: 0 1rem;
 
   * + * {
+    margin-top: 0;
+  }
+
+  @media screen and (min-width: 768px) {
     margin-top: 0;
   }
 `
