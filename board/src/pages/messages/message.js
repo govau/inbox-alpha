@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Route, Switch, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
@@ -6,7 +6,7 @@ import { Mutation } from 'react-apollo'
 
 import Icon from '../../components/icon'
 import Markdown from '../../components/markdown'
-import Task from '../../components/task'
+import { Tasks } from '../../components/task'
 import {
   Message,
   ReadMessage,
@@ -54,69 +54,87 @@ const MaybeReadMessage = ({ read, ...props }) =>
             })
             */
 
+const FullMessage = ({ msg, ...props }) => (
+  <Fragment>
+    <Message {...props}>
+      <SenderInfo>
+        <SenderCircle image={msg.sender.agency.logo}>
+          {msg.sender.agency.name.substring(0, 3)}
+        </SenderCircle>
+      </SenderInfo>
+
+      <MessageContentWrapper>
+        <MessageContent>
+          <About>
+            <Subject status={msg.readStatus}>{msg.subject}</Subject>
+            <Sender status={msg.readStatus}>{msg.sender.agency.name}</Sender>
+          </About>
+
+          <Features>
+            {msg.notices.map((notice, i) => (
+              <Lozenge
+                overdue={notice.severity === 'Critical'}
+                important={notice.severity === 'Important'}
+                information={notice.severity === 'Information'}
+                key={i}
+              >
+                {notice.description}
+              </Lozenge>
+            ))}
+          </Features>
+
+          <Actionables>
+            <Markdown source={msg.body} />
+            <Features>
+              {msg.documents.map((doc, i) => (
+                <Document
+                  key={i}
+                  to={doc.location || '/todo'}
+                  icon={<Icon>{doc.kind || 'book'}</Icon>}
+                >
+                  {doc.filename}
+                </Document>
+              ))}
+            </Features>
+
+            <Tasks msg={msg} />
+          </Actionables>
+          <Markdown
+            className="more-information"
+            source={msg.moreInformation || ''}
+          />
+        </MessageContent>
+
+        <Prompt>
+          <Timestamp>{msg.sent}</Timestamp>
+        </Prompt>
+      </MessageContentWrapper>
+    </Message>
+
+    {msg.responses.map((response, i) => (
+      <MessageContent>
+        <Markdown source={response.body} />
+
+        {response.documents.map((doc, i) => (
+          <Document
+            key={i}
+            to={doc.location || '/todo'}
+            icon={<Icon>{doc.kind || 'book'}</Icon>}
+          >
+            {doc.filename}
+          </Document>
+        ))}
+      </MessageContent>
+    ))}
+  </Fragment>
+)
+
 const Msg = ({ msg, ...props }) => (
   <Switch>
     <Route
       exact
       path={`/messages/${msg.id}`}
-      render={() => (
-        <Message {...props}>
-          <SenderInfo>
-            <SenderCircle image={msg.sender.agency.logo}>
-              {msg.sender.agency.name.substring(0, 3)}
-            </SenderCircle>
-          </SenderInfo>
-
-          <MessageContentWrapper>
-            <MessageContent>
-              <About>
-                <Subject status={msg.readStatus}>{msg.subject}</Subject>
-                <Sender status={msg.readStatus}>
-                  {msg.sender.agency.name}
-                </Sender>
-              </About>
-
-              <Features>
-                {msg.notices.map((notice, i) => (
-                  <Lozenge
-                    overdue={notice.severity === 'Critical'}
-                    important={notice.severity === 'Important'}
-                    information={notice.severity === 'Information'}
-                    key={i}
-                  >
-                    {notice.description}
-                  </Lozenge>
-                ))}
-              </Features>
-
-              <Actionables>
-                <Markdown source={msg.body} />
-                <Features>
-                  {msg.documents.map((doc, i) => (
-                    <Document
-                      key={i}
-                      to={doc.location || '/todo'}
-                      icon={<Icon>{doc.kind || 'book'}</Icon>}
-                    >
-                      {doc.filename}
-                    </Document>
-                  ))}
-                </Features>
-
-                {msg.tasks.map((task, i) => <Task key={i} {...task} />)}
-              </Actionables>
-              <Markdown
-                className="more-information"
-                source={msg.moreInformation || ''}
-              />
-            </MessageContent>
-
-            <Prompt>
-              <Timestamp>{msg.sent}</Timestamp>
-            </Prompt>
-          </MessageContentWrapper>
-        </Message>
-      )}
+      render={() => <FullMessage msg={msg} {...props} />}
     />
     <Route
       exact

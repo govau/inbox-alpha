@@ -84,4 +84,12 @@ type Message {
   notices: [Notice!]!
   documents: [Document!]!
   tasks: [Task!]!
+  responses: [Response!]!
+}
+
+type Response {
+  id: ID! @unique
+  references: Message!
+  body: String
+  documents: [Document!]!
 }

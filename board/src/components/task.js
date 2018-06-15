@@ -1,16 +1,21 @@
-import React from 'react'
+import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 import styled from 'styled-components'
 
 import Markdown from './markdown'
 import FileInput from './file-input'
 import { Button } from './button'
+import { Submit as FormSubmit } from './forms'
 
-const Upload = props => <FileInput name="attachment" />
+const Upload = props => (
+  <FileInput name={props.reference} onDocumentChange={props.onDocumentChange} />
+)
 const Download = props => <div>download me</div>
 const AcceptPayment = props => <Button>Accept payment</Button>
 const Consent = props => <Button>Consent</Button>
-const Submit = props => <Button>Send</Button>
+const Submit = props => <FormSubmit>Send</FormSubmit>
 const FormText = props => <input type="text" />
 const FormCheckbox = props => <input type="checkbox" />
 
@@ -78,7 +83,7 @@ const SendPayment = props => (
   </Payment>
 )
 
-const Tasks = {
+const TaskTypes = {
   Upload,
   Download,
   SendPayment,
@@ -96,7 +101,7 @@ const T = styled.div`
 `
 
 const Task = ({ instruction, task, ...more }) => {
-  const Renderer = Tasks[task]
+  const Renderer = TaskTypes[task]
 
   return (
     <T>
@@ -104,6 +109,73 @@ const Task = ({ instruction, task, ...more }) => {
       {Renderer ? <Renderer {...more} /> : null}
     </T>
   )
+}
+
+const createResponse = gql`
+  mutation($messageID: ID!, $filenames: [DocumentCreateInput!], $body: String) {
+    createResponse(
+      data: {
+        body: $body
+        documents: { create: $filenames }
+        references: { connect: { id: $messageID } }
+      }
+    ) {
+      id
+      body
+
+      documents {
+        id
+        kind
+        location
+        filename
+      }
+    }
+  }
+`
+const flatMap = fx => xs => Array.prototype.concat(...xs.map(fx))
+
+class Tasks extends Component {
+  state = {}
+
+  setTaskDocuments = taskID => (...names) => {
+    this.setState({
+      ...this.state,
+      [taskID]: names,
+    })
+  }
+
+  render() {
+    const { msg } = this.props
+
+    return (
+      <Mutation mutation={createResponse}>
+        {(createResponse, { loading, error, data }) => (
+          <form
+            onSubmit={e => {
+              e.preventDefault()
+              createResponse({
+                variables: {
+                  messageID: msg.id,
+                  filenames: flatMap(names => names)(
+                    Object.values(this.state)
+                  ).map(filename => ({ filename })),
+                },
+              })
+            }}
+          >
+            {msg.tasks.map((task, i) => (
+              <Task
+                {...task}
+                reference={`task-${i}`}
+                key={i}
+                onDocumentChange={this.setTaskDocuments(`task-${i}`)}
+              />
+            ))}
+          </form>
+        )}
+      </Mutation>
+    )
+  }
 }
 
 export { Task as default, Tasks }

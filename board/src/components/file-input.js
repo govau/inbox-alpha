@@ -66,7 +66,11 @@ class FileInput extends Component {
           ref={node => {
             input = node
           }}
-          onChange={e => this.setFilename(e.target.value.split('\\').pop())}
+          onChange={e => {
+            const filename = e.target.value.split('\\').pop()
+            this.setFilename(filename)
+            this.props.onDocumentChange(filename)
+          }}
           {...this.props}
         />
 

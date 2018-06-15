@@ -1,3 +1,4 @@
+import React from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 
@@ -18,7 +19,7 @@ const style = css`
   }
 `
 
-const Button = styled.button`
+const Button = styled(props => <button type="button" {...props} />)`
   ${style};
 
   &:focus {

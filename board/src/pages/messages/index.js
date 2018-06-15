@@ -55,6 +55,15 @@ const queryMe = gql`
             }
           }
         }
+
+        responses {
+          body
+          documents {
+            filename
+            kind
+            location
+          }
+        }
       }
     }
   }
