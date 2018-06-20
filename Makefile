@@ -6,9 +6,14 @@ CF       ?= cf
 
 DIRS    = directory example board inbox-prisma
 TARGETS = setup build deploy clean
-BUILDS  = $(TARGETS:%=\%.%)
+DEV_DIRS    = board inbox-prisma
+DEV_TARGETS = deploy-dev
 
-all: build
+targets = $(TARGETS) $(DEV_TARGETS)
+BUILDS  = $(targets:%=\%.%)
+
+$(DEV_TARGETS):
+	$(MAKE) $(DEV_DIRS:%=%.$@)
 
 $(TARGETS):
 	$(MAKE) $(DIRS:%=%.$@)
@@ -24,4 +29,4 @@ cf-login:
 		-o "${CF_ORG}"\
 		-s "${CF_SPACE}"
 
-.PHONY: cf-login $(TARGETS) $(BUILDS)
+.PHONY: cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)
