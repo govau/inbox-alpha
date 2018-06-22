@@ -42,7 +42,7 @@ migrate:
 	$(YARN) run prisma deploy
 
 deploy: manifest-vars.yml build migrate
-	$(CF) zero-downtime-push $(APP) -f manifest.yml --vars-file $<
+	$(CF) zero-downtime-push $(APP) -f manifest.yml
 
 deploy-dev: manifest-$(STG).yml build migrate
 	$(CF) push $(APP)-$(STG) -f manifest.yml --vars-file $<
