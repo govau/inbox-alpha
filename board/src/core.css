@@ -51,7 +51,7 @@ body {
 body main,
 .wrapper,
 .wrap-sides {
-  max-width: 92rem;
+  max-width: 120rem;
   margin: 0 auto;
   padding: 0 2rem;
 }
