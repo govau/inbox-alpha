@@ -1,0 +1,87 @@
+type User {
+  id: ID! @unique
+  name: String!
+  messages: [Message!]!
+}
+
+type Image {
+  url: String!
+  title: String!
+  description: String
+}
+
+type Agency {
+  id: ID! @unique
+  name: String!
+  logo: Image
+}
+
+type Service {
+  id: ID! @unique
+  agency: Agency!
+  name: String!
+  description: String
+  contactNo: String
+  messages: [Message!]!
+}
+
+enum Severity {
+  Critical
+  Important
+  Error
+  Information
+}
+
+enum ReadStatus {
+  Read
+  Unread
+}
+
+type Notice {
+  id: ID! @unique
+  description: String!
+  severity: Severity
+  before: String
+  after: String
+  message: Message
+}
+
+type Document {
+  id: ID! @unique
+  filename: String!
+  kind: String
+  location: String
+  message: Message
+}
+
+enum TaskType {
+  Upload
+  Download
+  SendPayment
+  AcceptPayment
+  Consent
+  FormText
+  FormCheckbox
+  Submit
+}
+
+type Task {
+  id: ID! @unique
+  instruction: String
+  paymentAmount: String
+  task: TaskType
+}
+
+type Message {
+  id: ID! @unique
+  sender: Service!
+  recipient: User!
+  subject: String
+  body: String
+  moreInformation: String
+  readStatus: ReadStatus
+  sent: String
+  notices: [Notice!]!
+  documents: [Document!]!
+  tasks: [Task!]!
+}

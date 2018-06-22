@@ -1,11 +1,15 @@
 YARN ?= yarn
-GRAPHQL_HOST ?= 'http://localhost:4466'
+ENVS  = dev stg prd
+HOSTS = inbox-prisma inbox-msg
+GRAPHQL_HOST ?= http://localhost:4466
+
+export GRAPHQL_HOST
 
 start:
 	docker-compose up
 
 migrate:
-	GRAPHQL_HOST=$(GRAPHQL_HOST) $(YARN) run prisma deploy
+	$(YARN) run prisma deploy
 
 setup:
 	$(YARN) install
@@ -14,7 +18,9 @@ build:
 
 deploy: migrate
 
-clean:
+$(ENVS:%=deploy-%): deploy-%:
+	GRAPHQL_HOST='$(GRAPHQL_HOST)/$*' $(MAKE) deploy
 
+clean:
 
 .PHONY: start migrate setup build deploy clean

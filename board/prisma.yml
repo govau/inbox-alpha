@@ -1,0 +1,2 @@
+endpoint: ${env:GRAPHQL_HOST}
+datamodel: datamodel.graphql

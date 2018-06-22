@@ -4,15 +4,30 @@ CF_ORG   ?= dta
 CF_SPACE ?= notifications
 CF       ?= cf
 
-DIRS    = directory example board inbox-prisma
+CIRCLE_BRANCH ?=
+BRANCH  = $(CIRCLE_BRANCH)
+FBRANCH = $(BRANCH:feat-%=%)
+
+ifneq ($(BRANCH), $(FBRANCH))
+	STG ?= $(FBRANCH)
+else
+	STG ?=
+endif
+
+export STG
+
+DIRS    = directory example board
 TARGETS = setup build deploy clean
-DEV_DIRS    = board inbox-prisma
+DEV_DIRS    = board
 DEV_TARGETS = deploy-dev
 
 targets = $(TARGETS) $(DEV_TARGETS)
 BUILDS  = $(targets:%=\%.%)
 
 $(DEV_TARGETS):
+	echo $(STG)
+	echo $(BRANCH)
+	echo $(CIRCLE_BRANCH)
 	$(MAKE) $(DEV_DIRS:%=%.$@)
 
 $(TARGETS):
@@ -29,4 +44,4 @@ cf-login:
 		-o "${CF_ORG}"\
 		-s "${CF_SPACE}"
 
-.PHONY: cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)
+.PHONY: ok cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)
