@@ -4,17 +4,17 @@ CF_ORG   ?= dta
 CF_SPACE ?= notifications
 CF       ?= cf
 
+# Manage dev deploys can respond to STG env variable if they support
+# feature branches
+STG_PREFIX    ?= feat-
 CIRCLE_BRANCH ?=
-BRANCH  = $(CIRCLE_BRANCH)
-FBRANCH = $(BRANCH:feat-%=%)
+BRANCH  ?= $(CIRCLE_BRANCH)
+FEATURE  = $(BRANCH:$(STG_PREFIX)%=%)
 
-ifneq ($(BRANCH), $(FBRANCH))
-	STG ?= $(FBRANCH)
-else
-	STG ?=
+# export stg variable only if we are on a feature branch
+ifneq ($(BRANCH), $(FEATURE))
+	export STG ?= $(FEATURE)
 endif
-
-export STG
 
 DIRS    = directory example board
 TARGETS = setup build deploy clean
@@ -25,9 +25,6 @@ targets = $(TARGETS) $(DEV_TARGETS)
 BUILDS  = $(targets:%=\%.%)
 
 $(DEV_TARGETS):
-	echo $(STG)
-	echo $(BRANCH)
-	echo $(CIRCLE_BRANCH)
 	$(MAKE) $(DEV_DIRS:%=%.$@)
 
 $(TARGETS):
