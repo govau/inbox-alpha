@@ -61,15 +61,32 @@ export const ReadMessage = styled(Message)`
   background-color: #f3f5f5;
 `
 
-export const Subject = styled.span`
-  font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
-  border-right: 1px solid ${props => props.theme.copyColour};
-  margin-right: 1rem;
-  padding-right: 1rem;
-`
-
 export const Sender = styled.span`
   font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
+`
+
+export const Subject = styled.span`
+  font-weight: ${props => (props.status === 'Unread' ? 'bold' : 'normal')};
+
+  & + ${Sender} {
+    border-left: 1px solid ${props => props.theme.copyColour};
+    margin-left: 1rem;
+    padding-left: 1rem;
+  }
+`
+
+export const ShortSubject = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 0;
+`
+
+export const ShortSender = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
 `
 
 export const About = styled.header`

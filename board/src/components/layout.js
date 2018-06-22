@@ -6,7 +6,7 @@ const Side = styled.div`
 `
 
 const Master = styled.div`
-  flex: 3;
+  flex: 2;
 `
 
 const Wrapper = styled.div`

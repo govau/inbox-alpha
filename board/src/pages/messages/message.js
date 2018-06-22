@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Switch, Link } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
@@ -14,6 +14,8 @@ import {
   About,
   Subject,
   Sender,
+  ShortSubject,
+  ShortSender,
   SenderInfo,
   SenderCircle,
   MessageContent,
@@ -133,46 +135,10 @@ const ShortMessage = ({ msg, history }) => (
 
         <MessageContentWrapper>
           <MessageContent>
-            <About>
-              <Link
-                onClick={e => {
-                  markAsRead({
-                    variables: { messageID: msg.id },
-                  })
-                }}
-                to={`/messages/${msg.id}`}
-              >
-                <Subject status={msg.readStatus}>{msg.subject}</Subject>
-                <Sender status={msg.readStatus}>
-                  {msg.sender.agency.name}
-                </Sender>
-              </Link>
-            </About>
-
-            <Features>
-              {msg.notices.map((notice, i) => (
-                <Lozenge
-                  overdue={notice.severity === 'Critical'}
-                  important={notice.severity === 'Important'}
-                  information={notice.severity === 'Information'}
-                  key={i}
-                >
-                  {notice.description}
-                </Lozenge>
-              ))}
-            </Features>
-
-            <Features>
-              {msg.documents.map((doc, i) => (
-                <Document
-                  key={i}
-                  to={doc.location || '/todo'}
-                  icon={<Icon>{doc.kind || 'book'}</Icon>}
-                >
-                  {doc.filename}
-                </Document>
-              ))}
-            </Features>
+            <ShortSender status={msg.readStatus}>
+              {msg.sender.agency.name}
+            </ShortSender>
+            <ShortSubject status={msg.readStatus}>{msg.subject}</ShortSubject>
           </MessageContent>
 
           <Prompt>
