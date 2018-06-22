@@ -32,8 +32,8 @@ references:
   not_master_branch: &not_master_branch
     filters:
       branches:
-        only:
-          - this-will-never-be-a-branch
+        ignore:
+          - master
 
 jobs:
   setup-and-build:
@@ -57,7 +57,7 @@ jobs:
             at: .
         - *cf_install
         - *cf_login
-        - run: make -j deploy
+        - run: make -j deploy-dev
   deploy-prod:
     <<: *node
     steps:

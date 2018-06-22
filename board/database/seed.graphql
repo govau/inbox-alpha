@@ -1,0 +1,36 @@
+mutation {
+  benefit: createService(
+    data: {
+      name: "Benefit EFT"
+      contactNo: "1300 186 912"
+      agency: { create: { name: "Medicare" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  rentAssistance: createService(
+    data: {
+      name: "Rent Assistance"
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  taxReturn: createService(
+    data: {
+      name: "Tax return"
+      description: "Lodge your tax return online"
+      agency: { create: { name: "Australian Taxation Office" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+}

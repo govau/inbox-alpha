@@ -1,0 +1,4 @@
+endpoint: ${env:GRAPHQL_HOST}
+datamodel: database/datamodel.graphql
+seed:
+  import: database/seed.graphql

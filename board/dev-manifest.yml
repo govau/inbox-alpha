@@ -4,6 +4,6 @@ defaults: &defaults
   memory: 64M
 
 applications:
-- name: inbox-msg
+- name: inbox-msg-((version))
   <<: *defaults
   path: build

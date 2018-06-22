@@ -10,6 +10,7 @@
 /build
 
 src/config
+manifest-vars.yml
 
 # misc
 .DS_Store

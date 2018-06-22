@@ -4,11 +4,28 @@ CF_ORG   ?= dta
 CF_SPACE ?= notifications
 CF       ?= cf
 
-DIRS    = directory example board inbox-prisma
-TARGETS = setup build deploy clean
-BUILDS  = $(TARGETS:%=\%.%)
+# Manage dev deploys can respond to STG env variable if they support
+# feature branches
+STG_PREFIX    ?= feat-
+CIRCLE_BRANCH ?=
+BRANCH  ?= $(CIRCLE_BRANCH)
+FEATURE  = $(BRANCH:$(STG_PREFIX)%=%)
 
-all: build
+# export stg variable only if we are on a feature branch
+ifneq ($(BRANCH), $(FEATURE))
+	export STG ?= $(FEATURE)
+endif
+
+DIRS    = directory example board
+TARGETS = setup build deploy clean
+DEV_DIRS    = board
+DEV_TARGETS = deploy-dev
+
+targets = $(TARGETS) $(DEV_TARGETS)
+BUILDS  = $(targets:%=\%.%)
+
+$(DEV_TARGETS):
+	$(MAKE) $(DEV_DIRS:%=%.$@)
 
 $(TARGETS):
 	$(MAKE) $(DIRS:%=%.$@)
@@ -24,4 +41,4 @@ cf-login:
 		-o "${CF_ORG}"\
 		-s "${CF_SPACE}"
 
-.PHONY: cf-login $(TARGETS) $(BUILDS)
+.PHONY: cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)
