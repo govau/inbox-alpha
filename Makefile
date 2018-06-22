@@ -41,4 +41,4 @@ cf-login:
 		-o "${CF_ORG}"\
 		-s "${CF_SPACE}"
 
-.PHONY: ok cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)
+.PHONY: cf-login $(TARGETS) $(DEV_TARGETS) $(BUILDS)

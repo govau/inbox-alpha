@@ -56,4 +56,4 @@ start: public/index.html $(SRC) $(PUB)
 start-backend:
 	docker-compose up
 
-.PHONY: deploy clean start sure
+.PHONY: deploy clean start
