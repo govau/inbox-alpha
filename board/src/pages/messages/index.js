@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
+import React, { Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import { Route, Switch } from 'react-router-dom'
-import markdownify from 'draftjs-to-markdown'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
 import Icon from '../../components/icon'
 import IconLink from '../../components/icon-link'
+import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
-import Editor from '../../components/editor'
-import Markdown from '../../components/markdown'
-import Message from './message'
+import Compose from './compose'
+import { ShortMessage, MaybeMessage } from './message'
 import { Messages } from './components'
 
 const queryMe = gql`
@@ -63,49 +62,6 @@ const queryMe = gql`
   }
 `
 
-const Navlist = styled.ul`
-  list-style: none;
-  padding: 0;
-`
-
-const Navlink = styled(({ active, ...props }) => <IconLink {...props} />)`
-  color: ${props => props.theme.copyColour};
-
-  ${props =>
-    props.active
-      ? css`
-          font-weight: bold;
-        `
-      : ``};
-
-  & span {
-    margin-left: 0.5em;
-  }
-
-  span {
-    text-decoration: none;
-  }
-`
-
-const Navitem = styled.li``
-
-const Sidenav = props => (
-  <nav {...props}>
-    <Navlist>
-      <Navitem>
-        <Navlink to="/messages/compose" icon={<Icon>create</Icon>}>
-          Compose
-        </Navlink>
-      </Navitem>
-      <Navitem>
-        <Navlink to="/messages" icon={<Icon>inbox</Icon>}>
-          Messages
-        </Navlink>
-      </Navitem>
-    </Navlist>
-  </nav>
-)
-
 const Heading = styled.header`
   @media screen and (min-width: 768px) {
     display: flex;
@@ -133,69 +89,61 @@ const Search = styled(Text)`
   }
 `
 
-class Homepage extends Component {
-  state = { editorContent: '' }
+const Help = styled.section`
+  text-align: center;
+  margin: 5em 0;
+  opacity: 0.6;
+`
 
-  setEditorContent = editorContent => {
-    this.setState({
-      ...this.state,
-      editorContent,
-    })
-  }
+const Sidenav = ({ messages, history }) => (
+  <Fragment>
+    <Search placeholder="Search your messages" />
+    <Messages>
+      {messages.map((msg, i) => (
+        <ShortMessage key={i} msg={msg} history={history} />
+      ))}
+    </Messages>
+  </Fragment>
+)
 
-  render() {
-    const { messages } = this.props
+const Homepage = ({ messages, match, history }) => (
+  <Fragment>
+    <Heading>
+      <H1>Message centre</H1>
+      <ButtonLink to={`${match.path}/compose`}>Start new message</ButtonLink>
+    </Heading>
 
-    return (
+    <Master side={<Sidenav messages={messages} history={history} />}>
       <Switch>
+        <Route exact path={`${match.path}/compose`} component={Compose} />
         <Route
           exact
-          path="/messages/compose"
-          render={() => (
-            <Master side={<Sidenav />}>
-              <Heading>
-                <H1>Message centre</H1>
-              </Heading>
+          path={`${match.path}/:id`}
+          render={({ match }) => (
+            <Fragment>
+              <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+                Back
+              </IconLink>
 
-              <Editor
-                onContentStateChange={contentState => {
-                  this.setEditorContent(markdownify(contentState))
-                }}
+              <MaybeMessage
+                msg={messages.find(msg => msg.id === match.params.id)}
               />
-              <hr />
-
-              <Markdown source={this.state.editorContent} />
-            </Master>
+            </Fragment>
           )}
         />
+
         <Route
-          render={() => (
-            <Master side={<Sidenav />}>
-              <Heading>
-                <H1>Messages</H1>
-                <Search placeholder="Begin typing to search..." />
-              </Heading>
-
-              <Route
-                exact
-                path="/messages/:id"
-                render={() => (
-                  <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-                    Back
-                  </IconLink>
-                )}
-              />
-
-              <Messages>
-                {messages.map((msg, i) => <Message key={i} msg={msg} />)}
-              </Messages>
-            </Master>
+          render={props => (
+            <Help>
+              <h2>No message selected</h2>
+              <p>Choose a conversation from the side bar to get started.</p>
+            </Help>
           )}
         />
       </Switch>
-    )
-  }
-}
+    </Master>
+  </Fragment>
+)
 
 const withUserMessages = graphql(queryMe, {
   options: route => {
