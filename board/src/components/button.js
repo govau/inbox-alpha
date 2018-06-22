@@ -18,7 +18,7 @@ const style = css`
   }
 `
 
-const Button = styled.button`
+const Button = styled(props => <button type="button" {...props} />)`
   ${style};
 
   &:focus {
