@@ -45,7 +45,7 @@ deploy: manifest-vars.yml build migrate
 	$(CF) zero-downtime-push $(APP) -f manifest.yml --vars-file $<
 
 deploy-dev: manifest-$(STG).yml build migrate
-	$(CF) zero-downtime-push $(APP)-$(STG) -f manifest.yml --vars-file $<
+	$(CF) push $(APP)-$(STG) -f manifest.yml --vars-file $<
 
 clean:
 	-rm -r build
