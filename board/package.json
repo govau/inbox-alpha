@@ -12,6 +12,7 @@
     "immutable": "^3.8.2",
     "react": "^16.4.0",
     "react-apollo": "^2.1.4",
+    "react-autocomplete": "^1.8.1",
     "react-dom": "^16.4.0",
     "react-draft-wysiwyg": "^1.12.13",
     "react-markdown": "^3.3.2",

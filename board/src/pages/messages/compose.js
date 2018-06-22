@@ -3,6 +3,7 @@ import markdownify from 'draftjs-to-markdown'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
+import Autocomplete from 'react-autocomplete'
 
 import Editor from '../../components/editor'
 import { Text } from '../../components/forms'
@@ -26,20 +27,12 @@ const Wrapper = styled.section``
 const Target = styled.div``
 
 const Services = styled.ul`
-  display: none;
   list-style: none;
   padding: 0;
   border: 1px solid #eee;
 `
 
-const Search = styled(Text)`
-  &:focus + ${Services} {
-    display: block;
-  }
-`
-
 const Service = styled.li`
-  font-weight: ${props => (props.active ? 'bold' : 'normal')};
   padding: 1rem 2rem;
 
   & + & {
@@ -56,8 +49,17 @@ const ServiceDescription = styled.div`
   font-size: 0.8em;
 `
 
+const ActiveService = styled(Service)`
+  ${ServiceName} {
+    font-weight: bold;
+  }
+`
+
 class Compose extends Component {
-  state = { editorContent: '' }
+  state = {
+    searchValue: '',
+    editorContent: '',
+  }
 
   setEditorContent = editorContent => {
     this.setState({
@@ -66,21 +68,39 @@ class Compose extends Component {
     })
   }
 
+  setSearchValue = searchValue => {
+    this.setState({
+      ...this.state,
+      searchValue,
+    })
+  }
+
   render() {
     return (
       <Wrapper>
         <Target>
-          <span>To:</span>
           <Query query={queryServices}>
             {({ loading, error, data }) =>
               loading ? (
                 <div>loading...</div>
               ) : (
-                <Fragment>
-                  <Search placeholder="agency or service" />
-                  <Services>
-                    {(data.services || []).map((service, i) => (
-                      <Service>
+                <Autocomplete
+                  value={this.state.searchValue}
+                  onChange={e => this.setSearchValue(e.target.value)}
+                  onSelect={this.setSearchValue}
+                  getItemValue={item => item.id}
+                  items={data.services || []}
+                  renderMenu={(items, value, style) => (
+                    <Services style={style} children={items} />
+                  )}
+                  renderInput={({ ref, ...props }) => (
+                    <Text reference={ref} {...props} />
+                  )}
+                  renderItem={(service, active) => {
+                    const ServiceC = active ? ActiveService : Service
+
+                    return (
+                      <ServiceC key={service.id} active={active}>
                         <ServiceName>
                           {service.name} @ {service.agency.name}
                         </ServiceName>
@@ -89,10 +109,10 @@ class Compose extends Component {
                             {service.description}
                           </ServiceDescription>
                         )}
-                      </Service>
-                    ))}
-                  </Services>
-                </Fragment>
+                      </ServiceC>
+                    )
+                  }}
+                />
               )
             }
           </Query>
