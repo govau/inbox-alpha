@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import markdownify from 'draftjs-to-markdown'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
