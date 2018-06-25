@@ -10,7 +10,7 @@ import { theme } from '../components/mygov'
 import { AuthenticatedRoute } from '../components/auth'
 
 import Home from './messages'
-import Login, { Logout, StandaloneLogin } from './login'
+import { Logout, StandaloneLogin } from './login'
 
 const IndexPage = props => (
   <Router>
