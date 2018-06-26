@@ -15,7 +15,7 @@ Thank you, ATO AUSTRALIA TAXATION OFFICE 2018
 Thanks. Thank you
 
 *Send it in*
-/please/ 
+/please/
 `
 
 export const rentAssistBody = `
@@ -47,7 +47,6 @@ Hi Alex,
 
 Your income tax return has been processed. View your income tax notice of assessment for more information.
 `
-
 
 const createNewUser = gql`
   mutation(

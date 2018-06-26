@@ -5,6 +5,7 @@ import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 
+import { ScrollToTopOnMount } from '../../../components/scroll'
 import Master from '../../../components/layout'
 import { Button, ButtonLink } from '../../../components/button'
 import Radio from '../../../components/radio'
@@ -249,7 +250,8 @@ class Step2 extends Component {
         <form onSubmit={this.handleSubmit}>
           <Confirmation>
             A Centrelink agent will call you on 0404 *** *89 between{' '}
-            <strong>{timeSlot}</strong> about your {caseSubject}.
+            <strong>{timeSlot}</strong> about your{' '}
+            <strong>{caseSubject}</strong>.
           </Confirmation>
           <Flex alignItems="baseline">
             <Box>
@@ -271,6 +273,16 @@ class Step2 extends Component {
   }
 }
 
+class Step3 extends Component {
+  componentDidMount() {
+    setTimeout(() => this.props.onSubmit(), 3000)
+  }
+
+  render() {
+    return <Fragment>Yes, yes, we'll get there.</Fragment>
+  }
+}
+
 export class Page extends Component {
   state = {
     step: 1,
@@ -282,13 +294,17 @@ export class Page extends Component {
   }
 
   handleStep2Submit = () => {
-    const { history, match } = this.props
-
-    history.push(`/messages/${match.params.id}`)
+    this.setState(({ step }) => ({ step: step + 1 }))
   }
 
   handleStep2Back = () => {
     this.setState(({ step }) => ({ step: step - 1 }))
+  }
+
+  handleStep3Submit = () => {
+    const { history, match } = this.props
+
+    history.push(`/messages/${match.params.id}`)
   }
 
   render() {
@@ -301,6 +317,7 @@ export class Page extends Component {
       case 1:
         content = (
           <Fragment>
+            <ScrollToTopOnMount />
             <Heading>
               <H1>Book a call</H1>
             </Heading>
@@ -317,6 +334,7 @@ export class Page extends Component {
       case 2:
         content = (
           <Fragment>
+            <ScrollToTopOnMount />
             <Heading>
               <H1>Confirm your call back time</H1>
             </Heading>
@@ -327,6 +345,19 @@ export class Page extends Component {
                 onSubmit={this.handleStep2Submit}
                 onBack={this.handleStep2Back}
               />
+            </Master>
+          </Fragment>
+        )
+        break
+      case 3:
+        content = (
+          <Fragment>
+            <ScrollToTopOnMount />
+            <Heading>
+              <H1>Loading...</H1>
+            </Heading>
+            <Master>
+              <Step3 onSubmit={this.handleStep3Submit} />
             </Master>
           </Fragment>
         )
