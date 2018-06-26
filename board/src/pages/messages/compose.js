@@ -86,14 +86,21 @@ const ActiveService = styled(Service)`
   }
 `
 
-/*
-update={(cache, {data: {createConversation}}) =>{
-const { conversations } = cache.readQuery({ query: queryConversations })
+const HiddenText = styled(Text)`
+  position: absolute;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  width: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+`
 
-cache.writeQuery({
-query: queryConversations,
-data: { conversations: conversations.concat([
-*/
+const GiveThisABetterName = ({ services = [], serviceID, children }) => {
+  const service = services.find(service => service.id === serviceID)
+  return service ? children({ service }) : null
+}
 
 class Compose extends Component {
   state = {
@@ -128,7 +135,7 @@ class Compose extends Component {
                     userID: this.props.userID,
                     serviceID: this.state.searchValue,
                     subject: this.state.subject,
-                    markdownSource: this.state.editorContent,
+                    markdownSource: markdownify(this.state.editorContent),
                   },
                 })
               }}
@@ -149,7 +156,33 @@ class Compose extends Component {
                           <Services style={style} children={items} />
                         )}
                         renderInput={({ ref, ...props }) => (
-                          <Text reference={ref} {...props} />
+                          <label>
+                            <span>
+                              To:{' '}
+                              <GiveThisABetterName
+                                services={data.services}
+                                serviceID={this.state.searchValue}
+                              >
+                                {({ service }) => (
+                                  <Fragment>
+                                    <ServiceName>
+                                      {service.name} @ {service.agency.name}
+                                    </ServiceName>
+                                    {service.description && (
+                                      <ServiceDescription>
+                                        {service.description}
+                                      </ServiceDescription>
+                                    )}
+                                  </Fragment>
+                                )}
+                              </GiveThisABetterName>
+                            </span>
+                            <HiddenText
+                              style={{ visibility: 'none' }}
+                              reference={ref}
+                              {...props}
+                            />
+                          </label>
                         )}
                         renderItem={(service, active) => {
                           const ServiceC = active ? ActiveService : Service
@@ -173,9 +206,10 @@ class Compose extends Component {
                 </Query>
               </Target>
 
+              <Text required placeholder="Subject" />
               <Editor
                 onContentStateChange={contentState => {
-                  this.setEditorContent(markdownify(contentState))
+                  this.setEditorContent(contentState)
                 }}
               />
 
