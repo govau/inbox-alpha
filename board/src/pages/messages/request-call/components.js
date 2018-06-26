@@ -5,9 +5,10 @@ import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
 
-import { ScrollToTopOnMount } from '../../../components/scroll'
+import { ScrollToTopOnMount } from '../../../components/scroll-to-top'
 import Master from '../../../components/layout'
 import { Button, ButtonLink } from '../../../components/button'
+import Loader from '../../../components/loader'
 import Radio from '../../../components/radio'
 import Icon from '../../../components/icon'
 import IconLink from '../../../components/icon-link'
@@ -279,26 +280,46 @@ class Step3 extends Component {
   }
 
   render() {
-    return <Fragment>Yes, yes, we'll get there.</Fragment>
+    return (
+      <Loader icon="lock">
+        Processing your call back request with Centrelink
+      </Loader>
+    )
   }
 }
 
 export class Page extends Component {
   state = {
+    stepChanges: 0,
     step: 1,
     timeSlot: null,
   }
 
+  incrementStep = () => {
+    this.setState(({ stepChanges, step }) => ({
+      stepChanges: stepChanges + 1,
+      step: step + 1,
+    }))
+  }
+
+  decrementStep = () => {
+    this.setState(({ stepChanges, step }) => ({
+      stepChanges: stepChanges + 1,
+      step: step - 1,
+    }))
+  }
+
   handleStep1Submit = timeSlot => {
-    this.setState(({ step }) => ({ step: step + 1, timeSlot }))
+    this.setState(() => ({ timeSlot }))
+    this.incrementStep()
   }
 
   handleStep2Submit = () => {
-    this.setState(({ step }) => ({ step: step + 1 }))
+    this.incrementStep()
   }
 
   handleStep2Back = () => {
-    this.setState(({ step }) => ({ step: step - 1 }))
+    this.decrementStep()
   }
 
   handleStep3Submit = () => {
@@ -309,15 +330,15 @@ export class Page extends Component {
 
   render() {
     const { match } = this.props
-    const { step, timeSlot } = this.state
+    const { stepChanges, step, timeSlot } = this.state
 
     let content
 
-    switch (step) {
-      case 1:
+    switch (true) {
+      case step === 1:
         content = (
           <Fragment>
-            <ScrollToTopOnMount />
+            <ScrollToTopOnMount key={stepChanges} />
             <Heading>
               <H1>Book a call</H1>
             </Heading>
@@ -331,10 +352,10 @@ export class Page extends Component {
           </Fragment>
         )
         break
-      case 2:
+      case step === 2 || step === 3:
         content = (
           <Fragment>
-            <ScrollToTopOnMount />
+            <ScrollToTopOnMount key={stepChanges} />
             <Heading>
               <H1>Confirm your call back time</H1>
             </Heading>
@@ -345,19 +366,7 @@ export class Page extends Component {
                 onSubmit={this.handleStep2Submit}
                 onBack={this.handleStep2Back}
               />
-            </Master>
-          </Fragment>
-        )
-        break
-      case 3:
-        content = (
-          <Fragment>
-            <ScrollToTopOnMount />
-            <Heading>
-              <H1>Loading...</H1>
-            </Heading>
-            <Master>
-              <Step3 onSubmit={this.handleStep3Submit} />
+              {step === 3 && <Step3 onSubmit={this.handleStep3Submit} />}
             </Master>
           </Fragment>
         )
