@@ -122,7 +122,7 @@ const Sidenav = ({ conversations, history }) => (
   </Fragment>
 )
 
-const Homepage = ({ conversations, match, history }) => (
+const Homepage = ({ user: { conversations, name, id }, match, history }) => (
   <Fragment>
     <Heading>
       <H1>Message centre</H1>
@@ -131,6 +131,11 @@ const Homepage = ({ conversations, match, history }) => (
 
     <Master side={<Sidenav conversations={conversations} history={history} />}>
       <Switch>
+        <Route
+          exact
+          path={`${match.path}/compose`}
+          render={() => <Compose userID={id} />}
+        />
         <Route
           exact
           path={`${match.path}/:id`}
@@ -166,6 +171,6 @@ const withUserMessages = graphql(queryMe, {
   options: route => {
     return { variables: { userID: route.user.id } }
   },
-})(withData(Homepage, ({ user }) => user))
+})(withData(Homepage))
 
 export { withUserMessages as default, Homepage }
