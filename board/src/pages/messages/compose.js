@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react'
-import { Redirect } from 'react-router-dom'
 import markdownify from 'draftjs-to-markdown'
 import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'

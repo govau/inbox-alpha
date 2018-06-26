@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import Icon from '../../components/icon'
@@ -17,19 +18,19 @@ const Document = ({ filename, location, kind }) => (
 )
 
 const RequestDocument = ({ linkText }) => (
-  <a href="#">{linkText || 'Provide a document'}</a>
+  <Link to="/todo">{linkText || 'Provide a document'}</Link>
 )
 
 const RequestPayment = ({ amountInCents, linkText }) => (
-  <a href="#">{linkText || 'Provide payment'}</a>
+  <Link to="/todo">{linkText || 'Provide payment'}</Link>
 )
 
 const RequestScheduledPayment = ({ amountInCents, linkText }) => (
-  <a href="#">{linkText || 'Schedule payment'}</a>
+  <Link to="/todo">{linkText || 'Schedule payment'}</Link>
 )
 
 const RequestCall = ({ linkText }) => (
-  <a href="#">{linkText || 'request a call'}</a>
+  <Link to="/todo">{linkText || 'request a call'}</Link>
 )
 
 const renderers = {
