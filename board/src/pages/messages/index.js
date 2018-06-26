@@ -11,11 +11,7 @@ import IconLink from '../../components/icon-link'
 import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
 import Compose from './compose'
-import { ShortMessage, MaybeMessage } from './message'
-import Conversation, {
-  ConversationLine,
-  SometimesConversation,
-} from './conversation'
+import { ConversationLine, SometimesConversation } from './conversation'
 import { Messages } from './components'
 
 const queryMe = gql`
