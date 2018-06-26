@@ -90,7 +90,7 @@ const Homepage = ({ messages, match, history }) => (
   <Switch>
     <Route
       exact
-      path={`${match.path}/:id/book-a-call`}
+      path={`${match.path}:id/book-a-call/`}
       render={({ match }) => (
         <RequestCall.Page match={match} history={history} />
       )}
@@ -101,20 +101,20 @@ const Homepage = ({ messages, match, history }) => (
         <Fragment>
           <Heading>
             <H1>Message centre</H1>
-            <ButtonLink to={`${match.path}/compose`}>
+            <ButtonLink to={`${match.path}compose/`}>
               Start new message
             </ButtonLink>
           </Heading>
 
           <Master side={<Sidenav messages={messages} history={history} />}>
             <Switch>
-              <Route exact path={`${match.path}/compose`} component={Compose} />
+              <Route exact path={`${match.path}compose/`} component={Compose} />
               <Route
                 exact
-                path={`${match.path}/:id`}
+                path={`${match.path}:id/`}
                 render={({ match }) => (
                   <Fragment>
-                    <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+                    <IconLink to="/messages/" icon={<Icon>arrow_back</Icon>}>
                       Back
                     </IconLink>
 

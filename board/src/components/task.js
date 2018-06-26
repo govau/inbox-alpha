@@ -72,7 +72,7 @@ const SendPayment = props => (
 
       <BARF>
         <Button>Pay</Button>
-        <Link to="/messages">Remind me later</Link>
+        <Link to="/messages/">Remind me later</Link>
       </BARF>
     </form>
   </Payment>

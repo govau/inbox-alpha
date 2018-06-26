@@ -91,7 +91,7 @@ const FullMessage = ({ msg }) => (
             {msg.documents.map((doc, i) => (
               <Document
                 key={i}
-                to={doc.location || '/todo'}
+                to={doc.location || '/todo/'}
                 icon={<Icon>{doc.kind || 'book'}</Icon>}
               >
                 {doc.filename}
@@ -124,7 +124,7 @@ const ShortMessage = ({ msg, history }) => (
           markAsRead({
             variables: { messageID: msg.id },
           })
-          history.push(`/messages/${msg.id}`)
+          history.push(`/messages/${msg.id}/`)
         }}
       >
         <SenderInfo>
@@ -158,12 +158,12 @@ const Msg = ({ msg, ...props }) => (
   <Switch>
     <Route
       exact
-      path={`/messages/${msg.id}`}
+      path={`/messages/${msg.id}/`}
       render={props => <ShortMessage msg={msg} {...props} />}
     />
     <Route
       exact
-      path="/messages"
+      path="/messages/"
       render={props => <FullMessage msg={msg} {...props} />}
     />
   </Switch>

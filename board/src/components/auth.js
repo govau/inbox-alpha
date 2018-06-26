@@ -35,7 +35,7 @@ const AuthenticatedRoute = ({
       ) : Alternative ? (
         <Alternative />
       ) : (
-        <Redirect to="/login" />
+        <Redirect to="/login/" />
       )
     }
   />

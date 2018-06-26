@@ -252,14 +252,14 @@ const LoggedOutHeader = () => (
 
             <Nav active={on}>
               <Navlist>
-                <HeaderLink onClick={deactivate} to="/todo">
+                <HeaderLink onClick={deactivate} to="/todo/">
                   Help
                 </HeaderLink>
                 <ThemeProvider theme={buttonTheme}>
                   <HeaderLink
                     link={ButtonLink}
                     onClick={deactivate}
-                    to="/login"
+                    to="/login/"
                   >
                     Sign in
                   </HeaderLink>
@@ -297,14 +297,14 @@ const StickyHeader = ({ user }) => (
 
               <Nav active={on}>
                 <Navlist>
-                  <HeaderLink onClick={deactivate} to="/todo">
+                  <HeaderLink onClick={deactivate} to="/todo/">
                     Help
                   </HeaderLink>
                   <ThemeProvider theme={buttonTheme}>
                     <HeaderLink
                       link={ButtonLink}
                       onClick={deactivate}
-                      to="/logout"
+                      to="/logout/"
                     >
                       Sign out
                     </HeaderLink>
@@ -322,13 +322,13 @@ const StickyHeader = ({ user }) => (
                 <Navlink onClick={deactivate} to="/">
                   Home
                 </Navlink>
-                <Navlink onClick={deactivate} to="/profile">
+                <Navlink onClick={deactivate} to="/profile/">
                   Profile
                 </Navlink>
-                <Navlink onClick={deactivate} to="/permissions">
+                <Navlink onClick={deactivate} to="/permissions/">
                   Permissions
                 </Navlink>
-                <Navlink onClick={deactivate} to="/activity">
+                <Navlink onClick={deactivate} to="/activity/">
                   Activity
                 </Navlink>
                 <Query query={queryMessages} variables={{ userID: user.id }}>
@@ -340,14 +340,14 @@ const StickyHeader = ({ user }) => (
                     return user ? (
                       <Navlink
                         onClick={deactivate}
-                        to="/messages"
+                        to="/messages/"
                         link={IndicatorLink}
                         data-count={count ? count : ''}
                       >
                         Messages
                       </Navlink>
                     ) : (
-                      <Navlink onClick={deactivate} to="/messages">
+                      <Navlink onClick={deactivate} to="/messages/">
                         Messages
                       </Navlink>
                     )

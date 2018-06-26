@@ -11,16 +11,16 @@ export default props => (
           <ul>
             {/* outside router; can't use <Link /> without reworking it all */}
             <li>
-              <a href="/privacy-policy">Privacy policy</a>
+              <a href="/privacy-policy/">Privacy policy</a>
             </li>
             <li>
-              <a href="/todo/terms-and-conditions">Terms and conditions</a>
+              <a href="/todo/terms-and-conditions/">Terms and conditions</a>
             </li>
             <li>
-              <a href="/todo/contact">Contact us</a>
+              <a href="/todo/contact/">Contact us</a>
             </li>
             <li>
-              <a href="/todo/help">Need help?</a>
+              <a href="/todo/help/">Need help?</a>
             </li>
           </ul>
         </nav>
