@@ -1,7 +1,7 @@
 type User {
   id: ID! @unique
   name: String!
-  messages: [Message!]!
+  conversations: [Conversation!]!
 }
 
 type Image {
@@ -22,7 +22,7 @@ type Service {
   name: String!
   description: String
   contactNo: String
-  messages: [Message!]!
+  conversations: [Conversation!]!
 }
 
 enum Severity {
@@ -54,34 +54,74 @@ type Document {
   message: Message
 }
 
-enum TaskType {
-  Upload
-  Download
-  SendPayment
-  AcceptPayment
-  Consent
-  FormText
-  FormCheckbox
-  Submit
+enum SectionKind {
+  Markdown
+  Document
+  RequestDocument
+  RequestPayment
+  RequestScheduledPayment
+  RequestCall
 }
 
-type Task {
+enum SenderSource {
+  User
+  Service
+}
+
+type Sender {
+  source: SenderSource!
+  user: User
+  service: Service
+}
+
+type Markdown {
+  source: String
+}
+
+type RequestDocumentOptions {
+  linkText: String
+}
+
+type PaymentOptions {
+  amountInCents: Int!
+  linkText: String
+}
+
+type ScheduledPaymentOptions {
+  amountInCents: Int!
+  linkText: String
+}
+
+type CallOptions {
+  linkText: String
+}
+
+type Section {
   id: ID! @unique
-  instruction: String
-  paymentAmount: String
-  task: TaskType
+  message: Message
+  kind: SectionKind
+  markdown: Markdown
+  document: Document
+  requestDocument: RequestDocumentOptions
+  requestPayment: PaymentOptions
+  requestScheduledPayment: ScheduledPaymentOptions
+  requestCall: CallOptions
 }
 
 type Message {
   id: ID! @unique
-  sender: Service!
-  recipient: User!
-  subject: String
-  body: String
-  moreInformation: String
+  conversation: Conversation
+  sections: [Section!]!
+  sender: Sender
   readStatus: ReadStatus
-  sent: String
-  notices: [Notice!]!
-  documents: [Document!]!
-  tasks: [Task!]!
+  sentAt: String
+  readAt: String
+}
+
+type Conversation {
+  id: ID! @unique
+  service: Service!
+  user: User!
+  subject: String
+  messages: [Message!]!
 }

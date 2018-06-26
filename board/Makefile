@@ -39,7 +39,7 @@ manifest-%.yml:
 	echo "version: $*" > $@
 
 migrate:
-	$(YARN) run prisma deploy
+	$(YARN) run prisma deploy --force
 
 deploy: manifest-vars.yml build migrate
 	$(CF) zero-downtime-push $(APP) -f manifest.yml

@@ -62,71 +62,129 @@ const createNewUser = gql`
     createUser(
       data: {
         name: $username
-        messages: {
+        conversations: {
           create: [
             {
               subject: "Rental Contract required"
-              body: $rentAssistBody
-              moreInformation: $rentAssistHelp
-              readStatus: Unread
-              sender: { connect: { id: $centrelinkID } }
-              sent: "10:34 AM"
-              notices: {
-                create: {
-                  description: "Further information needed"
-                  severity: Important
-                }
-              }
-              tasks: {
+              service: { connect: { id: $centrelinkID } }
+              messages: {
                 create: [
                   {
-                    instruction: "Attach a copy of your new **Rental Contract** to update your new address and confirm your payments."
-                    task: Upload
+                    sender: { create: { source: Service } }
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $rentAssistBody } }
+                        }
+                        {
+                          kind: RequestDocument
+                          requestDocument: { create: {} }
+                        }
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $rentAssistHelp } }
+                        }
+                      ]
+                    }
                   }
-                  { task: Submit }
+                  {
+                    sender: { create: { source: User } }
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "a followup message regarding your rental contract"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestDocument
+                          requestDocument: { create: {} }
+                        }
+                      ]
+                    }
+                  }
                 ]
               }
             }
             {
               subject: "Name update"
-              body: $centrelinkBody
-              readStatus: Unread
-              sender: { connect: { id: $centrelinkID } }
-              sent: "9:15 AM"
-              notices: {
-                create: {
-                  description: "Request completed"
-                  severity: Information
-                }
+              service: { connect: { id: $centrelinkID } }
+              messages: {
+                create: [
+                  {
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $centrelinkBody } }
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             }
             {
               subject: "Benefit statement"
-              body: "Your benefits have been transferred by EFT to your nominated account. View the attached statement for full details."
-              readStatus: Unread
-              sender: { connect: { id: $medicareID } }
-              sent: "13 June"
-              documents: { create: { filename: "Benefit EFT statement" } }
+              service: { connect: { id: $medicareID } }
+              messages: {
+                create: [
+                  {
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "Your benefits have been transferred by EFT to your nominated account. View the attached statement for full details."
+                            }
+                          }
+                        }
+                        {
+                          kind: Document
+                          document: {
+                            create: { filename: "Benefit EFT statement" }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
             }
             {
               subject: "Tax Assessment 2017"
-              body: $assessmentBody
-              readStatus: Read
-              sender: { connect: { id: $taxID } }
-              sent: "8 June"
-              notices: {
-                create: {
-                  description: "Payment due 29 Jun 2018"
-                  severity: Important
-                }
-              }
-              documents: { create: { filename: "2017 Notice of Assessment" } }
-              tasks: {
+              service: { connect: { id: $taxID } }
+              messages: {
                 create: [
                   {
-                    instruction: ""
-                    paymentAmount: "$1086.24"
-                    task: SendPayment
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                        {
+                          kind: Document
+                          document: {
+                            create: { filename: "2017 Notice of Assessment" }
+                          }
+                        }
+                        {
+                          kind: RequestPayment
+                          requestPayment: {
+                            create: {
+                              amountInCents: 108624
+                              linkText: "Pay for your tax stuff"
+                            }
+                          }
+                        }
+                      ]
+                    }
                   }
                 ]
               }
