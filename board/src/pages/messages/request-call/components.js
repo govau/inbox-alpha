@@ -244,28 +244,29 @@ class Step2 extends Component {
   }
 
   render() {
-    const { timeSlot, caseSubject } = this.props
+    const { id, timeSlot, caseSubject } = this.props
 
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
           <Confirmation>
-            A Centrelink agent will call you on 0404 *** *89 between{' '}
-            <strong>{timeSlot}</strong> about your{' '}
-            <strong>{caseSubject}</strong>.
+            <p>
+              A Centrelink agent will call you on 0404 *** *89 between{' '}
+              <strong>{timeSlot}</strong> about your{' '}
+              <strong>{caseSubject}</strong>.
+            </p>
+            <Button type="button" onClick={this.props.onBack} appearance="link">
+              Change time
+            </Button>
           </Confirmation>
           <Flex alignItems="baseline">
             <Box>
               <Button type="submit">Send</Button>
             </Box>
             <Box>
-              <Button
-                type="button"
-                onClick={this.props.onBack}
-                color="transparent"
-              >
+              <ButtonLink to={`/messages/${id}`} color="transparent">
                 Cancel
-              </Button>
+              </ButtonLink>
             </Box>
           </Flex>
         </form>
@@ -361,6 +362,7 @@ export class Page extends Component {
             </Heading>
             <Master>
               <Step2
+                id={match.params.id}
                 timeSlot={timeSlot}
                 caseSubject="Tax Return 2017 (transaction ID: ATO4565TYZ)"
                 onSubmit={this.handleStep2Submit}
