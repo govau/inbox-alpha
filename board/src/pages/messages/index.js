@@ -12,7 +12,8 @@ import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
 import Compose from './compose'
 import { ShortMessage, MaybeMessage } from './message'
-import { Messages } from './components'
+import { Heading, H1, Messages } from './components'
+import * as RequestCall from './request-call'
 
 const queryMe = gql`
   query($userID: ID!) {
@@ -62,27 +63,6 @@ const queryMe = gql`
   }
 `
 
-const Heading = styled.header`
-  @media screen and (min-width: 768px) {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    * + * {
-      margin-top: 0;
-    }
-  }
-
-  & + ${Messages} {
-    margin-top: 2em;
-  }
-`
-
-const H1 = styled.h1`
-  @media screen and (min-width: 768px) {
-    flex: 1;
-  }
-`
-
 const Search = styled(Text)`
   @media screen and (min-width: 768px) {
     flex: 2;
@@ -107,42 +87,60 @@ const Sidenav = ({ messages, history }) => (
 )
 
 const Homepage = ({ messages, match, history }) => (
-  <Fragment>
-    <Heading>
-      <H1>Message centre</H1>
-      <ButtonLink to={`${match.path}/compose`}>Start new message</ButtonLink>
-    </Heading>
+  <Switch>
+    <Route
+      exact
+      path={`${match.path}/:id/book-a-call`}
+      render={({ match }) => (
+        <RequestCall.Page match={match} history={history} />
+      )}
+    />
 
-    <Master side={<Sidenav messages={messages} history={history} />}>
-      <Switch>
-        <Route exact path={`${match.path}/compose`} component={Compose} />
-        <Route
-          exact
-          path={`${match.path}/:id`}
-          render={({ match }) => (
-            <Fragment>
-              <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-                Back
-              </IconLink>
+    <Route
+      render={() => (
+        <Fragment>
+          <Heading>
+            <H1>Message centre</H1>
+            <ButtonLink to={`${match.path}/compose`}>
+              Start new message
+            </ButtonLink>
+          </Heading>
 
-              <MaybeMessage
-                msg={messages.find(msg => msg.id === match.params.id)}
+          <Master side={<Sidenav messages={messages} history={history} />}>
+            <Switch>
+              <Route exact path={`${match.path}/compose`} component={Compose} />
+              <Route
+                exact
+                path={`${match.path}/:id`}
+                render={({ match }) => (
+                  <Fragment>
+                    <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+                      Back
+                    </IconLink>
+
+                    <MaybeMessage
+                      msg={messages.find(msg => msg.id === match.params.id)}
+                    />
+                  </Fragment>
+                )}
               />
-            </Fragment>
-          )}
-        />
 
-        <Route
-          render={props => (
-            <Help>
-              <h2>No message selected</h2>
-              <p>Choose a conversation from the side bar to get started.</p>
-            </Help>
-          )}
-        />
-      </Switch>
-    </Master>
-  </Fragment>
+              <Route
+                render={props => (
+                  <Help>
+                    <h2>No message selected</h2>
+                    <p>
+                      Choose a conversation from the side bar to get started.
+                    </p>
+                  </Help>
+                )}
+              />
+            </Switch>
+          </Master>
+        </Fragment>
+      )}
+    />
+  </Switch>
 )
 
 const withUserMessages = graphql(queryMe, {
