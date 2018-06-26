@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Icon from '../../components/icon'
 import MarkdownComponent from '../../components/markdown'
@@ -45,7 +45,17 @@ const renderers = {
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)
 
 const MessageWrapper = styled.section`
-  background-color: ${props => (props.sender === 'User' ? 'green' : 'grey')};
+  background-color: #f3f5f5;
+  padding: 2rem;
+  border-radius: 4px;
+
+  ${props =>
+    props.sender === 'User'
+      ? css`
+          background-color: #f1f3d6;
+          align-self: flex-end;
+        `
+      : css``};
 `
 
 const Section = ({ kind, sender, ...section }) => {
@@ -54,12 +64,11 @@ const Section = ({ kind, sender, ...section }) => {
   return Renderer ? <Renderer {...section[lowerCase(kind)]} /> : null
 }
 
-const Message = ({ sender, readStatus, sections }) => (
-  <MessageWrapper sender={sender && sender.source}>
-    <strong>{readStatus}</strong>
+const Message = styled(({ className, sender, readStatus, sections }) => (
+  <MessageWrapper className={className} sender={sender && sender.source}>
     {sections.map((section, i) => <Section key={i} {...section} />)}
   </MessageWrapper>
-)
+))``
 
 export {
   Section as default,

@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 
 import { Message as MessageSection } from './section'
 import { Error } from '../../components/error'
@@ -12,12 +13,22 @@ import {
   MessageContentWrapper,
 } from './components'
 
-const Conversation = ({ conversation: { subject, service, messages } }) => (
-  <div>
-    <div>{subject}</div>
-    {messages.map((msg, i) => <MessageSection key={i} {...msg} />)}
-  </div>
-)
+const Conversation = styled(
+  ({ className, conversation: { subject, service, messages } }) => (
+    <div className={className}>
+      <div>{subject}</div>
+      {messages.map((msg, i) => <MessageSection key={i} {...msg} />)}
+    </div>
+  )
+)`
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: flex-start;
+
+  ${MessageSection} {
+    max-width: 60rem;
+  }
+`
 
 const ConversationLine = ({ conversation, history }) => (
   <Message
