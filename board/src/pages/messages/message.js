@@ -169,4 +169,9 @@ const Msg = ({ msg, ...props }) => (
   </Switch>
 )
 
-export { Msg as default, FullMessage, ShortMessage, MaybeMessage }
+export {
+  Msg as default,
+  FullMessage,
+  ShortMessage,
+  MaybeMessage,
+}

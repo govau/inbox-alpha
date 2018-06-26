@@ -12,6 +12,10 @@ import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
 import Compose from './compose'
 import { ShortMessage, MaybeMessage } from './message'
+import Conversation, {
+  ConversationLine,
+  SometimesConversation,
+} from './conversation'
 import { Messages } from './components'
 
 const queryMe = gql`
@@ -19,41 +23,53 @@ const queryMe = gql`
     user(where: { id: $userID }) {
       name
       id
-      messages {
+      conversations {
         id
         subject
-        body
-        moreInformation
-        readStatus
-        sent
-
-        tasks {
-          id
-          instruction
-          task
-          paymentAmount
-        }
-
-        documents {
-          filename
-          kind
-          location
-        }
-
-        notices {
-          description
-          severity
-        }
-
-        sender {
+        service {
           name
           description
           contactNo
           agency {
             name
-            logo {
-              url
-              title
+          }
+        }
+        messages {
+          readStatus
+          sentAt
+          readAt
+          sender {
+            source
+            user {
+              id
+              name
+            }
+            service {
+              id
+              name
+            }
+          }
+          sections {
+            kind
+            markdown {
+              source
+            }
+            document {
+              filename
+            }
+            requestDocument {
+              linkText
+            }
+            requestPayment {
+              amountInCents
+              linkText
+            }
+            requestScheduledPayment {
+              amountInCents
+              linkText
+            }
+            requestCall {
+              linkText
             }
           }
         }
@@ -95,27 +111,26 @@ const Help = styled.section`
   opacity: 0.6;
 `
 
-const Sidenav = ({ messages, history }) => (
+const Sidenav = ({ conversations, history }) => (
   <Fragment>
     <Search placeholder="Search your messages" />
     <Messages>
-      {messages.map((msg, i) => (
-        <ShortMessage key={i} msg={msg} history={history} />
+      {conversations.map((conv, i) => (
+        <ConversationLine key={i} conversation={conv} history={history} />
       ))}
     </Messages>
   </Fragment>
 )
 
-const Homepage = ({ messages, match, history }) => (
+const Homepage = ({ conversations, match, history }) => (
   <Fragment>
     <Heading>
       <H1>Message centre</H1>
       <ButtonLink to={`${match.path}/compose`}>Start new message</ButtonLink>
     </Heading>
 
-    <Master side={<Sidenav messages={messages} history={history} />}>
+    <Master side={<Sidenav conversations={conversations} history={history} />}>
       <Switch>
-        <Route exact path={`${match.path}/compose`} component={Compose} />
         <Route
           exact
           path={`${match.path}/:id`}
@@ -125,8 +140,10 @@ const Homepage = ({ messages, match, history }) => (
                 Back
               </IconLink>
 
-              <MaybeMessage
-                msg={messages.find(msg => msg.id === match.params.id)}
+              <SometimesConversation
+                conversation={conversations.find(
+                  conv => conv.id === match.params.id
+                )}
               />
             </Fragment>
           )}
@@ -135,7 +152,7 @@ const Homepage = ({ messages, match, history }) => (
         <Route
           render={props => (
             <Help>
-              <h2>No message selected</h2>
+              <h2>No conversation selected</h2>
               <p>Choose a conversation from the side bar to get started.</p>
             </Help>
           )}
