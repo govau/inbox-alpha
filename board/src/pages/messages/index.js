@@ -6,8 +6,6 @@ import { Route, Switch } from 'react-router-dom'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
-import Icon from '../../components/icon'
-import IconLink from '../../components/icon-link'
 import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
 import Compose from './compose'
@@ -131,17 +129,11 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
                 exact
                 path={`${match.path}/:id`}
                 render={({ match }) => (
-                  <Fragment>
-                    <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-                      Back
-                    </IconLink>
-
-                    <SometimesConversation
-                      conversation={conversations.find(
-                        conv => conv.id === match.params.id
-                      )}
-                    />
-                  </Fragment>
+                  <SometimesConversation
+                    conversation={conversations.find(
+                      conv => conv.id === match.params.id
+                    )}
+                  />
                 )}
               />
               <Route

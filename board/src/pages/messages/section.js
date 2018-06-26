@@ -1,9 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import Icon from '../../components/icon'
 import MarkdownComponent from '../../components/markdown'
+import SpeechBubble from '../../components/speech-bubble'
 import { Document as DocumentComponent } from './components'
 
 const Markdown = ({ source }) => <MarkdownComponent source={source} />
@@ -44,20 +45,6 @@ const renderers = {
 
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)
 
-const MessageWrapper = styled.section`
-  background-color: #f3f5f5;
-  padding: 2rem;
-  border-radius: 4px;
-
-  ${props =>
-    props.sender === 'User'
-      ? css`
-          background-color: #f1f3d6;
-          align-self: flex-end;
-        `
-      : css``};
-`
-
 const Section = ({ kind, sender, ...section }) => {
   const Renderer = renderers[kind]
 
@@ -65,9 +52,12 @@ const Section = ({ kind, sender, ...section }) => {
 }
 
 const Message = styled(({ className, sender, readStatus, sections }) => (
-  <MessageWrapper className={className} sender={sender && sender.source}>
+  <SpeechBubble
+    reversed={sender && sender.source === 'User'}
+    className={className}
+  >
     {sections.map((section, i) => <Section key={i} {...section} />)}
-  </MessageWrapper>
+  </SpeechBubble>
 ))``
 
 export {

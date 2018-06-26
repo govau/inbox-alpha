@@ -67,7 +67,6 @@ export const Message = styled.li`
   padding: 1em 0;
   display: flex;
   flex-flow: row nowrap;
-  border-top: 3px solid #d5d5d5;
 
   & + & {
     border-top: 1px solid #d5d5d5;
