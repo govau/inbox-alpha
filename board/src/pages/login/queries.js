@@ -15,7 +15,7 @@ Thank you, ATO AUSTRALIA TAXATION OFFICE 2018
 Thanks. Thank you
 
 *Send it in*
-/please/ 
+/please/
 `
 
 export const rentAssistBody = `

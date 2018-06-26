@@ -4,9 +4,30 @@ import classnames from 'classnames'
 
 import IconLink from '../../components/icon-link'
 
+export const H1 = styled.h1`
+  @media screen and (min-width: 768px) {
+    flex: 1;
+  }
+`
+
 export const Messages = styled.ul`
   list-style: none;
   padding: 0;
+`
+
+export const Heading = styled.header`
+  @media screen and (min-width: 768px) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    * + * {
+      margin-top: 0;
+    }
+  }
+
+  & + ${Messages} {
+    margin-top: 2em;
+  }
 `
 
 export const SenderInfo = styled.div``

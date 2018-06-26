@@ -11,7 +11,7 @@ import { theme } from '../components/mygov'
 import { AuthenticatedRoute } from '../components/auth'
 
 import Home from './messages'
-import Login, { Logout, StandaloneLogin } from './login'
+import { Logout, StandaloneLogin } from './login'
 
 const IndexPage = props => (
   <Router>
@@ -30,7 +30,6 @@ const IndexPage = props => (
                   <Switch>
                     <AuthenticatedRoute exact path="/" component={Home} />
                     <AuthenticatedRoute path="/messages" component={Home} />
-                    <Route exact path="/loginx" component={Login} />
                     <Route exact path="/logout" component={Logout} />
                     <Route exact path="/profile" component={Err} />
                     <Route exact path="/permissions" component={Err} />
