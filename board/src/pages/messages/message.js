@@ -46,17 +46,6 @@ const markAsRead = gql`
 const MaybeReadMessage = ({ read, ...props }) =>
   read ? <ReadMessage {...props} /> : <Message {...props} />
 
-/*
-   *
-          update={(cache, { data: { updateMessage } }) => {
-            const { users } = cache.readQuery({ query: queryUsers })
-
-            cache.writeQuery({
-              query: queryUsers,
-              data: { users: users.concat([createUser]) },
-            })
-            */
-
 const FullMessage = ({ msg }) => (
   <Message>
     <SenderInfo>
