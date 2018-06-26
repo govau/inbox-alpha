@@ -2,6 +2,17 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { Link } from 'react-router-dom'
 
+const colors = {
+  transparent: 'transparent',
+}
+
+const primaryCSS = css`
+  color: #22201c;
+  background-color: #d1e65f;
+`
+
+const transparentCSS = css``
+
 const style = css`
   font: inherit;
   border-width: 0;
@@ -10,9 +21,10 @@ const style = css`
   display: inline-block;
   padding: 1rem 1em;
   text-align: center;
-  color: #22201c;
-  background-color: #d1e65f;
   width: 100%;
+
+  ${({ color }) =>
+    color === colors.transparent ? transparentCSS : primaryCSS};
 
   @media screen and (min-width: 768px) {
     width: fit-content;
