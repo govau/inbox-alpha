@@ -167,7 +167,7 @@ class Step1 extends Component {
 
     return (
       <Fragment>
-        <IconLink to={`/messages/${id}/`} icon={<Icon>arrow_back</Icon>}>
+        <IconLink to={`/messages/${id}`} icon={<Icon>arrow_back</Icon>}>
           Back
         </IconLink>
 
@@ -207,7 +207,7 @@ class Step1 extends Component {
               <p>A Centrelink agent will call you on 0404 *** *89</p>
             </Box>
             <Box ml="auto">
-              <Link to="/profile/">change</Link>
+              <Link to="/profile">change</Link>
             </Box>
           </Flex>
 
@@ -216,7 +216,7 @@ class Step1 extends Component {
               <Button type="submit">Book call back</Button>
             </Box>
             <Box>
-              <ButtonLink to={`/messages/${id}/`} color="transparent">
+              <ButtonLink to={`/messages/${id}`} color="transparent">
                 Cancel
               </ButtonLink>
             </Box>
@@ -264,7 +264,7 @@ class Step2 extends Component {
               <Button type="submit">Send</Button>
             </Box>
             <Box>
-              <ButtonLink to={`/messages/${id}/`} color="transparent">
+              <ButtonLink to={`/messages/${id}`} color="transparent">
                 Cancel
               </ButtonLink>
             </Box>

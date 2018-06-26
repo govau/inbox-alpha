@@ -17,7 +17,7 @@ const IndexPage = props => (
     <ThemeProvider theme={theme}>
       <ScrollToTop>
         <Switch>
-          <Route exact path="/login/" component={StandaloneLogin} />
+          <Route exact path="/login" component={StandaloneLogin} />
           <Route
             render={() => (
               <Fragment>
@@ -28,11 +28,11 @@ const IndexPage = props => (
                 <main role="main">
                   <Switch>
                     <AuthenticatedRoute exact path="/" component={Home} />
-                    <AuthenticatedRoute path="/messages/" component={Home} />
-                    <Route exact path="/logout/" component={Logout} />
-                    <Route exact path="/profile/" component={Err} />
-                    <Route exact path="/permissions/" component={Err} />
-                    <Route exact path="/activity/" component={Err} />
+                    <AuthenticatedRoute path="/messages" component={Home} />
+                    <Route exact path="/logout" component={Logout} />
+                    <Route exact path="/profile" component={Err} />
+                    <Route exact path="/permissions" component={Err} />
+                    <Route exact path="/activity" component={Err} />
                     <Route component={Err} />
                   </Switch>
                 </main>

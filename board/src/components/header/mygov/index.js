@@ -75,13 +75,13 @@ const Identity = props => {
           <div className={toolbarClasses}>
             <nav className="header__nav">
               <ul className="header__navitems">
-                <RoutedItem onClick={hide} to="/todo/help/">
+                <RoutedItem onClick={hide} to="/todo/help">
                   How we keep your information private
                 </RoutedItem>
-                <RoutedItem onClick={hide} to="/todo/help/">
+                <RoutedItem onClick={hide} to="/todo/help">
                   Our identity partners
                 </RoutedItem>
-                <RoutedItem onClick={hide} to="/todo/help/">
+                <RoutedItem onClick={hide} to="/todo/help">
                   Services you can access
                 </RoutedItem>
               </ul>

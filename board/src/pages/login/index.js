@@ -91,7 +91,7 @@ const Login = ({ services }) => {
             ) : (
               <Fragment>
                 <Authenticated user={data}>
-                  <Redirect to="/messages/" />
+                  <Redirect to="/messages" />
                 </Authenticated>
                 <Submit>Log in</Submit>
               </Fragment>
