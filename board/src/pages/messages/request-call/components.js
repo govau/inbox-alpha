@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
@@ -20,9 +20,14 @@ const LegendWrapper = styled.div`
   }
 `
 
-const SmallHeading = styled.div`
+const smallHeadingCSS = css`
   height: 1.8em;
   font-weight: bold;
+  font-size: 18px;
+`
+
+const SmallHeading = styled.div`
+  ${smallHeadingCSS};
 `
 
 const LegendBox = styled(Box)`
@@ -33,14 +38,21 @@ const LegendBox = styled(Box)`
   }
 `
 
+const availabilityPalette = {
+  mostAvailable: '#d7ea69',
+  available: '#e2f091',
+  leastAvailable: '#f1f4d5',
+  unavailable: '#cdcdcd',
+}
+
 const Legend = () => (
   <LegendWrapper>
     <SmallHeading>Interview times</SmallHeading>
     <Flex alignItems="baseline">
-      <LegendBox w={[1 / 4]} color="#d7ea69" />
-      <LegendBox w={[1 / 4]} color="#e2f091" />
-      <LegendBox w={[1 / 4]} color="#f1f4d5" />
-      <LegendBox w={[1 / 4]} color="#cdcdcd" />
+      <LegendBox w={[1 / 4]} color={availabilityPalette.mostAvailable} />
+      <LegendBox w={[1 / 4]} color={availabilityPalette.available} />
+      <LegendBox w={[1 / 4]} color={availabilityPalette.leastAvailable} />
+      <LegendBox w={[1 / 4]} color={availabilityPalette.unavailable} />
     </Flex>
     <Flex alignItems="baseline">
       <Box>Available</Box>
@@ -55,7 +67,10 @@ const SideWrapper = styled.div`
 
 const day = 'day'
 
-const disabledClassName = 'disabled'
+const mostAvailableClassName = 'most-available'
+const availableClassName = 'available'
+const leastAvailableClassName = 'least-available'
+const unavailableClassName = 'unavailable'
 
 const classNames = {
   container: 'DayPicker',
@@ -87,35 +102,112 @@ const classNames = {
 }
 
 const DayPicker = styled(ReactDayPicker).attrs({ classNames })`
-  .${day} {
+  .${classNames.months} {
+    margin: 0;
   }
+  .${classNames.month} {
+    margin: 0;
+  }
+  .${classNames.caption} > div {
+    ${smallHeadingCSS};
+  }
+  .${day} {
+    padding: 1.265rem;
+  }
+  .${mostAvailableClassName}:not(.${classNames.outside}) {
+    background-color: ${availabilityPalette.mostAvailable};
+    cursor: pointer;
+  }
+  .${availableClassName}:not(.${classNames.outside}) {
+    background-color: ${availabilityPalette.available};
+    cursor: pointer;
+  }
+  .${leastAvailableClassName}:not(.${classNames.outside}) {
+    background-color: ${availabilityPalette.leastAvailable};
+    cursor: pointer;
+  }
+  .${unavailableClassName}:not(.${classNames.outside}) {
+    background-color: ${availabilityPalette.unavailable};
+    cursor: not-allowed;
+  }
+  .${classNames.today} {
+    color: inherit;
+  }
+  .${classNames.selected}:not(.${classNames.disabled}):not(.${
+  classNames.outside
+}) {
+    color: #fff;
+    background-color: #333;
+    border-radius: 0;
 
-  .${disabledClassName}:not(.DayPicker-Day--outside) {
-    background-color: #cdcdcd;
+    &:hover {
+      color: #fff;
+      background-color: #333;
+      border-radius: 0;
+    }
   }
 `
 
-const Side = () => (
-  <SideWrapper>
-    <DayPicker
-      modifiers={{
-        [disabledClassName]: day => {
-          // Gray out weekends.
-          if (day.getDay() === 0 || day.getDay() === 6) {
-            return true
-          }
-          // Gray out arbitrary day.
-          return (
-            day.getDate() === 27 &&
-            day.getMonth() === 5 &&
-            day.getFullYear() === 2018
-          )
-        },
-      }}
-    />
-    <Legend />
-  </SideWrapper>
-)
+const isWeekend = day => day.getDay() === 0 || day.getDay() === 6
+
+class Side extends Component {
+  state = {
+    selectedDay: null,
+  }
+
+  handleDayClick = (day, { selected }) => {
+    this.setState(() => ({
+      selectedDay: selected ? null : day,
+    }))
+  }
+
+  render() {
+    const { selectedDay } = this.state
+
+    return (
+      <SideWrapper>
+        <DayPicker
+          selectedDays={selectedDay}
+          onDayClick={this.handleDayClick}
+          modifiers={{
+            [mostAvailableClassName]: day =>
+              !isWeekend(day) &&
+              ((day.getDate() >= 16 && day.getDate() <= 21) ||
+                day.getDate() === 29),
+            [availableClassName]: day =>
+              !isWeekend(day) &&
+              (day.getDate() === 15 ||
+                day.getDate() === 22 ||
+                day.getDate() === 8),
+            [leastAvailableClassName]: day =>
+              !isWeekend(day) &&
+              ((day.getDate() >= 1 && day.getDate() <= 14) ||
+                (day.getDate() >= 23 && day.getDate() <= 28) ||
+                (day.getDate() >= 30 && day.getDate() <= 31)),
+            [unavailableClassName]: day => {
+              const now = new Date()
+              // Dates in past unavailable.
+              if (now.getTime() >= day.getTime()) {
+                return true
+              }
+              // Weekends unavailable.
+              if (isWeekend(day)) {
+                return true
+              }
+              // Arbitrary day unavailable.
+              return (
+                day.getDate() === 25 &&
+                day.getMonth() === 6 &&
+                day.getFullYear() === 2018
+              )
+            },
+          }}
+        />
+        <Legend />
+      </SideWrapper>
+    )
+  }
+}
 
 const TimeSections = styled.section``
 
@@ -172,7 +264,9 @@ class Step1 extends Component {
         </IconLink>
 
         <p>Choose a time</p>
-        <p>First available time is: Tuesday 1 July 2018</p>
+        <p>
+          First available time is: <strong>Tuesday 1 July 2018</strong>
+        </p>
 
         <form onSubmit={this.handleSubmit}>
           <TimeSections>
