@@ -106,7 +106,7 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
         <Fragment>
           <Heading>
             <H1>Message centre</H1>
-            <ButtonLink to={`${match.path}/compose`}>
+            <ButtonLink to={`${match.path}/compose`} color="black">
               Start new message
             </ButtonLink>
           </Heading>

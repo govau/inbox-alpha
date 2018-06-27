@@ -379,7 +379,9 @@ class Step1 extends Component {
 
           <Flex alignItems="baseline">
             <Box>
-              <Button type="submit">Book call back</Button>
+              <Button type="submit" color="black">
+                Book call back
+              </Button>
             </Box>
             <Box>
               <ButtonLink to={`/messages/${id}`} color="transparent">
@@ -439,7 +441,9 @@ class Step2 extends Component {
           </Confirmation>
           <Flex alignItems="baseline">
             <Box>
-              <Button type="submit">Send</Button>
+              <Button type="submit" color="black">
+                Send
+              </Button>
             </Box>
             <Box>
               <ButtonLink to={`/messages/${id}`} color="transparent">
@@ -546,9 +550,9 @@ export class Page extends Component {
                             userResponse: `
 **Call back request**
 
-**Number**: 0404 xxx x89  
-**Date**: INSERT MY DATE EHRE  
-**Time**: ${timeSlot}  
+**Number**: 0404 xxx x89
+**Date**: INSERT MY DATE EHRE
+**Time**: ${timeSlot}
 **Case ID**:  INSERT THE GENRETED CASE ID HERE
                             `,
                             serviceResponse: `

@@ -343,7 +343,9 @@ export class Page extends Component {
                           to={`/messages/${data.createConversation.id}`}
                         />
                       ) : null}
-                      <Button type="submit">Send</Button>
+                      <Button type="submit" color="black">
+                        Send
+                      </Button>
                     </Fragment>
                   )}
                 </form>
