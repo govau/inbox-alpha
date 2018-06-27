@@ -91,7 +91,15 @@ const Login = ({ services }) => {
             ) : (
               <Fragment>
                 <Authenticated user={data}>
-                  <Redirect to="/messages" />
+                  {(conversation =>
+                    conversation ? (
+                      <Redirect to={`/messages/${conversation.id}`} />
+                    ) : (
+                      <Redirect to="/messages" />
+                    ))(
+                    data &&
+                      data.createUser.conversations.find(conversation => true)
+                  )}
                 </Authenticated>
                 <Submit>Log in</Submit>
               </Fragment>

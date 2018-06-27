@@ -1,6 +1,16 @@
 import { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 
+export class ScrollToTopOnMount extends Component {
+  componentDidMount() {
+    window.scrollTo(0, 0)
+  }
+
+  render() {
+    return null
+  }
+}
+
 class ScrollToTop extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.location !== prevProps.location) {
@@ -14,4 +24,3 @@ class ScrollToTop extends Component {
 }
 
 export default withRouter(ScrollToTop)
-

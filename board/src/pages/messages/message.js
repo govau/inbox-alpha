@@ -1,9 +1,10 @@
 import React from 'react'
-import { Route, Switch, Link } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 
+import { Error } from '../../components/error'
 import Icon from '../../components/icon'
 import Markdown from '../../components/markdown'
 import Task from '../../components/task'
@@ -13,6 +14,8 @@ import {
   About,
   Subject,
   Sender,
+  ShortSubject,
+  ShortSender,
   SenderInfo,
   SenderCircle,
   MessageContent,
@@ -43,158 +46,121 @@ const markAsRead = gql`
 const MaybeReadMessage = ({ read, ...props }) =>
   read ? <ReadMessage {...props} /> : <Message {...props} />
 
-/*
-   *
-          update={(cache, { data: { updateMessage } }) => {
-            const { users } = cache.readQuery({ query: queryUsers })
+const FullMessage = ({ msg }) => (
+  <Message>
+    <SenderInfo>
+      <SenderCircle image={msg.sender.agency.logo}>
+        {msg.sender.agency.name.substring(0, 3)}
+      </SenderCircle>
+    </SenderInfo>
 
-            cache.writeQuery({
-              query: queryUsers,
-              data: { users: users.concat([createUser]) },
-            })
-            */
+    <MessageContentWrapper>
+      <MessageContent>
+        <About>
+          <Subject status={msg.readStatus}>{msg.subject}</Subject>
+          <Sender status={msg.readStatus}>{msg.sender.agency.name}</Sender>
+        </About>
+
+        <Features>
+          {msg.notices.map((notice, i) => (
+            <Lozenge
+              overdue={notice.severity === 'Critical'}
+              important={notice.severity === 'Important'}
+              information={notice.severity === 'Information'}
+              key={i}
+            >
+              {notice.description}
+            </Lozenge>
+          ))}
+        </Features>
+
+        <Actionables>
+          <Markdown source={msg.body} />
+          <Features>
+            {msg.documents.map((doc, i) => (
+              <Document
+                key={i}
+                to={doc.location || '/todo'}
+                icon={<Icon>{doc.kind || 'book'}</Icon>}
+              >
+                {doc.filename}
+              </Document>
+            ))}
+          </Features>
+
+          {msg.tasks.map((task, i) => <Task key={i} {...task} />)}
+        </Actionables>
+        <Markdown
+          className="more-information"
+          source={msg.moreInformation || ''}
+        />
+      </MessageContent>
+
+      <Prompt>
+        <Timestamp>{msg.sent}</Timestamp>
+      </Prompt>
+    </MessageContentWrapper>
+  </Message>
+)
+
+const ShortMessage = ({ msg, history }) => (
+  <Mutation mutation={markAsRead}>
+    {(markAsRead, { loading, error, data }) => (
+      <MaybeReadMessage
+        style={{ cursor: 'pointer' }}
+        read={msg.readStatus === 'Read'}
+        onClick={e => {
+          markAsRead({
+            variables: { messageID: msg.id },
+          })
+          history.push(`/messages/${msg.id}`)
+        }}
+      >
+        <SenderInfo>
+          <SenderCircle image={msg.sender.agency.logo}>
+            {msg.sender.agency.name.substring(0, 3)}
+          </SenderCircle>
+        </SenderInfo>
+
+        <MessageContentWrapper>
+          <MessageContent>
+            <ShortSender status={msg.readStatus}>
+              {msg.sender.agency.name}
+            </ShortSender>
+            <ShortSubject status={msg.readStatus}>{msg.subject}</ShortSubject>
+          </MessageContent>
+
+          <Prompt>
+            <Timestamp>{msg.sent}</Timestamp>
+          </Prompt>
+        </MessageContentWrapper>
+      </MaybeReadMessage>
+    )}
+  </Mutation>
+)
+
+const MaybeMessage = ({ msg }) => {
+  return msg ? <FullMessage msg={msg} /> : <Error />
+}
 
 const Msg = ({ msg, ...props }) => (
   <Switch>
     <Route
       exact
       path={`/messages/${msg.id}`}
-      render={() => (
-        <Message {...props}>
-          <SenderInfo>
-            <SenderCircle image={msg.sender.agency.logo}>
-              {msg.sender.agency.name.substring(0, 3)}
-            </SenderCircle>
-          </SenderInfo>
-
-          <MessageContentWrapper>
-            <MessageContent>
-              <About>
-                <Subject status={msg.readStatus}>{msg.subject}</Subject>
-                <Sender status={msg.readStatus}>
-                  {msg.sender.agency.name}
-                </Sender>
-              </About>
-
-              <Features>
-                {msg.notices.map((notice, i) => (
-                  <Lozenge
-                    overdue={notice.severity === 'Critical'}
-                    important={notice.severity === 'Important'}
-                    information={notice.severity === 'Information'}
-                    key={i}
-                  >
-                    {notice.description}
-                  </Lozenge>
-                ))}
-              </Features>
-
-              <Actionables>
-                <Markdown source={msg.body} />
-                <Features>
-                  {msg.documents.map((doc, i) => (
-                    <Document
-                      key={i}
-                      to={doc.location || '/todo'}
-                      icon={<Icon>{doc.kind || 'book'}</Icon>}
-                    >
-                      {doc.filename}
-                    </Document>
-                  ))}
-                </Features>
-
-                {msg.tasks.map((task, i) => <Task key={i} {...task} />)}
-              </Actionables>
-              <Markdown
-                className="more-information"
-                source={msg.moreInformation || ''}
-              />
-            </MessageContent>
-
-            <Prompt>
-              <Timestamp>{msg.sent}</Timestamp>
-            </Prompt>
-          </MessageContentWrapper>
-        </Message>
-      )}
+      render={props => <ShortMessage msg={msg} {...props} />}
     />
     <Route
       exact
       path="/messages"
-      render={({ history }) => (
-        <Mutation mutation={markAsRead}>
-          {(markAsRead, { loading, error, data }) => (
-            <MaybeReadMessage
-              {...props}
-              style={{ cursor: 'pointer' }}
-              read={msg.readStatus === 'Read'}
-              onClick={e => {
-                markAsRead({
-                  variables: { messageID: msg.id },
-                })
-                history.push(`/messages/${msg.id}`)
-              }}
-            >
-              <SenderInfo>
-                <SenderCircle image={msg.sender.agency.logo}>
-                  {msg.sender.agency.name.substring(0, 3)}
-                </SenderCircle>
-              </SenderInfo>
-
-              <MessageContentWrapper>
-                <MessageContent>
-                  <About>
-                    <Link
-                      onClick={e => {
-                        markAsRead({
-                          variables: { messageID: msg.id },
-                        })
-                      }}
-                      to={`/messages/${msg.id}`}
-                    >
-                      <Subject status={msg.readStatus}>{msg.subject}</Subject>
-                      <Sender status={msg.readStatus}>
-                        {msg.sender.agency.name}
-                      </Sender>
-                    </Link>
-                  </About>
-
-                  <Features>
-                    {msg.notices.map((notice, i) => (
-                      <Lozenge
-                        overdue={notice.severity === 'Critical'}
-                        important={notice.severity === 'Important'}
-                        information={notice.severity === 'Information'}
-                        key={i}
-                      >
-                        {notice.description}
-                      </Lozenge>
-                    ))}
-                  </Features>
-
-                  <Features>
-                    {msg.documents.map((doc, i) => (
-                      <Document
-                        key={i}
-                        to={doc.location || '/todo'}
-                        icon={<Icon>{doc.kind || 'book'}</Icon>}
-                      >
-                        {doc.filename}
-                      </Document>
-                    ))}
-                  </Features>
-                </MessageContent>
-
-                <Prompt>
-                  <Timestamp>{msg.sent}</Timestamp>
-                </Prompt>
-              </MessageContentWrapper>
-            </MaybeReadMessage>
-          )}
-        </Mutation>
-      )}
+      render={props => <FullMessage msg={msg} {...props} />}
     />
   </Switch>
 )
 
-export { Msg as default }
+export {
+  Msg as default,
+  FullMessage,
+  ShortMessage,
+  MaybeMessage,
+}
