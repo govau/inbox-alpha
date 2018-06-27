@@ -1,4 +1,5 @@
 import React from 'react'
+import format from 'date-fns/format'
 import styled from 'styled-components'
 
 import { Message as MessageSection } from './section'
@@ -12,6 +13,11 @@ import {
   MessageContent,
   MessageContentWrapper,
 } from './components'
+
+const Timestamp = styled.time`
+  opacity: 0.7;
+  font-size: 0.8em;
+`
 
 export const NewConversationLine = () => (
   <Message active={true}>
@@ -46,6 +52,9 @@ const ConversationLine = ({ conversation, history }) => (
       <MessageContent>
         <ShortSender>{conversation.service.agency.name}</ShortSender>
         <ShortSubject>{conversation.subject}</ShortSubject>
+        <Timestamp dateTime={conversation.createdAt}>
+          {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
+        </Timestamp>
       </MessageContent>
     </MessageContentWrapper>
   </Message>

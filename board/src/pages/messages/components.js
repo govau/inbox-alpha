@@ -50,9 +50,20 @@ export const Sidenav = ({ conversations, match, history }) => (
           render={({ match }) => <NewConversationLine key={'compose'} />}
         />
       </Switch>
-      {conversations.map((conv, i) => (
-        <ConversationLine key={i} conversation={conv} history={history} />
-      ))}
+      {conversations
+        .slice(0)
+        .sort((a, b) => {
+          if (a.createdAt < b.createdAt) {
+            return 1
+          }
+          if (a.createdAt > b.createdAt) {
+            return -1
+          }
+          return 0
+        })
+        .map((conv, i) => (
+          <ConversationLine key={i} conversation={conv} history={history} />
+        ))}
     </Messages>
   </Fragment>
 )

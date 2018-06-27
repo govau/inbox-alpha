@@ -19,6 +19,7 @@ const queryMe = gql`
       id
       conversations {
         id
+        createdAt
         subject
         service {
           name
