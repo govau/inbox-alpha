@@ -38,7 +38,7 @@ const ConversationLine = ({ conversation, history }) => (
   >
     <SenderInfo>
       <SenderCircle image={conversation.service.agency.logo}>
-        {conversation.service.agency.name.substring(0, 3)}
+        {conversation.service.agency.name.substring(0, 2)}
       </SenderCircle>
     </SenderInfo>
 
@@ -60,6 +60,7 @@ const Subject = styled.div`
   padding: 1rem 2rem;
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
   background-color: #f3f5f5;
 
   > * + * {
@@ -87,7 +88,10 @@ const refNo = conversation =>
 const Conversation = ({ className, conversation }) => (
   <Wrapper>
     <Subject className={className}>
-      <div>To</div>
+      <SenderCircle image={conversation.service.agency.logo}>
+        {conversation.service.agency.name.substring(0, 2)}
+      </SenderCircle>
+
       <MessageContentWrapper>
         <MessageContent>
           <ShortSender>{conversation.service.agency.name}</ShortSender>

@@ -21,9 +21,7 @@ Thanks. Thank you
 export const rentAssistBody = `
 Hi Alex,
 
-We have received new address information from you, which may impact your Rent Assistance payments.
-
-**You need to:**
+We have received new address information from you (Transaction ID: CoN3462), which may impact your Rent Assistance payments.
 `
 
 export const rentAssistHelp = `
@@ -58,7 +56,6 @@ const createNewUser = gql`
     $assessmentBody: String
     $centrelinkBody: String
     $rentAssistBody: String
-    $rentAssistHelp: String
   ) {
     createUser(
       data: {
@@ -72,38 +69,32 @@ const createNewUser = gql`
                 create: [
                   {
                     sender: { create: { source: Service } }
+                    sentAt: "Tue 19 June 2018, 5:30pm"
                     sections: {
                       create: [
                         {
                           kind: Markdown
                           markdown: { create: { source: $rentAssistBody } }
                         }
-                        {
-                          kind: RequestDocument
-                          requestDocument: { create: {} }
-                        }
-                        {
-                          kind: Markdown
-                          markdown: { create: { source: $rentAssistHelp } }
-                        }
                       ]
                     }
                   }
                   {
-                    sender: { create: { source: User } }
+                    sender: { create: { source: Service } }
+                    readAt: "Wed 20 June 2018, 5:31pm"
                     sections: {
                       create: [
                         {
                           kind: Markdown
                           markdown: {
                             create: {
-                              source: "a followup message regarding your rental contract"
+                              source: "Please attach a copy if your new Rental Contract to confirm your new address within 14 days."
                             }
                           }
                         }
                         {
                           kind: RequestDocument
-                          requestDocument: { create: {} }
+                          requestDocument: { create: { linkText: "Attach Rental Contract"} }
                         }
                       ]
                     }

@@ -57,14 +57,17 @@ export const Sidenav = ({ conversations, match, history }) => (
   </Fragment>
 )
 
-export const SenderInfo = styled.div``
+export const SenderInfo = styled.div`
+`
 
 export const SenderCircle = styled.div`
   background-color: #d5d5d5;
-  color: white;
+  color: #7d7d7d;
   border-radius: 50%;
-  margin: 0 1rem;
-  padding: 0.4em;
+  padding: 0.6rem 0.9rem;
+  height: 4rem;
+  width: 4rem;
+  font-size: 0.9em;
 `
 
 export const MessageContentWrapper = styled.div`
@@ -90,11 +93,12 @@ export const MessageContent = styled.div`
 `
 
 export const Message = styled.li`
-  background-color: ${({ active }) => (active ? '#eee' : '#fff')};
+  background-color: ${({ active }) => (active ? '#f3f5f5' : '#fff')};
   margin-top: 0;
-  padding: 1em 0;
+  padding: 1rem 2rem;
   display: flex;
   flex-flow: row nowrap;
+  align-items: center;
 
   & + & {
     border-top: 1px solid #d5d5d5;
@@ -102,6 +106,7 @@ export const Message = styled.li`
 
   > * + * {
     margin-top: 0;
+    margin-left: 1rem;
   }
 `
 

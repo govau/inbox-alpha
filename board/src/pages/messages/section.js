@@ -129,6 +129,7 @@ const Wrapper = styled.div`
 const Message = styled(({ className, conversation, message }) => (
   <Wrapper reversed={message.sender && message.sender.source === 'User'}>
     <Timestamp>{format(message.sentAt, 'ddd D MMM YYYY, h:mm a')}</Timestamp>
+    <Timestamp>{message.sentAt}</Timestamp>
     <SpeechBubble
       reversed={message.sender && message.sender.source === 'User'}
       className={className}
@@ -143,6 +144,7 @@ const Message = styled(({ className, conversation, message }) => (
         </div>
       ))}
     </SpeechBubble>
+    <Timestamp label="Read">{message.readAt}</Timestamp>
     <Timestamp label="Read">
       {format(message.readAt, 'ddd D MMM YYYY, h:mm a')}
     </Timestamp>
