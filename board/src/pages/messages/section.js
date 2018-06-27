@@ -114,9 +114,11 @@ const Message = styled(({ className, conversation, message }) => (
         </div>
       ))}
     </SpeechBubble>
-    <Timestamp label="Read">
-      {format(message.readAt, 'ddd D MMM YYYY, h:mm a')}
-    </Timestamp>
+    {message.readAt && (
+      <Timestamp label="Read">
+        {format(message.readAt, 'ddd D MMM YYYY, h:mm a')}
+      </Timestamp>
+    )}
   </Wrapper>
 ))``
 
