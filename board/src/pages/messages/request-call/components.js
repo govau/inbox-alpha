@@ -41,6 +41,8 @@ const createBooking = gql`
 
     serviceResponse: createMessage(
       data: {
+        sentAt: $sentAt
+        readAt: $sentAt
         conversation: { connect: { id: $conversationID } }
         sender: { create: { source: Service } }
         sections: {
@@ -549,7 +551,13 @@ export class Page extends Component {
 **Time**: ${timeSlot}  
 **Case ID**:  INSERT THE GENRETED CASE ID HERE
                             `,
-                            serviceResponse: `great. ${timeSlot} works here too; we'll see then MATE`,
+                            serviceResponse: `
+**Call back confirmation**
+
+Transaction ID: PUT THE ID HERE
+
+We'll call you on **${timeSlot}** on the number you provided **0404 xxx x89**
+                            `,
                           },
                         })
                       }}

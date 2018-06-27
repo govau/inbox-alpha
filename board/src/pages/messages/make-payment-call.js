@@ -2,6 +2,9 @@ import React, { Fragment } from 'react'
 import { Link, Route } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import styled from 'styled-components'
+
+import Icon from '../../components/icon'
 
 const makePaymentCall = gql`
   mutation($conversationID: ID!) {
@@ -61,6 +64,19 @@ const makePaymentCall = gql`
   }
 `
 
+const Calendar = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+
+  & * + * {
+    margin-top: 0;
+  }
+
+  > * + * {
+    margin-left: 1rem;
+  }
+`
+
 export default ({ conversation }) => {
   let c
 
@@ -77,20 +93,32 @@ export default ({ conversation }) => {
           {(create, { loading, error, data, client }) => {
             c = client
             return (
-              <Fragment>
-                <Link
-                  to="/todo"
-                  onClick={e => {
-                    e.preventDefault()
-                    create({
-                      variables: {
-                        conversationID: conversation.id,
-                      },
-                    })
-                  }}
-                >
-                  Start the call
-                </Link>
+              <div>
+                <Calendar>
+                  <Icon style={{ fontSize: '3em' }}>calendar_today</Icon>
+                  <div>
+                    <div>
+                      <Link to="/todo">Download to add to calendar</Link>
+                    </div>
+                    <div>Booked_callback.ics 0.5KB</div>
+                  </div>
+                </Calendar>
+
+                <p>
+                  <Link
+                    to="/todo"
+                    onClick={e => {
+                      e.preventDefault()
+                      create({
+                        variables: {
+                          conversationID: conversation.id,
+                        },
+                      })
+                    }}
+                  >
+                    Reschedule appointment
+                  </Link>
+                </p>
 
                 {loading ? (
                   <div>loading...</div>
@@ -100,7 +128,7 @@ export default ({ conversation }) => {
                     {error.message}
                   </details>
                 ) : null}
-              </Fragment>
+              </div>
             )
           }}
         </Mutation>
