@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
 
 import Master from '../../components/layout'
+import Icon from '../../components/icon'
 import { Button } from '../../components/button'
 import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
@@ -119,9 +120,14 @@ const Editor = styled(CoreEditor).attrs({
   optionWrapperClassName,
 })`
   .${toolbarClassName} {
+    position: relative;
     padding: 0;
     border: 0;
     background-color: #eee;
+  }
+
+  .${inlineWrapperClassName}, .${listWrapperClassName} {
+    margin: 0;
   }
 
   .rdw-editor-main {
@@ -140,6 +146,32 @@ const Editor = styled(CoreEditor).attrs({
     }
   }
 `
+
+const AttachDocumentOptionWrapper = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: -1px;
+`
+
+const AttachFileIcon = styled(Icon)`
+  font-size: 17px !important;
+  vertical-align: middle;
+`
+
+class AttachDocumentOption extends Component {
+  handleAttach = () => {}
+
+  render() {
+    return (
+      <AttachDocumentOptionWrapper>
+        <a onClick={this.handleAttach}>
+          <AttachFileIcon>attach_file</AttachFileIcon>
+          attach file
+        </a>
+      </AttachDocumentOptionWrapper>
+    )
+  }
+}
 
 export class Page extends Component {
   state = {
@@ -280,6 +312,7 @@ export class Page extends Component {
                         onContentStateChange={contentState => {
                           this.setEditorContent(contentState)
                         }}
+                        toolbarCustomButtons={[<AttachDocumentOption />]}
                       />
                     </EditorWrapper>
                   </fieldset>
