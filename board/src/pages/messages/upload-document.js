@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react'
-import { Route, Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
+import format from 'date-fns/format'
 import gql from 'graphql-tag'
 
 import FileInput from '../../components/file-input'
@@ -62,10 +63,10 @@ const uploadDocument = gql`
   }
 `
 
-const confirmation = now => `
+const confirmation = ({ now, filename }) => `
 **Transaction ID**: CTR34256AS  
 **File received**: ${now}  
-**File name**: FILE NAME HERE
+**File name**: ${filename}
 `
 
 const nextSteps = `
@@ -75,6 +76,8 @@ We will be in touch with you as soon as possible about your Rent Assistance paym
 
 Our current turnaround time is within 7 days.
 `
+
+const fmtdate = date => format(date, 'ddd D MMM YYYY, h:mm a')
 
 export default ({ conversation }) => {
   let c
@@ -93,26 +96,23 @@ export default ({ conversation }) => {
             c = client
             return (
               <Fragment>
-                <FileInput name="the-file-input" />
-                <div>
-                  <Link
-                    to="/todo"
-                    onClick={e => {
-                      e.preventDefault()
-                      create({
-                        variables: {
-                          conversationID: conversation.id,
-                          filename: 'this-is-the-filename',
-                          sentAt: new Date().toString(),
-                          confirmation: confirmation(new Date().toString()),
-                          nextSteps,
-                        },
-                      })
-                    }}
-                  >
-                    upload the document
-                  </Link>
-                </div>
+                <FileInput
+                  name="the-file-input"
+                  onAttach={({ filename }) => {
+                    create({
+                      variables: {
+                        conversationID: conversation.id,
+                        filename,
+                        sentAt: fmtdate(new Date()),
+                        confirmation: confirmation({
+                          now: fmtdate(new Date()),
+                          filename,
+                        }),
+                        nextSteps,
+                      },
+                    })
+                  }}
+                />
 
                 {loading ? (
                   <div>loading...</div>
