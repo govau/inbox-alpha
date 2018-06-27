@@ -230,13 +230,20 @@ export class Page extends Component {
                 <form
                   onSubmit={e => {
                     e.preventDefault()
+
+                    const { service, subject, editorContent } = this.state
+
+                    if (!(service && subject && editorContent)) {
+                      return
+                    }
+
                     create({
                       variables: {
                         sentAt: new Date().toISOString(),
                         userID: this.props.userID,
-                        serviceID: this.state.service.id,
-                        subject: this.state.subject,
-                        markdownSource: markdownify(this.state.editorContent),
+                        serviceID: service.id,
+                        subject: subject,
+                        markdownSource: markdownify(editorContent),
                       },
                     })
                   }}
