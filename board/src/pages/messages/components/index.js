@@ -3,9 +3,11 @@ import { Switch, Route } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import classnames from 'classnames'
 
-import { Text } from '../../components/forms'
-import IconLink from '../../components/icon-link'
-import { NewConversationLine, ConversationLine } from './conversation'
+import { Text } from '../../../components/forms'
+import IconLink from '../../../components/icon-link'
+import { NewConversationLine, ConversationLine } from '../conversation'
+
+import attachment from './attachment.png'
 
 export const H1 = styled.h1`
   @media screen and (min-width: 768px) {
@@ -205,27 +207,39 @@ export const Lozenge = styled(
   ${lozengeColour};
 `
 
-export const Document = styled(IconLink)`
-  background-color: #f3f5f5;
+export const Document = styled(({ className, ...props }) => (
+  <figure className={className}>
+    <img src={attachment} alt="an attached document" />
+    <figcaption>
+      <IconLink {...props} />
+    </figcaption>
+  </figure>
+))`
   font-size: 0.8em;
   border-radius: 3px;
-  padding: 0.5rem 0.5rem;
+  margin-left: 0;
+  margin-right: 0;
+  display: inline-flex;
+  flex-flow: column nowrap;
+  align-items: center;
 
-  &,
-  &:visited {
-    color: #246add;
-  }
+  ${IconLink} {
+    &,
+    &:visited {
+      color: #246add;
+    }
 
-  & span {
-    margin-left: 0.5em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  @media screen and (min-width: 768px) {
     & span {
-      max-width: 20rem;
+      margin-left: 0.5em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media screen and (min-width: 768px) {
+      & span {
+        max-width: 20rem;
+      }
     }
   }
 `

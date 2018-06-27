@@ -28,17 +28,23 @@ const RequestDocument = ({ conversation, linkText }) => (
 )
 
 const RequestPayment = ({ amountInCents, linkText }) => (
-  <Link to="/todo">{linkText || 'Provide payment'}</Link>
+  <p>
+    <Link to="/todo">{linkText || 'Provide payment'}</Link>
+  </p>
 )
 
 const RequestScheduledPayment = ({ amountInCents, linkText }) => (
-  <Link to="/todo">{linkText || 'Schedule payment'}</Link>
+  <p>
+    <Link to="/todo">{linkText || 'Schedule payment'}</Link>
+  </p>
 )
 
 const RequestCall = ({ conversation, linkText }) => (
-  <Link to={`/messages/${conversation.id}/book-a-call`}>
-    {linkText || 'Request a call'}
-  </Link>
+  <p>
+    <Link to={`/messages/${conversation.id}/book-a-call`}>
+      {linkText || 'Request a call'}
+    </Link>
+  </p>
 )
 
 const IconSided = styled.div`
@@ -57,7 +63,7 @@ const Confirmation = ({ markdown }) => (
     <MarkdownComponent
       source={markdown.source}
       renderers={{
-        delete: ({ children }) => <p style={{ opacity: '0.7' }}>{children}</p>,
+        delete: ({ children }) => <span style={{ opacity: '0.7' }}>{children}</span>,
       }}
     />
   </IconSided>
@@ -143,13 +149,12 @@ const Message = styled(({ className, conversation, message }) => (
       className={className}
     >
       {message.sections.map((section, i) => (
-        <div key={i}>
-          <Section
-            section={section}
-            message={message}
-            conversation={conversation}
-          />
-        </div>
+        <Section
+          key={i}
+          section={section}
+          message={message}
+          conversation={conversation}
+        />
       ))}
     </SpeechBubble>
     <Timestamp label="Read">{message.readAt}</Timestamp>
