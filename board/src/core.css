@@ -51,7 +51,7 @@ body {
 body main,
 .wrapper,
 .wrap-sides {
-  max-width: 92rem;
+  max-width: 120rem;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -117,7 +117,18 @@ main [type='hidden'] + * {
 
 a,
 a:visited {
-  color: #333;
+  color: #246add;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+fieldset {
+  border: 0;
+  padding: 0 0 2rem 0;
 }
 
 @media desktop {

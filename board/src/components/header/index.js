@@ -40,6 +40,7 @@ const ButtonLink = styled(Link)`
     display: auto;
   }
 `
+
 const Headeritem = styled.li`
   ${ButtonLink}, ${ButtonLink}:visited {
     color: ${props => props.theme.copyColour};
@@ -201,12 +202,17 @@ const Navlink = ({ link: Component = Link, to, ...props }) => (
 const queryMessages = gql`
   query($userID: ID!) {
     user(where: { id: $userID }) {
-      messages {
-        readStatus
+      conversations {
+        messages {
+          readStatus
+        }
       }
     }
   }
 `
+
+const flatMap = fx => xs => Array.prototype.concat(...xs.map(fx))
+
 const MinimalHeader = () => (
   <ThemeProvider theme={headerTheme}>
     <Header>
@@ -333,9 +339,9 @@ const StickyHeader = ({ user }) => (
                 </Navlink>
                 <Query query={queryMessages} variables={{ userID: user.id }}>
                   {({ loading, error, data: { user } }) => {
-                    const count = ((user && user.messages) || []).filter(
-                      msg => msg.readStatus === 'Unread'
-                    ).length
+                    const count = flatMap(conv => conv.messages)(
+                      (user && user.conversations) || []
+                    ).filter(msg => msg.readStatus === 'Unread').length
 
                     return user ? (
                       <Navlink

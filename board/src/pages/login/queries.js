@@ -15,15 +15,13 @@ Thank you, ATO AUSTRALIA TAXATION OFFICE 2018
 Thanks. Thank you
 
 *Send it in*
-/please/ 
+/please/
 `
 
 export const rentAssistBody = `
 Hi Alex,
 
-We have received new address information from you, which may impact your Rent Assistance payments.
-
-**You need to:**
+We have received new address information from you (Transaction ID: CoN3462), which may impact your Rent Assistance payments.
 `
 
 export const rentAssistHelp = `
@@ -33,21 +31,17 @@ If you need help submitting your documents, [book a time](/) and we'll call you 
 `
 
 export const centrelinkBody = `
-Hi Alex,
-
-  Transaction ID: 22X4423181
-
 Your change of name request has been successfully processed.
 
-If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)
+~~If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)~~
 `
 
 export const assessmentBody = `
 Hi Alex,
 
-Your income tax return has been processed. View your income tax notice of assessment for more information.
+Your income tax return has been processed.  
+View your income tax Notice of Assessment for more information.
 `
-
 
 const createNewUser = gql`
   mutation(
@@ -58,76 +52,172 @@ const createNewUser = gql`
     $assessmentBody: String
     $centrelinkBody: String
     $rentAssistBody: String
-    $rentAssistHelp: String
   ) {
     createUser(
       data: {
         name: $username
-        messages: {
+        conversations: {
           create: [
             {
-              subject: "Rental Contract required"
-              body: $rentAssistBody
-              moreInformation: $rentAssistHelp
-              readStatus: Unread
-              sender: { connect: { id: $centrelinkID } }
-              sent: "10:34 AM"
-              notices: {
-                create: {
-                  description: "Further information needed"
-                  severity: Important
-                }
-              }
-              tasks: {
+              subject: "Rent Assistance"
+              service: { connect: { id: $centrelinkID } }
+              messages: {
                 create: [
                   {
-                    instruction: "Attach a copy of your new **Rental Contract** to update your new address and confirm your payments."
-                    task: Upload
+                    sender: { create: { source: Service } }
+                    sentAt: "Tue 19 June 2018, 5:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $rentAssistBody } }
+                        }
+                      ]
+                    }
                   }
-                  { task: Submit }
+                  {
+                    sender: { create: { source: Service } }
+                    readAt: "Wed 20 June 2018, 5:31pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "Please attach a copy if your new Rental Contract to confirm your new address within 14 days."
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestDocument
+                          requestDocument: { create: { linkText: "Attach Rental Contract"} }
+                        }
+                      ]
+                    }
+                  }
                 ]
               }
             }
             {
               subject: "Name update"
-              body: $centrelinkBody
-              readStatus: Unread
-              sender: { connect: { id: $centrelinkID } }
-              sent: "9:15 AM"
-              notices: {
-                create: {
-                  description: "Request completed"
-                  severity: Information
-                }
+              service: { connect: { id: $centrelinkID } }
+              messages: {
+                create: [
+                  {
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: "Hi Alex,\\n\\n Transaction ID: CoN3462" }}
+                        }
+                        {
+                          kind: Confirmation
+                          markdown: { create: { source: $centrelinkBody } }
+                        }
+                      ]
+                    }
+                  }
+                ]
               }
             }
             {
               subject: "Benefit statement"
-              body: "Your benefits have been transferred by EFT to your nominated account. View the attached statement for full details."
-              readStatus: Unread
-              sender: { connect: { id: $medicareID } }
-              sent: "13 June"
-              documents: { create: { filename: "Benefit EFT statement" } }
+              service: { connect: { id: $medicareID } }
+              messages: {
+                create: [
+                  {
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "Your benefits have been transferred by EFT to your nominated account. View the attached statement for full details."
+                            }
+                          }
+                        }
+                        {
+                          kind: Document
+                          document: {
+                            create: { filename: "Benefit EFT statement" }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
             }
             {
               subject: "Tax Assessment 2017"
-              body: $assessmentBody
-              readStatus: Read
-              sender: { connect: { id: $taxID } }
-              sent: "8 June"
-              notices: {
-                create: {
-                  description: "Payment due 29 Jun 2018"
-                  severity: Important
-                }
-              }
-              documents: { create: { filename: "2017 Notice of Assessment" } }
-              tasks: {
+              service: { connect: { id: $taxID } }
+              messages: {
                 create: [
                   {
-                    instruction: ""
-                    paymentAmount: "$1086.24"
-                    task: SendPayment
+                    sentAt: "Tue 09 June 2018, 2:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    sections: {
+                      create: [
+                        {
+                          kind: Document
+                          document: {
+                            create: {
+                              filename: "2017 Notice of Assessment.pdf"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readAt: "Tue 09 June 2018, 7:33pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jun 2018"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestPayment
+                          requestPayment: {
+                            create: {
+                              amountInCents: 108624
+                              linkText: "Pay now"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestScheduledPayment
+                          requestScheduledPayment: {
+                            create: {
+                              amountInCents: 108624
+                              linkText: "Pay on due date"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestCall
+                          requestCall: {
+                            create: {
+                              linkText: "Request a call back to discuss payment options"
+                            }
+                          }
+                        }
+                      ]
+                    }
                   }
                 ]
               }
@@ -138,6 +228,9 @@ const createNewUser = gql`
     ) {
       id
       name
+      conversations(orderBy: createdAt_DESC) {
+        id
+      }
     }
   }
 `

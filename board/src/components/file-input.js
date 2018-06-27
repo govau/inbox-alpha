@@ -1,27 +1,14 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { Button } from './button'
 import Icon from './icon'
+import IconLink from './icon-link'
 
-const InputWrapper = styled.div`
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-
-  * + * {
-    margin-top: 0;
-  }
-`
-
-const Trigger = styled(Button)`
-  background-color: transparent;
-  border: 2px solid ${props => props.theme.bodyColour};
-`
+const InputWrapper = styled.div``
 
 const Label = styled.label`
-  display: flex;
-  align-items: center;
+  cursor: pointer;
 `
 
 const Input = styled.input`
@@ -31,16 +18,6 @@ const Input = styled.input`
   overflow: hidden;
   position: absolute;
   z-index: -1;
-`
-
-const FileInfo = styled.div`
-  margin: 0 2rem;
-  color: #717171;
-
-  & + ${Icon} {
-    cursor: pointer;
-    color: #717171;
-  }
 `
 
 class FileInput extends Component {
@@ -66,27 +43,61 @@ class FileInput extends Component {
           ref={node => {
             input = node
           }}
-          onChange={e => this.setFilename(e.target.value.split('\\').pop())}
+          onChange={e => {
+            const filename = e.target.value.split('\\').pop()
+            this.setFilename(filename)
+            this.props.onDocumentChange && this.props.onDocumentChange(filename)
+          }}
           {...this.props}
         />
 
-        <Trigger>
-          <Label htmlFor={name}>
-            <Icon style={{ transform: 'rotate(-45deg)' }}>attachment</Icon>{' '}
-            Attach document
-          </Label>
-        </Trigger>
-        <FileInfo>{this.state.filename}</FileInfo>
         {this.state.filename ? (
-          <Icon
-            onClick={e => {
-              input.value = ''
-              this.setFilename('')
-            }}
-          >
-            close
-          </Icon>
-        ) : null}
+          <Fragment>
+            <IconLink
+              plain_text
+              icon={
+                <Icon style={{ transform: 'rotate(-45deg)' }}>attachment</Icon>
+              }
+            >
+              {this.state.filename}
+            </IconLink>
+            <div>
+              <Link
+                to="/todo"
+                onClick={e => {
+                  e.preventDefault()
+                  input.value = ''
+                  this.setFilename('')
+                  this.props.onAttach({ filename: this.state.filename })
+                }}
+              >
+                Attach
+              </Link>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Link
+                to="/todo"
+                onClick={e => {
+                  e.preventDefault()
+                  input.value = ''
+                  this.setFilename('')
+                }}
+              >
+                Cancel
+              </Link>
+            </div>
+          </Fragment>
+        ) : (
+          <Label htmlFor={name}>
+            <IconLink
+              plain_text
+              but_color_it_like_a_link_anyway
+              icon={
+                <Icon style={{ transform: 'rotate(-45deg)' }}>attachment</Icon>
+              }
+            >
+              Select document
+            </IconLink>
+          </Label>
+        )}
       </InputWrapper>
     )
   }

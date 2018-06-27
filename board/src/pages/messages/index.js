@@ -1,57 +1,70 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import styled, { css } from 'styled-components'
-import { Route } from 'react-router-dom'
+import styled from 'styled-components'
+import { Route, Switch } from 'react-router-dom'
 
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
-import Icon from '../../components/icon'
-import IconLink from '../../components/icon-link'
-import { Text } from '../../components/forms'
-import Message from './message'
-import { Messages } from './components'
+import { ButtonLink } from '../../components/button'
+import { Heading, H1, Sidenav } from './components'
+import { SometimesConversation } from './conversation'
+import * as Compose from './compose'
+import RequestCall from './request-call'
 
 const queryMe = gql`
   query($userID: ID!) {
     user(where: { id: $userID }) {
       name
       id
-      messages {
+      conversations(orderBy: createdAt_DESC) {
         id
+        createdAt
         subject
-        body
-        moreInformation
-        readStatus
-        sent
-
-        tasks {
-          id
-          instruction
-          task
-          paymentAmount
-        }
-
-        documents {
-          filename
-          kind
-          location
-        }
-
-        notices {
-          description
-          severity
-        }
-
-        sender {
+        service {
           name
           description
           contactNo
           agency {
             name
-            logo {
-              url
-              title
+          }
+        }
+        messages {
+          readStatus
+          sentAt
+          readAt
+          sender {
+            source
+            user {
+              id
+              name
+            }
+            service {
+              id
+              name
+            }
+          }
+          sections {
+            kind
+            markdown {
+              source
+            }
+            document {
+              filename
+            }
+            requestDocument {
+              linkText
+            }
+            requestPayment {
+              amountInCents
+              linkText
+            }
+            requestScheduledPayment {
+              amountInCents
+              linkText
+            }
+            requestCall {
+              linkText
             }
           }
         }
@@ -60,106 +73,86 @@ const queryMe = gql`
   }
 `
 
-const Navlist = styled.ul`
-  list-style: none;
-  padding: 0;
+const Help = styled.section`
+  text-align: center;
+  margin: 5em 0;
+  opacity: 0.6;
 `
 
-const Navlink = styled(IconLink)`
-  color: ${props => props.theme.copyColour};
-
-  ${props =>
-    props.active
-      ? css`
-          font-weight: bold;
-        `
-      : ``} & span {
-    margin-left: 0.5em;
-  }
-
-  span {
-    text-decoration: none;
-  }
-`
-
-const Navitem = styled.li``
-
-const Sidenav = props => (
-  <nav {...props}>
-    <Navlist>
-      <Navitem>
-        <Navlink active to="/todo" icon={<Icon>inbox</Icon>}>
-          Messages
-        </Navlink>
-      </Navitem>
-      <Navitem>
-        <Navlink to="/todo" icon={<Icon>done</Icon>}>
-          Done
-        </Navlink>
-      </Navitem>
-      <Navitem>
-        <Navlink to="/todo" icon={<Icon>flag</Icon>}>
-          Priority
-        </Navlink>
-      </Navitem>
-    </Navlist>
-  </nav>
-)
-
-const Heading = styled.header`
-  @media screen and (min-width: 768px) {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    * + * {
-      margin-top: 0;
-    }
-  }
-
-  & + ${Messages} {
-    margin-top: 2em;
-  }
-`
-
-const H1 = styled.h1`
-  @media screen and (min-width: 768px) {
-    flex: 1;
-  }
-`
-
-const Search = styled(Text)`
-  @media screen and (min-width: 768px) {
-    flex: 2;
-  }
-`
-
-const Homepage = ({ name, id, messages }) => (
-  <Master side={null && <Sidenav />}>
-    <Heading>
-      <H1>Messages</H1>
-      <Search placeholder="Begin typing to search..." />
-    </Heading>
-
+const Homepage = ({ user: { conversations, name, id }, match, history }) => (
+  <Switch>
     <Route
       exact
-      path="/messages/:id"
+      path={`${match.path}/compose`}
       render={() => (
-        <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-          Back
-        </IconLink>
+        <Compose.Page
+          match={match}
+          history={history}
+          userID={id}
+          conversations={conversations}
+        />
       )}
     />
 
-    <Messages>
-      {messages.map((msg, i) => <Message key={i} msg={msg} />)}
-    </Messages>
-  </Master>
+    <Route
+      exact
+      path={`${match.path}/:id/book-a-call`}
+      component={RequestCall}
+    />
+
+    <Route
+      render={() => (
+        <Fragment>
+          <Heading>
+            <H1>Message centre</H1>
+            <ButtonLink to={`${match.path}/compose`} color="black">
+              Start new message
+            </ButtonLink>
+          </Heading>
+
+          <Master
+            side={
+              <Sidenav
+                conversations={conversations}
+                match={match}
+                history={history}
+              />
+            }
+          >
+            <Switch>
+              <Route
+                exact
+                path={`${match.path}/:id`}
+                render={({ match }) => (
+                  <SometimesConversation
+                    conversation={conversations.find(
+                      conv => conv.id === match.params.id
+                    )}
+                  />
+                )}
+              />
+              <Route
+                render={props => (
+                  <Help>
+                    <h2>No conversation selected</h2>
+                    <p>
+                      Choose a conversation from the side bar to get started.
+                    </p>
+                  </Help>
+                )}
+              />
+            </Switch>
+          </Master>
+        </Fragment>
+      )}
+    />
+  </Switch>
 )
 
 const withUserMessages = graphql(queryMe, {
   options: route => {
     return { variables: { userID: route.user.id } }
   },
-})(withData(Homepage, ({ user }) => user))
+})(withData(Homepage))
 
 export { withUserMessages as default, Homepage }

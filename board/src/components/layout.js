@@ -3,10 +3,13 @@ import styled from 'styled-components'
 
 const Side = styled.div`
   flex: 1;
+  align-self: flex-start;
+  position: sticky;
+  top: 0;
 `
 
 const Master = styled.div`
-  flex: 3;
+  flex: 2;
 `
 
 const Wrapper = styled.div`
