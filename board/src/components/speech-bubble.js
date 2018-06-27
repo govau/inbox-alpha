@@ -1,13 +1,13 @@
 import styled, { css } from 'styled-components'
 
 const Content = styled.div`
-  padding: 1em;
+  padding: 2rem;
   margin-left: 2rem;
   margin-right: 2rem;
   background-color: #f3f5f5;
   box-shadow: 0 0 5px 0 #7e9dff;
   border: 6px solid #6085ff;
-  border-radius: 1rem;
+  border-radius: 2rem;
   position: relative;
 
   box-shadow: none;

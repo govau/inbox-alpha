@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -65,21 +65,43 @@ const Section = ({ section, conversation, message }) => {
   ) : null
 }
 
-const Message = styled(({ className, conversation, message }) => (
-  <SpeechBubble
-    reversed={message.sender && message.sender.source === 'User'}
-    className={className}
-  >
-    {message.sections.map((section, i) => (
-      <div key={i}>
-        <Section
-          section={section}
-          message={message}
-          conversation={conversation}
-        />
+const Timestamp = styled(
+  ({ className, label, children }) =>
+    children ? (
+      <div className={className}>
+        {label ? `${label}: ` : ''}
+        {children}
       </div>
-    ))}
-  </SpeechBubble>
+    ) : null
+)`
+  opacity: 0.7;
+  font-size: 0.8em;
+  margin-left: 3rem;
+
+  & + * {
+    margin-top: 1rem;
+  }
+`
+
+const Message = styled(({ className, conversation, message }) => (
+  <Fragment>
+    <Timestamp>{message.sentAt}</Timestamp>
+    <SpeechBubble
+      reversed={message.sender && message.sender.source === 'User'}
+      className={className}
+    >
+      {message.sections.map((section, i) => (
+        <div key={i}>
+          <Section
+            section={section}
+            message={message}
+            conversation={conversation}
+          />
+        </div>
+      ))}
+    </SpeechBubble>
+    <Timestamp label="Read">{message.readAt}</Timestamp>
+  </Fragment>
 ))``
 
 export {
