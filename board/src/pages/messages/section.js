@@ -63,7 +63,9 @@ const Confirmation = ({ markdown }) => (
     <MarkdownComponent
       source={markdown.source}
       renderers={{
-        delete: ({ children }) => <span style={{ opacity: '0.7' }}>{children}</span>,
+        delete: ({ children }) => (
+          <span style={{ opacity: '0.7' }}>{children}</span>
+        ),
       }}
     />
   </IconSided>
@@ -87,18 +89,20 @@ const selectors = {
 
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)
 
-const Section = ({ section, conversation, message }) => {
+const Section = ({ innerRef, section, conversation, message }) => {
   const { kind, sender, ...rest } = section
 
   const Renderer = renderers[kind]
   const selector = selectors[kind] || (section => section[lowerCase(kind)])
 
   return Renderer ? (
-    <Renderer
-      {...selector(rest)}
-      conversation={conversation}
-      message={message}
-    />
+    <div ref={innerRef}>
+      <Renderer
+        {...selector(rest)}
+        conversation={conversation}
+        message={message}
+      />
+    </div>
   ) : null
 }
 
@@ -141,25 +145,36 @@ const Wrapper = styled.div`
   }
 `
 
-const Message = styled(({ className, conversation, message }) => (
-  <Wrapper reversed={message.sender && message.sender.source === 'User'}>
-    <Timestamp>{message.sentAt}</Timestamp>
-    <SpeechBubble
-      reversed={message.sender && message.sender.source === 'User'}
-      className={className}
-    >
-      {message.sections.map((section, i) => (
-        <Section
-          key={i}
-          section={section}
-          message={message}
-          conversation={conversation}
-        />
-      ))}
-    </SpeechBubble>
-    <Timestamp label="Read">{message.readAt}</Timestamp>
-  </Wrapper>
-))``
+const Message = styled(({ className, conversation, message }) => {
+  let latest
+
+  setTimeout(() => {
+    latest && latest.scrollIntoView({ behavior: 'smooth' })
+  }, 500)
+
+  return (
+    <Wrapper reversed={message.sender && message.sender.source === 'User'}>
+      <Timestamp>{message.sentAt}</Timestamp>
+      <SpeechBubble
+        reversed={message.sender && message.sender.source === 'User'}
+        className={className}
+      >
+        {message.sections.map((section, i) => (
+          <Section
+            innerRef={node => {
+              latest = node
+            }}
+            key={i}
+            section={section}
+            message={message}
+            conversation={conversation}
+          />
+        ))}
+      </SpeechBubble>
+      <Timestamp label="Read">{message.readAt}</Timestamp>
+    </Wrapper>
+  )
+})``
 
 export {
   Section as default,
