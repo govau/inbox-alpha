@@ -6,12 +6,10 @@ import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
 
 import Master from '../../components/layout'
-import Icon from '../../components/icon'
-import IconLink from '../../components/icon-link'
 import Editor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
 import { Text, Submit } from '../../components/forms'
-import { Heading, H1 } from './components'
+import { Heading, H1, Sidenav } from './components'
 
 const queryServices = gql`
   query {
@@ -59,6 +57,7 @@ const createConversation = gql`
 
 const Wrapper = styled.section`
   @media screen and (min-width: 768px) {
+    margin-left: 2rem;
     max-width: 50rem;
   }
 `
@@ -131,16 +130,23 @@ export class Page extends Component {
   }
 
   render() {
+    const { match, history, conversations } = this.props
+
     return (
       <Fragment>
         <Heading>
           <H1>Message centre</H1>
         </Heading>
-        <Master>
+        <Master
+          side={
+            <Sidenav
+              conversations={conversations}
+              match={match}
+              history={history}
+            />
+          }
+        >
           <Wrapper>
-            <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
-              Back
-            </IconLink>
             <Mutation mutation={createConversation}>
               {(create, { loading, error, data, client }) => (
                 <form

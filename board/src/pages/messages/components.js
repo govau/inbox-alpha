@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import { Switch, Route } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import classnames from 'classnames'
 
+import { Text } from '../../components/forms'
 import IconLink from '../../components/icon-link'
+import { NewConversationLine, ConversationLine } from './conversation'
 
 export const H1 = styled.h1`
   @media screen and (min-width: 768px) {
@@ -29,6 +32,30 @@ export const Heading = styled.header`
     margin-top: 2em;
   }
 `
+
+const Search = styled(Text)`
+  @media screen and (min-width: 768px) {
+    flex: 2;
+  }
+`
+
+export const Sidenav = ({ conversations, match, history }) => (
+  <Fragment>
+    <Search placeholder="Search your messages" />
+    <Messages>
+      <Switch>
+        <Route
+          exact
+          path={`${match.path}/compose`}
+          render={({ match }) => <NewConversationLine key={'compose'} />}
+        />
+      </Switch>
+      {conversations.map((conv, i) => (
+        <ConversationLine key={i} conversation={conv} history={history} />
+      ))}
+    </Messages>
+  </Fragment>
+)
 
 export const SenderInfo = styled.div``
 
@@ -63,6 +90,7 @@ export const MessageContent = styled.div`
 `
 
 export const Message = styled.li`
+  background-color: ${({ active }) => (active ? '#eee' : '#fff')};
   margin-top: 0;
   padding: 1em 0;
   display: flex;

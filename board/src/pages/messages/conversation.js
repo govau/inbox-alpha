@@ -13,6 +13,21 @@ import {
   MessageContentWrapper,
 } from './components'
 
+export const NewConversationLine = () => (
+  <Message active={true}>
+    <SenderInfo>
+      <SenderCircle>&nbsp;&nbsp;?&nbsp;&nbsp;</SenderCircle>
+    </SenderInfo>
+
+    <MessageContentWrapper>
+      <MessageContent>
+        <ShortSender>New message</ShortSender>
+        <ShortSubject />
+      </MessageContent>
+    </MessageContentWrapper>
+  </Message>
+)
+
 const ConversationLine = ({ conversation, history }) => (
   <Message
     style={{ cursor: 'pointer' }}
