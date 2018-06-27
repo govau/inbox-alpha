@@ -6,7 +6,8 @@ import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
 
 import Master from '../../components/layout'
-import Editor from '../../components/editor'
+import { Button } from '../../components/button'
+import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
 import { Text, Submit } from '../../components/forms'
 import { Heading, H1, Sidenav } from './components'
@@ -102,6 +103,47 @@ const HiddenText = styled(Text)`
   margin: -1px;
   padding: 0;
   border: 0;
+`
+
+const EditorWrapper = styled.div`
+  padding: 2rem;
+  background-color: #eee;
+`
+
+const editorClassName = 'content-editor'
+const toolbarClassName = 'content-editor-toolbar'
+const optionWrapperClassName = 'content-editor-toolbar-option-wrapper'
+const inlineWrapperClassName = 'content-editor-toolbar-inline-wrapper'
+const listWrapperClassName = 'content-editor-toolbar-list-wrapper'
+
+const Editor = styled(CoreEditor).attrs({
+  editorClassName,
+  toolbarClassName,
+  inlineWrapperClassName,
+  listWrapperClassName,
+  optionWrapperClassName,
+})`
+  .${toolbarClassName} {
+    padding: 0;
+    border: 0;
+    background-color: #eee;
+  }
+
+  .rdw-editor-main {
+    padding: 0 2rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+
+  .${optionWrapperClassName} {
+    box-shadow: none;
+    border: 0;
+    background-color: transparent;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
 `
 
 const GiveThisABetterName = ({ services = [], serviceID, children }) => {
@@ -229,11 +271,13 @@ export class Page extends Component {
                   </Target>
 
                   <Text required placeholder="Subject" />
-                  <Editor
-                    onContentStateChange={contentState => {
-                      this.setEditorContent(contentState)
-                    }}
-                  />
+                  <EditorWrapper>
+                    <Editor
+                      onContentStateChange={contentState => {
+                        this.setEditorContent(contentState)
+                      }}
+                    />
+                  </EditorWrapper>
 
                   {loading ? (
                     <Submit disabled>loading...</Submit>
@@ -250,7 +294,7 @@ export class Page extends Component {
                           to={`/messages/${data.createConversation.id}`}
                         />
                       ) : null}
-                      <Submit>Send</Submit>
+                      <Button type="submit">Send</Button>
                     </Fragment>
                   )}
                 </form>
