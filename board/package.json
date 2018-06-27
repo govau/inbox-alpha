@@ -5,6 +5,7 @@
   "dependencies": {
     "apollo-boost": "^0.1.7",
     "classnames": "^2.2.5",
+    "date-fns": "^1.29.0",
     "draft-js": "^0.10.5",
     "draftjs-to-markdown": "^0.5.1",
     "graphql": "^0.13.2",

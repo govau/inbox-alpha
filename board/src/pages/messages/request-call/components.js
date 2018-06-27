@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import format from 'date-fns/format'
 import styled, { css } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
@@ -423,9 +424,7 @@ class Step2 extends Component {
               {time && (
                 <Fragment>
                   {' '}
-                  on{' '}
-                  <strong>{`${time.getDate()}/${time.getMonth() +
-                    1}/${time.getFullYear()}`}</strong>
+                  on <strong>{format(time, 'D MMM YYYY')}</strong>
                 </Fragment>
               )}{' '}
               {timeSlot && (
