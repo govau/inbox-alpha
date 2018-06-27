@@ -550,9 +550,9 @@ export class Page extends Component {
                             userResponse: `
 **Call back request**
 
-**Number**: 0404 xxx x89
-**Date**: INSERT MY DATE EHRE
-**Time**: ${timeSlot}
+**Number**: 0404 xxx x89  
+**Date**: INSERT MY DATE EHRE  
+**Time**: ${timeSlot}  
 **Case ID**:  INSERT THE GENRETED CASE ID HERE
                             `,
                             serviceResponse: `
