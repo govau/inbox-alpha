@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import Icon from '../../components/icon'
 import MarkdownComponent from '../../components/markdown'
@@ -83,8 +83,21 @@ const Timestamp = styled(
   }
 `
 
+const Wrapper = styled.div`
+  ${props =>
+    props.reversed
+      ? css`
+          align-self: flex-end;
+        `
+      : css``};
+
+  ${SpeechBubble} + ${Timestamp} {
+    margin-top: 1rem;
+  }
+`
+
 const Message = styled(({ className, conversation, message }) => (
-  <Fragment>
+  <Wrapper reversed={message.sender && message.sender.source === 'User'}>
     <Timestamp>{message.sentAt}</Timestamp>
     <SpeechBubble
       reversed={message.sender && message.sender.source === 'User'}
@@ -101,7 +114,7 @@ const Message = styled(({ className, conversation, message }) => (
       ))}
     </SpeechBubble>
     <Timestamp label="Read">{message.readAt}</Timestamp>
-  </Fragment>
+  </Wrapper>
 ))``
 
 export {

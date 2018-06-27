@@ -17,7 +17,6 @@ const Content = styled.div`
     props.reversed
       ? css`
           background-color: #f1f3d6;
-          align-self: flex-end;
         `
       : css``};
 

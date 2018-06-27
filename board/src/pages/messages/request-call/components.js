@@ -20,11 +20,13 @@ import CacheBustingRedirect from '../../../components/cache-busting-redirect'
 const createBooking = gql`
   mutation(
     $conversationID: ID!
+    $sentAt: String
     $userResponse: String
     $serviceResponse: String
   ) {
     userMessage: createMessage(
       data: {
+        sentAt: $sentAt
         conversation: { connect: { id: $conversationID } }
         sender: { create: { source: User } }
         sections: {
@@ -538,7 +540,15 @@ export class Page extends Component {
                         create({
                           variables: {
                             conversationID: match.params.id,
-                            userResponse: `yeah. book me in, go for it. ${timeSlot} works for me. make it happen`,
+                            sentAt: new Date().toString(),
+                            userResponse: `
+**Call back request**
+
+**Number**: 0404 xxx x89  
+**Date**: INSERT MY DATE EHRE  
+**Time**: ${timeSlot}  
+**Case ID**:  INSERT THE GENRETED CASE ID HERE
+                            `,
                             serviceResponse: `great. ${timeSlot} works here too; we'll see then MATE`,
                           },
                         })

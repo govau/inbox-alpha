@@ -62,17 +62,11 @@ const Conversations = styled.div`
   }
 `
 
-const Code = styled.code`
-  background-color: #dcdcdc;
-  justify-self: flex-end;
-  align-self: flex-start;
-`
-
 // generate a bogus case number for this conversation
 const refNo = conversation =>
   `${conversation.service.agency.name
     .substring(0, 3)
-    .toLowerCase()}-${conversation.id.slice(-8)}`
+    .toUpperCase()}${conversation.id.slice(-8).toUpperCase()}`
 
 const Conversation = ({ className, conversation }) => (
   <Wrapper>
@@ -80,11 +74,12 @@ const Conversation = ({ className, conversation }) => (
       <div>To</div>
       <MessageContentWrapper>
         <MessageContent>
-          <ShortSender>{conversation.service.name}</ShortSender>
-          <ShortSubject>{conversation.subject}</ShortSubject>{' '}
+          <ShortSender>{conversation.service.agency.name}</ShortSender>
+          <ShortSubject>
+            {conversation.subject} Case ID: {refNo(conversation)}
+          </ShortSubject>
         </MessageContent>
       </MessageContentWrapper>
-      <Code>ref: {refNo(conversation)}</Code>
     </Subject>
 
     <Conversations>
