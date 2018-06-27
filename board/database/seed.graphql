@@ -33,4 +33,220 @@ mutation {
     name
     description
   }
+
+  lostTFN: createService(
+    data: {
+      name: "Lost TFN"
+      description: ""
+      agency: { create: { name: "Australian Taxation Office" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  reportIdentityFraud: createService(
+    data: {
+      name: "Report identity fraud"
+      description: ""
+      agency: { create: { name: "Australian Taxation Office" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  amendTaxReturn: createService(
+    data: {
+      name: "Amend a tax return"
+      description: ""
+      agency: { create: { name: "Australian Taxation Office" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  helpWithAustudyPayments: createService(
+    data: {
+      name: "Help with Austudy payments"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  familyTaxBenefits: createService(
+    data: {
+      name: "Family Tax Benefits"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  parentalLeavePay: createService(
+    data: {
+      name: "Parental Leave Pay"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  helpWithYouthAllowanceForm: createService(
+    data: {
+      name: "Help with Youth Allowance form"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  helpWithNewstartAllowanceForm: createService(
+    data: {
+      name: "Help with Newstart Allowance form"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  repaymentOfCentrelinkDebt: createService(
+    data: {
+      name: "Repayment of a Centrelink debt"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  lowIncomeHealthCareCard: createService(
+    data: {
+      name: "Low income health care card"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  applyForEarlyReleaseOfSuperannuation: createService(
+    data: {
+      name: "Apply for early release of Superannuation"
+      description: ""
+      agency: { create: { name: "Centrelink" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  myChildsImmunisationHistory: createService(
+    data: {
+      name: "My child's immunisation history"
+      description: ""
+      agency: { create: { name: "Medicare" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  compensationRecoveryQuestion: createService(
+    data: {
+      name: "Compensation recovery question"
+      description: ""
+      agency: { create: { name: "Medicare" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  pharmaceuticalsBenefitsScheme: createService(
+    data: {
+      name: "Pharmaceuticals Benefits Scheme"
+      description: ""
+      agency: { create: { name: "Medicare" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  changesInCircumstances: createService(
+    data: {
+      name: "Changes in circumstances"
+      description: ""
+      agency: { create: { name: "Child Support" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  ndisPaymentQuestion: createService(
+    data: {
+      name: "NDIS payment question"
+      description: ""
+      agency: { create: { name: "NDIS" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  accessingTheNDIS: createService(
+    data: {
+      name: "Accessing the NDIS"
+      description: ""
+      agency: { create: { name: "NDIS" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
+  helpUnderstandingMyPlan: createService(
+    data: {
+      name: "Help understanding my plan"
+      description: ""
+      agency: { create: { name: "NDIS" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
 }

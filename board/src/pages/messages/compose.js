@@ -184,7 +184,8 @@ export class Page extends Component {
   }
 
   setService = (services, serviceLabel) => {
-    const [serviceName, agencyName] = serviceLabel.split('@')
+    // Note: assumes service and agency names do not include a `-`.
+    const [serviceName, agencyName] = serviceLabel.split('-')
     const service =
       services.filter(
         s =>
@@ -262,7 +263,7 @@ export class Page extends Component {
                                     .indexOf(value.toLowerCase()) > -1
                                 }
                                 getItemValue={service =>
-                                  `${service.name} @ ${service.agency.name}`
+                                  `${service.name} - ${service.agency.name}`
                                 }
                                 renderMenu={(items, value, style) => {
                                   if (items.length === 0) {
@@ -280,7 +281,7 @@ export class Page extends Component {
                                   return (
                                     <ServiceC key={service.id} active={active}>
                                       <ServiceName>
-                                        {service.name} @ {service.agency.name}
+                                        {service.name} - {service.agency.name}
                                       </ServiceName>
                                       {service.description && (
                                         <ServiceDescription>
