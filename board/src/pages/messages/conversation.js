@@ -34,6 +34,7 @@ const ConversationLine = ({ conversation, history }) => (
     onClick={e => {
       history.push(`/messages/${conversation.id}`)
     }}
+    active={history.location.pathname === `/messages/${conversation.id}`}
   >
     <SenderInfo>
       <SenderCircle image={conversation.service.agency.logo}>
