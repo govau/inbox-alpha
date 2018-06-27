@@ -17,7 +17,7 @@ const queryMe = gql`
     user(where: { id: $userID }) {
       name
       id
-      conversations {
+      conversations(orderBy: createdAt_DESC) {
         id
         createdAt
         subject
