@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Link, Route } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
