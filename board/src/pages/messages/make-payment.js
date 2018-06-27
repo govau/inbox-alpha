@@ -75,19 +75,22 @@ export default ({ conversation }) => {
             c = client
             return (
               <Fragment>
-                <Link
-                  to="/todo"
-                  onClick={e => {
-                    e.preventDefault()
-                    create({
-                      variables: {
-                        conversationID: conversation.id,
-                      },
-                    })
-                  }}
-                >
-                  Make the payment
-                </Link>
+                <div>
+                  <Link
+                    to="/todo"
+                    onClick={e => {
+                      e.preventDefault()
+                      create({
+                        variables: {
+                          conversationID: conversation.id,
+                        },
+                      })
+                    }}
+                  >
+                    Pay now
+                  </Link>&nbsp;&nbsp;&nbsp;&nbsp;
+                  <Link to="/todo">Change</Link>
+                </div>
 
                 {loading ? (
                   <div>loading...</div>

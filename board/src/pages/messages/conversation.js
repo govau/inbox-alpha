@@ -58,7 +58,7 @@ const Conversations = styled.div`
   align-items: flex-start;
 
   ${MessageSection} {
-    max-width: 60rem;
+    max-width: 55rem;
   }
 `
 
