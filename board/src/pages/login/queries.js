@@ -228,6 +228,9 @@ const createNewUser = gql`
     ) {
       id
       name
+      conversations(orderBy: createdAt_DESC) {
+        id
+      }
     }
   }
 `
