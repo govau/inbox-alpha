@@ -8,9 +8,9 @@ import withData from '../../components/with-data'
 import Master from '../../components/layout'
 import { ButtonLink } from '../../components/button'
 import { Text } from '../../components/forms'
-import Compose from './compose'
 import { Heading, H1, Messages } from './components'
 import { ConversationLine, SometimesConversation } from './conversation'
+import * as Compose from './compose'
 import * as RequestCall from './request-call'
 
 const queryMe = gql`
@@ -100,6 +100,12 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
   <Switch>
     <Route
       exact
+      path={`${match.path}/compose`}
+      render={({ match }) => <Compose.Page userID={id} />}
+    />
+
+    <Route
+      exact
       path={`${match.path}/:id/book-a-call`}
       render={({ match }) => (
         <RequestCall.Page match={match} history={history} />
@@ -120,11 +126,6 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
             side={<Sidenav conversations={conversations} history={history} />}
           >
             <Switch>
-              <Route
-                exact
-                path={`${match.path}/compose`}
-                render={() => <Compose userID={id} />}
-              />
               <Route
                 exact
                 path={`${match.path}/:id`}

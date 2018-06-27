@@ -5,9 +5,13 @@ import gql from 'graphql-tag'
 import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
 
+import Master from '../../components/layout'
+import Icon from '../../components/icon'
+import IconLink from '../../components/icon-link'
 import Editor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
 import { Text, Submit } from '../../components/forms'
+import { Heading, H1 } from './components'
 
 const queryServices = gql`
   query {
@@ -53,7 +57,11 @@ const createConversation = gql`
   }
 `
 
-const Wrapper = styled.section``
+const Wrapper = styled.section`
+  @media screen and (min-width: 768px) {
+    max-width: 50rem;
+  }
+`
 
 const Target = styled.div``
 
@@ -102,7 +110,7 @@ const GiveThisABetterName = ({ services = [], serviceID, children }) => {
   return service ? children({ service }) : null
 }
 
-class Compose extends Component {
+export class Page extends Component {
   state = {
     searchValue: '',
     editorContent: '',
@@ -124,119 +132,127 @@ class Compose extends Component {
 
   render() {
     return (
-      <Wrapper>
-        <Mutation mutation={createConversation}>
-          {(create, { loading, error, data, client }) => (
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                create({
-                  variables: {
-                    userID: this.props.userID,
-                    serviceID: this.state.searchValue,
-                    subject: this.state.subject,
-                    markdownSource: markdownify(this.state.editorContent),
-                  },
-                })
-              }}
-            >
-              <Target>
-                <Query query={queryServices}>
-                  {({ loading, error, data }) =>
-                    loading ? (
-                      <div>loading...</div>
-                    ) : (
-                      <Autocomplete
-                        value={this.state.searchValue}
-                        onChange={e => this.setSearchValue(e.target.value)}
-                        onSelect={this.setSearchValue}
-                        getItemValue={item => item.id}
-                        items={data.services || []}
-                        renderMenu={(items, value, style) => (
-                          <Services style={style} children={items} />
-                        )}
-                        renderInput={({ ref, ...props }) => (
-                          <label>
-                            <span>
-                              To:{' '}
-                              <GiveThisABetterName
-                                services={data.services}
-                                serviceID={this.state.searchValue}
-                              >
-                                {({ service }) => (
-                                  <Fragment>
-                                    <ServiceName>
-                                      {service.name} @ {service.agency.name}
-                                    </ServiceName>
-                                    {service.description && (
-                                      <ServiceDescription>
-                                        {service.description}
-                                      </ServiceDescription>
+      <Fragment>
+        <Heading>
+          <H1>Message centre</H1>
+        </Heading>
+        <Master>
+          <Wrapper>
+            <IconLink to="/messages" icon={<Icon>arrow_back</Icon>}>
+              Back
+            </IconLink>
+            <Mutation mutation={createConversation}>
+              {(create, { loading, error, data, client }) => (
+                <form
+                  onSubmit={e => {
+                    e.preventDefault()
+                    create({
+                      variables: {
+                        userID: this.props.userID,
+                        serviceID: this.state.searchValue,
+                        subject: this.state.subject,
+                        markdownSource: markdownify(this.state.editorContent),
+                      },
+                    })
+                  }}
+                >
+                  <Target>
+                    <Query query={queryServices}>
+                      {({ loading, error, data }) =>
+                        loading ? (
+                          <div>loading...</div>
+                        ) : (
+                          <Autocomplete
+                            value={this.state.searchValue}
+                            onChange={e => this.setSearchValue(e.target.value)}
+                            onSelect={this.setSearchValue}
+                            getItemValue={item => item.id}
+                            items={data.services || []}
+                            renderMenu={(items, value, style) => (
+                              <Services style={style} children={items} />
+                            )}
+                            renderInput={({ ref, ...props }) => (
+                              <label>
+                                <span>
+                                  To:{' '}
+                                  <GiveThisABetterName
+                                    services={data.services}
+                                    serviceID={this.state.searchValue}
+                                  >
+                                    {({ service }) => (
+                                      <Fragment>
+                                        <ServiceName>
+                                          {service.name} @ {service.agency.name}
+                                        </ServiceName>
+                                        {service.description && (
+                                          <ServiceDescription>
+                                            {service.description}
+                                          </ServiceDescription>
+                                        )}
+                                      </Fragment>
                                     )}
-                                  </Fragment>
-                                )}
-                              </GiveThisABetterName>
-                            </span>
-                            <HiddenText
-                              style={{ visibility: 'none' }}
-                              reference={ref}
-                              {...props}
-                            />
-                          </label>
-                        )}
-                        renderItem={(service, active) => {
-                          const ServiceC = active ? ActiveService : Service
+                                  </GiveThisABetterName>
+                                </span>
+                                <HiddenText
+                                  style={{ visibility: 'none' }}
+                                  reference={ref}
+                                  {...props}
+                                />
+                              </label>
+                            )}
+                            renderItem={(service, active) => {
+                              const ServiceC = active ? ActiveService : Service
 
-                          return (
-                            <ServiceC key={service.id} active={active}>
-                              <ServiceName>
-                                {service.name} @ {service.agency.name}
-                              </ServiceName>
-                              {service.description && (
-                                <ServiceDescription>
-                                  {service.description}
-                                </ServiceDescription>
-                              )}
-                            </ServiceC>
-                          )
-                        }}
-                      />
-                    )
-                  }
-                </Query>
-              </Target>
+                              return (
+                                <ServiceC key={service.id} active={active}>
+                                  <ServiceName>
+                                    {service.name} @ {service.agency.name}
+                                  </ServiceName>
+                                  {service.description && (
+                                    <ServiceDescription>
+                                      {service.description}
+                                    </ServiceDescription>
+                                  )}
+                                </ServiceC>
+                              )
+                            }}
+                          />
+                        )
+                      }
+                    </Query>
+                  </Target>
 
-              <Text required placeholder="Subject" />
-              <Editor
-                onContentStateChange={contentState => {
-                  this.setEditorContent(contentState)
-                }}
-              />
+                  <Text required placeholder="Subject" />
+                  <Editor
+                    onContentStateChange={contentState => {
+                      this.setEditorContent(contentState)
+                    }}
+                  />
 
-              {loading ? (
-                <Submit disabled>loading...</Submit>
-              ) : (
-                <Fragment>
-                  {error ? (
-                    <details>
-                      <summary>there was an error</summary>
-                      {error.message}
-                    </details>
-                  ) : data ? (
-                    <CacheBustingRedirect
-                      client={client}
-                      to={`/messages/${data.createConversation.id}`}
-                    />
-                  ) : null}
-                  <Submit>Send</Submit>
-                </Fragment>
+                  {loading ? (
+                    <Submit disabled>loading...</Submit>
+                  ) : (
+                    <Fragment>
+                      {error ? (
+                        <details>
+                          <summary>there was an error</summary>
+                          {error.message}
+                        </details>
+                      ) : data ? (
+                        <CacheBustingRedirect
+                          client={client}
+                          to={`/messages/${data.createConversation.id}`}
+                        />
+                      ) : null}
+                      <Submit>Send</Submit>
+                    </Fragment>
+                  )}
+                </form>
               )}
-            </form>
-          )}
-        </Mutation>
-      </Wrapper>
+            </Mutation>
+          </Wrapper>
+        </Master>
+      </Fragment>
     )
   }
 }
-
-export default Compose
