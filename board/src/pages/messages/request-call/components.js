@@ -130,6 +130,12 @@ const DayPicker = styled(ReactDayPicker).attrs({ classNames })`
     background-color: ${availabilityPalette.unavailable};
     cursor: not-allowed;
   }
+  .${unavailableClassName} {
+    &:hover {
+      background-color: ${availabilityPalette.unavailable} !important;
+      border-radius: 0 !important;
+    }
+  }
   .${classNames.today} {
     color: inherit;
   }
@@ -146,9 +152,39 @@ const DayPicker = styled(ReactDayPicker).attrs({ classNames })`
       border-radius: 0;
     }
   }
+  .${mostAvailableClassName}:not(.${unavailableClassName}):not(.${
+  classNames.selected
+}),
+  .${availableClassName}:not(.${unavailableClassName}):not(.${
+  classNames.selected
+}),
+  .${leastAvailableClassName}:not(.${unavailableClassName}):not(.${
+  classNames.selected
+}) {
+    &:hover {
+      background-color: white !important;
+      border-radius: 0 !important;
+    }
+  }
 `
 
 const isWeekend = day => day.getDay() === 0 || day.getDay() === 6
+
+const isUnavailable = day => {
+  const now = new Date()
+  // Dates in past unavailable.
+  if (now.getTime() >= day.getTime()) {
+    return true
+  }
+  // Weekends unavailable.
+  if (isWeekend(day)) {
+    return true
+  }
+  // Arbitrary day unavailable.
+  return (
+    day.getDate() === 25 && day.getMonth() === 6 && day.getFullYear() === 2018
+  )
+}
 
 class Side extends Component {
   state = {
@@ -156,9 +192,14 @@ class Side extends Component {
   }
 
   handleDayClick = (day, { selected }) => {
+    if (isUnavailable(day)) {
+      return
+    }
     this.setState(() => ({
       selectedDay: selected ? null : day,
     }))
+
+    this.props.onDayChange(selected ? null : day)
   }
 
   render() {
@@ -184,23 +225,7 @@ class Side extends Component {
               ((day.getDate() >= 1 && day.getDate() <= 14) ||
                 (day.getDate() >= 23 && day.getDate() <= 28) ||
                 (day.getDate() >= 30 && day.getDate() <= 31)),
-            [unavailableClassName]: day => {
-              const now = new Date()
-              // Dates in past unavailable.
-              if (now.getTime() >= day.getTime()) {
-                return true
-              }
-              // Weekends unavailable.
-              if (isWeekend(day)) {
-                return true
-              }
-              // Arbitrary day unavailable.
-              return (
-                day.getDate() === 25 &&
-                day.getMonth() === 6 &&
-                day.getFullYear() === 2018
-              )
-            },
+            [unavailableClassName]: day => isUnavailable(day),
           }}
         />
         <Legend />
@@ -338,16 +363,28 @@ class Step2 extends Component {
   }
 
   render() {
-    const { id, timeSlot, caseSubject } = this.props
+    const { id, time, timeSlot, caseSubject } = this.props
 
     return (
       <Fragment>
         <form onSubmit={this.handleSubmit}>
           <Confirmation>
             <p>
-              A Centrelink agent will call you on 0404 *** *89 between{' '}
-              <strong>{timeSlot}</strong> about your{' '}
-              <strong>{caseSubject}</strong>.
+              A Centrelink agent will call you on 0404 *** *89
+              {time && (
+                <Fragment>
+                  {' '}
+                  on{' '}
+                  <strong>{`${time.getDate()}/${time.getMonth() +
+                    1}/${time.getFullYear()}`}</strong>
+                </Fragment>
+              )}{' '}
+              {timeSlot && (
+                <Fragment>
+                  between <strong>{timeSlot}</strong>{' '}
+                </Fragment>
+              )}
+              about your <strong>{caseSubject}</strong>.
             </p>
             <Button type="button" onClick={this.props.onBack} appearance="link">
               Change time
@@ -387,6 +424,7 @@ export class Page extends Component {
   state = {
     stepChanges: 0,
     step: 1,
+    time: null,
     timeSlot: null,
   }
 
@@ -409,6 +447,10 @@ export class Page extends Component {
     this.incrementStep()
   }
 
+  handleDayChange = day => {
+    this.setState(() => ({ time: day }))
+  }
+
   handleStep2Submit = () => {
     this.incrementStep()
   }
@@ -425,7 +467,7 @@ export class Page extends Component {
 
   render() {
     const { match } = this.props
-    const { stepChanges, step, timeSlot } = this.state
+    const { stepChanges, step, time, timeSlot } = this.state
 
     let content
 
@@ -437,7 +479,7 @@ export class Page extends Component {
             <Heading>
               <H1>Book a call</H1>
             </Heading>
-            <Master side={<Side />}>
+            <Master side={<Side onDayChange={this.handleDayChange} />}>
               <Step1
                 id={match.params.id}
                 onSubmit={this.handleStep1Submit}
@@ -457,6 +499,7 @@ export class Page extends Component {
             <Master>
               <Step2
                 id={match.params.id}
+                time={time}
                 timeSlot={timeSlot}
                 caseSubject="Tax Return 2017 (transaction ID: ATO4565TYZ)"
                 onSubmit={this.handleStep2Submit}
