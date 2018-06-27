@@ -89,7 +89,7 @@ const Conversation = ({ className, conversation }) => (
 
     <Conversations>
       {conversation.messages.map((msg, i) => (
-        <MessageSection key={i} {...msg} />
+        <MessageSection key={i} conversation={conversation} message={msg} />
       ))}
     </Conversations>
   </Wrapper>

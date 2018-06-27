@@ -81,6 +81,7 @@ const createNewUser = gql`
                           kind: RequestDocument
                           requestDocument: { create: {} }
                         }
+                        { kind: RequestCall, requestCall: { create: {} } }
                         {
                           kind: Markdown
                           markdown: { create: { source: $rentAssistHelp } }

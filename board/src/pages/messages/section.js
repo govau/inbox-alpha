@@ -30,8 +30,10 @@ const RequestScheduledPayment = ({ amountInCents, linkText }) => (
   <Link to="/todo">{linkText || 'Schedule payment'}</Link>
 )
 
-const RequestCall = ({ linkText }) => (
-  <Link to="/todo">{linkText || 'request a call'}</Link>
+const RequestCall = ({ conversation, linkText }) => (
+  <Link to={`/messages/${conversation.id}/book-a-call`}>
+    {linkText || 'Request a call'}
+  </Link>
 )
 
 const renderers = {
@@ -45,18 +47,33 @@ const renderers = {
 
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)
 
-const Section = ({ kind, sender, ...section }) => {
+const Section = ({ section, conversation, message }) => {
+  const { kind, sender, ...rest } = section
   const Renderer = renderers[kind]
 
-  return Renderer ? <Renderer {...section[lowerCase(kind)]} /> : null
+  return Renderer ? (
+    <Renderer
+      {...rest[lowerCase(kind)]}
+      conversation={conversation}
+      message={message}
+    />
+  ) : null
 }
 
-const Message = styled(({ className, sender, readStatus, sections }) => (
+const Message = styled(({ className, conversation, message }) => (
   <SpeechBubble
-    reversed={sender && sender.source === 'User'}
+    reversed={message.sender && message.sender.source === 'User'}
     className={className}
   >
-    {sections.map((section, i) => <Section key={i} {...section} />)}
+    {message.sections.map((section, i) => (
+      <div key={i}>
+        <Section
+          section={section}
+          message={message}
+          conversation={conversation}
+        />
+      </div>
+    ))}
   </SpeechBubble>
 ))``
 
