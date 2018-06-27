@@ -1,9 +1,9 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const Input = ({ reference, ...props }) => <input ref={reference} {...props} />
 
-const GreatJob = styled(Input)`
+export const inputCSS = css`
   display: block;
   width: 100%;
   font-size: 1em;
@@ -16,6 +16,10 @@ const GreatJob = styled(Input)`
   }
 `
 
+const GreatJob = styled(Input)`
+  ${inputCSS};
+`
+
 const Text = styled(props => <GreatJob type="text" {...props} />)``
 
 const Password = styled(props => <GreatJob type="password" {...props} />)``
@@ -24,7 +28,7 @@ const Submit = styled(({ children, ...props }) => (
   <GreatJob type="submit" value={children} {...props} />
 ))`
   border: 0;
-  background-color: #F0F3F5;
+  background-color: #f0f3f5;
   cursor: pointer;
 `
 

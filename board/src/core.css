@@ -144,3 +144,8 @@ a:focus {
     font-size: 2rem;
   }
 }
+
+fieldset {
+  border: 0;
+  padding: 0 0 2rem 0;
+}

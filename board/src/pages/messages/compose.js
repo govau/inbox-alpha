@@ -9,7 +9,7 @@ import Master from '../../components/layout'
 import { Button } from '../../components/button'
 import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
-import { Text, Submit } from '../../components/forms'
+import { Text, Submit, inputCSS } from '../../components/forms'
 import { Heading, H1, Sidenav } from './components'
 
 const queryServices = gql`
@@ -94,15 +94,10 @@ const ActiveService = styled(Service)`
   }
 `
 
-const HiddenText = styled(Text)`
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
+const AutocompleteWrapper = styled.div`
+  input {
+    ${inputCSS};
+  }
 `
 
 const EditorWrapper = styled.div`
@@ -146,16 +141,27 @@ const Editor = styled(CoreEditor).attrs({
   }
 `
 
-const GiveThisABetterName = ({ services = [], serviceID, children }) => {
-  const service = services.find(service => service.id === serviceID)
-  return service ? children({ service }) : null
-}
-
 export class Page extends Component {
   state = {
-    searchValue: '',
+    serviceLabel: '',
+    service: null,
     subject: '',
     editorContent: '',
+  }
+
+  setService = (services, serviceLabel) => {
+    const [serviceName, agencyName] = serviceLabel.split('@')
+    const service =
+      services.filter(
+        s =>
+          s.name === serviceName.trim() && s.agency.name === agencyName.trim()
+      )[0] || null
+
+    this.setState({
+      ...this.state,
+      serviceLabel,
+      service,
+    })
   }
 
   setSubject = subject => {
@@ -169,13 +175,6 @@ export class Page extends Component {
     this.setState({
       ...this.state,
       editorContent,
-    })
-  }
-
-  setSearchValue = searchValue => {
-    this.setState({
-      ...this.state,
-      searchValue,
     })
   }
 
@@ -205,7 +204,7 @@ export class Page extends Component {
                     create({
                       variables: {
                         userID: this.props.userID,
-                        serviceID: this.state.searchValue,
+                        serviceID: this.state.service.id,
                         subject: this.state.subject,
                         markdownSource: markdownify(this.state.editorContent),
                       },
@@ -218,78 +217,88 @@ export class Page extends Component {
                         loading ? (
                           <div>loading...</div>
                         ) : (
-                          <Autocomplete
-                            value={this.state.searchValue}
-                            onChange={e => this.setSearchValue(e.target.value)}
-                            onSelect={this.setSearchValue}
-                            getItemValue={item => item.id}
-                            items={data.services || []}
-                            renderMenu={(items, value, style) => (
-                              <Services style={style} children={items} />
-                            )}
-                            renderInput={({ ref, ...props }) => (
-                              <label>
-                                <span>
-                                  To:{' '}
-                                  <GiveThisABetterName
-                                    services={data.services}
-                                    serviceID={this.state.searchValue}
-                                  >
-                                    {({ service }) => (
-                                      <Fragment>
-                                        <ServiceName>
-                                          {service.name} @ {service.agency.name}
-                                        </ServiceName>
-                                        {service.description && (
-                                          <ServiceDescription>
-                                            {service.description}
-                                          </ServiceDescription>
-                                        )}
-                                      </Fragment>
-                                    )}
-                                  </GiveThisABetterName>
-                                </span>
-                                <HiddenText
-                                  style={{ visibility: 'none' }}
-                                  reference={ref}
-                                  {...props}
-                                />
-                              </label>
-                            )}
-                            renderItem={(service, active) => {
-                              const ServiceC = active ? ActiveService : Service
+                          <fieldset>
+                            <label htmlFor="service">To</label>
+                            <AutocompleteWrapper>
+                              <Autocomplete
+                                inputProps={{ id: 'service' }}
+                                wrapperStyle={{}}
+                                items={data.services || []}
+                                shouldItemRender={(service, value) =>
+                                  service.name
+                                    .toLowerCase()
+                                    .indexOf(value.toLowerCase()) > -1 ||
+                                  service.agency.name
+                                    .toLowerCase()
+                                    .indexOf(value.toLowerCase()) > -1
+                                }
+                                getItemValue={service =>
+                                  `${service.name} @ ${service.agency.name}`
+                                }
+                                renderMenu={(items, value, style) => {
+                                  if (items.length === 0) {
+                                    return <Fragment />
+                                  }
+                                  return (
+                                    <Services style={style} children={items} />
+                                  )
+                                }}
+                                renderItem={(service, active) => {
+                                  const ServiceC = active
+                                    ? ActiveService
+                                    : Service
 
-                              return (
-                                <ServiceC key={service.id} active={active}>
-                                  <ServiceName>
-                                    {service.name} @ {service.agency.name}
-                                  </ServiceName>
-                                  {service.description && (
-                                    <ServiceDescription>
-                                      {service.description}
-                                    </ServiceDescription>
-                                  )}
-                                </ServiceC>
-                              )
-                            }}
-                          />
+                                  return (
+                                    <ServiceC key={service.id} active={active}>
+                                      <ServiceName>
+                                        {service.name} @ {service.agency.name}
+                                      </ServiceName>
+                                      {service.description && (
+                                        <ServiceDescription>
+                                          {service.description}
+                                        </ServiceDescription>
+                                      )}
+                                    </ServiceC>
+                                  )
+                                }}
+                                value={this.state.serviceLabel}
+                                onChange={e =>
+                                  this.setState({
+                                    serviceLabel: e.target.value,
+                                  })
+                                }
+                                onSelect={value =>
+                                  this.setService(data.services, value)
+                                }
+                              />
+                            </AutocompleteWrapper>
+                          </fieldset>
                         )
                       }
                     </Query>
                   </Target>
 
-                  <Text
-                    required
-                    placeholder="Subject"
-                    onChange={e => this.setSubject(e.target.value)}
-                  />
-                  <EditorWrapper>
-                    <Editor
-                      onContentStateChange={contentState => {
-                        this.setEditorContent(contentState)
-                      }}
+                  <fieldset>
+                    <label htmlFor="subject">Subject</label>
+                    <Text
+                      id="subject"
+                      required
+                      placeholder=""
+                      onChange={e => this.setSubject(e.target.value)}
                     />
-                  </EditorWrapper>
+                  </fieldset>
+
+                  <fieldset>
+                    <label htmlFor="content">Write message</label>
+                    <EditorWrapper>
+                      <Editor
+                        id="content"
+                        onContentStateChange={contentState => {
+                          this.setEditorContent(contentState)
+                        }}
+                      />
+                    </EditorWrapper>
+                  </fieldset>
 
                   {loading ? (
                     <Submit disabled>loading...</Submit>
