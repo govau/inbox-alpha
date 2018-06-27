@@ -31,6 +31,7 @@ const createConversation = gql`
   mutation(
     $userID: ID!
     $serviceID: ID!
+    $sentAt: String
     $subject: String
     $markdownSource: String
   ) {
@@ -41,6 +42,7 @@ const createConversation = gql`
         subject: $subject
         messages: {
           create: {
+            sentAt: $sentAt
             sender: { create: { source: User } }
             sections: {
               create: {
@@ -229,6 +231,7 @@ export class Page extends Component {
                     e.preventDefault()
                     create({
                       variables: {
+                        sentAt: new Date().toISOString(),
                         userID: this.props.userID,
                         serviceID: this.state.service.id,
                         subject: this.state.subject,
