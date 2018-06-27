@@ -9,7 +9,7 @@ import Master from '../../components/layout'
 import { Button } from '../../components/button'
 import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
-import { Text, Submit, inputCSS } from '../../components/forms'
+import { Submit, inputCSS } from '../../components/forms'
 import { Heading, H1, Sidenav } from './components'
 
 const queryServices = gql`
@@ -161,13 +161,7 @@ export class Page extends Component {
       ...this.state,
       serviceLabel,
       service,
-    })
-  }
-
-  setSubject = subject => {
-    this.setState({
-      ...this.state,
-      subject,
+      subject: serviceName,
     })
   }
 
@@ -218,7 +212,7 @@ export class Page extends Component {
                           <div>loading...</div>
                         ) : (
                           <fieldset>
-                            <label htmlFor="service">To</label>
+                            <label htmlFor="service">Subject</label>
                             <AutocompleteWrapper>
                               <Autocomplete
                                 inputProps={{ id: 'service' }}
@@ -277,16 +271,6 @@ export class Page extends Component {
                       }
                     </Query>
                   </Target>
-
-                  <fieldset>
-                    <label htmlFor="subject">Subject</label>
-                    <Text
-                      id="subject"
-                      required
-                      placeholder=""
-                      onChange={e => this.setSubject(e.target.value)}
-                    />
-                  </fieldset>
 
                   <fieldset>
                     <label htmlFor="content">Write message</label>
