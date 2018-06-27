@@ -166,6 +166,18 @@ mutation {
     description
   }
 
+  claimQuestion: createService(
+    data: {
+      name: "Claim question"
+      description: ""
+      agency: { create: { name: "Medicare" } }
+    }
+  ) {
+    id
+    name
+    description
+  }
+
   myChildsImmunisationHistory: createService(
     data: {
       name: "My child's immunisation history"
