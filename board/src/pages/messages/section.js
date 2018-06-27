@@ -96,15 +96,23 @@ const Section = ({ section, conversation, message }) => {
   ) : null
 }
 
-const Timestamp = styled(
-  ({ className, label, children }) =>
-    children ? (
-      <div className={className}>
-        {label ? `${label}: ` : ''}
-        {children}
-      </div>
-    ) : null
-)`
+const Timestamp = styled(({ className, label, children }) => {
+  if (!children) {
+    return null
+  }
+
+  const date =
+    format(children, 'ddd D MMM YYYY, h:mm a') !== 'Invalid Date'
+      ? format(children, 'ddd D MMM YYYY, h:mm a')
+      : children
+
+  return (
+    <div className={className}>
+      {label ? `${label}: ` : ''}
+      {date}
+    </div>
+  )
+})`
   opacity: 0.7;
   font-size: 0.8em;
   margin-left: 3rem;
@@ -129,9 +137,7 @@ const Wrapper = styled.div`
 
 const Message = styled(({ className, conversation, message }) => (
   <Wrapper reversed={message.sender && message.sender.source === 'User'}>
-    {message.sentAt && (
-      <Timestamp>{format(message.sentAt, 'ddd D MMM YYYY, h:mm a')}</Timestamp>
-    )}
+    <Timestamp>{message.sentAt}</Timestamp>
     <SpeechBubble
       reversed={message.sender && message.sender.source === 'User'}
       className={className}
@@ -146,11 +152,7 @@ const Message = styled(({ className, conversation, message }) => (
         </div>
       ))}
     </SpeechBubble>
-    {message.readAt && (
-      <Timestamp label="Read">
-        {format(message.readAt, 'ddd D MMM YYYY, h:mm a')}
-      </Timestamp>
-    )}
+    <Timestamp label="Read">{message.readAt}</Timestamp>
   </Wrapper>
 ))``
 

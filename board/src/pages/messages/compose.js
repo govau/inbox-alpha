@@ -238,7 +238,7 @@ export class Page extends Component {
 
                     create({
                       variables: {
-                        sentAt: new Date().toISOString(),
+                        sentAt: new Date().toString(),
                         userID: this.props.userID,
                         serviceID: service.id,
                         subject: subject,

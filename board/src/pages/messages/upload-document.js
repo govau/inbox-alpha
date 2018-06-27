@@ -71,7 +71,7 @@ const confirmation = now => `
 const nextSteps = `
 #### Next steps
 
-We will nbe in touch with you as soon as possible about your Rent Assistance payments.
+We will be in touch with you as soon as possible about your Rent Assistance payments.
 
 Our current turnaround time is within 7 days.
 `
