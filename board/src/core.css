@@ -117,7 +117,13 @@ main [type='hidden'] + * {
 
 a,
 a:visited {
-  color: #0f6493;
+  color: #246add;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline;
 }
 
 @media desktop {

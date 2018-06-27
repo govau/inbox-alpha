@@ -47,6 +47,7 @@ const createBooking = gql`
               kind: Markdown
               markdown: { create: { source: $serviceResponse } }
             }
+            { kind: MakePaymentCall }
           ]
         }
       }

@@ -45,7 +45,8 @@ If you did not initiate this request, please get in contact with [Centrelink sup
 export const assessmentBody = `
 Hi Alex,
 
-Your income tax return has been processed. View your income tax notice of assessment for more information.
+Your income tax return has been processed.  
+View your income tax Notice of Assessment for more information.
 `
 
 const createNewUser = gql`
@@ -81,7 +82,6 @@ const createNewUser = gql`
                           kind: RequestDocument
                           requestDocument: { create: {} }
                         }
-                        { kind: RequestCall, requestCall: { create: {} } }
                         {
                           kind: Markdown
                           markdown: { create: { source: $rentAssistHelp } }
@@ -163,16 +163,38 @@ const createNewUser = gql`
               messages: {
                 create: [
                   {
+                    sentAt: "Tue 09 June 2018, 2:30pm"
                     sections: {
                       create: [
                         {
                           kind: Markdown
                           markdown: { create: { source: $assessmentBody } }
                         }
+                      ]
+                    }
+                  }
+                  {
+                    sections: {
+                      create: [
                         {
                           kind: Document
                           document: {
-                            create: { filename: "2017 Notice of Assessment" }
+                            create: { filename: "2017 Notice of Assessment.pdf" }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readAt: "Tue 09 June 2018, 7:33pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: {
+                            create: {
+                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jun 2018"
+                            }
                           }
                         }
                         {
@@ -180,7 +202,24 @@ const createNewUser = gql`
                           requestPayment: {
                             create: {
                               amountInCents: 108624
-                              linkText: "Pay for your tax stuff"
+                              linkText: "Pay now"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestScheduledPayment
+                          requestScheduledPayment: {
+                            create: {
+                              amountInCents: 108624
+                              linkText: "Pay on due date"
+                            }
+                          }
+                        }
+                        {
+                          kind: RequestCall
+                          requestCall: {
+                            create: {
+                              linkText: "Request a call back to discuss payment options"
                             }
                           }
                         }

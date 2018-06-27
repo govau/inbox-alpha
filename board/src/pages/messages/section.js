@@ -7,6 +7,9 @@ import MarkdownComponent from '../../components/markdown'
 import SpeechBubble from '../../components/speech-bubble'
 import { Document as DocumentComponent } from './components'
 
+import MakePayment from './make-payment'
+import MakePaymentCall from './make-payment-call'
+
 const Markdown = ({ source }) => <MarkdownComponent source={source} />
 
 const Document = ({ filename, location, kind }) => (
@@ -43,6 +46,8 @@ const renderers = {
   RequestPayment,
   RequestScheduledPayment,
   RequestCall,
+  MakePaymentCall,
+  MakePayment,
 }
 
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)

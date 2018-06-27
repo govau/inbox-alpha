@@ -61,6 +61,9 @@ enum SectionKind {
   RequestPayment
   RequestScheduledPayment
   RequestCall
+
+  MakePaymentCall
+  MakePayment
 }
 
 enum SenderSource {
