@@ -123,6 +123,7 @@ type Message {
 
 type Conversation {
   id: ID! @unique
+  createdAt: DateTime!
   service: Service!
   user: User!
   subject: String
