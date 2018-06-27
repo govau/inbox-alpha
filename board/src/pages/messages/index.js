@@ -7,10 +7,9 @@ import { Route, Switch } from 'react-router-dom'
 import withData from '../../components/with-data'
 import Master from '../../components/layout'
 import { ButtonLink } from '../../components/button'
-import { Text } from '../../components/forms'
-import Compose from './compose'
-import { Heading, H1, Messages } from './components'
-import { ConversationLine, SometimesConversation } from './conversation'
+import { Heading, H1, Sidenav } from './components'
+import { SometimesConversation } from './conversation'
+import * as Compose from './compose'
 import * as RequestCall from './request-call'
 
 const queryMe = gql`
@@ -73,31 +72,27 @@ const queryMe = gql`
   }
 `
 
-const Search = styled(Text)`
-  @media screen and (min-width: 768px) {
-    flex: 2;
-  }
-`
-
 const Help = styled.section`
   text-align: center;
   margin: 5em 0;
   opacity: 0.6;
 `
 
-const Sidenav = ({ conversations, history }) => (
-  <Fragment>
-    <Search placeholder="Search your messages" />
-    <Messages>
-      {conversations.map((conv, i) => (
-        <ConversationLine key={i} conversation={conv} history={history} />
-      ))}
-    </Messages>
-  </Fragment>
-)
-
 const Homepage = ({ user: { conversations, name, id }, match, history }) => (
   <Switch>
+    <Route
+      exact
+      path={`${match.path}/compose`}
+      render={() => (
+        <Compose.Page
+          match={match}
+          history={history}
+          userID={id}
+          conversations={conversations}
+        />
+      )}
+    />
+
     <Route
       exact
       path={`${match.path}/:id/book-a-call`}
@@ -111,20 +106,21 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
         <Fragment>
           <Heading>
             <H1>Message centre</H1>
-            <ButtonLink to={`${match.path}/compose`}>
+            <ButtonLink to={`${match.path}/compose`} color="black">
               Start new message
             </ButtonLink>
           </Heading>
 
           <Master
-            side={<Sidenav conversations={conversations} history={history} />}
+            side={
+              <Sidenav
+                conversations={conversations}
+                match={match}
+                history={history}
+              />
+            }
           >
             <Switch>
-              <Route
-                exact
-                path={`${match.path}/compose`}
-                render={() => <Compose userID={id} />}
-              />
               <Route
                 exact
                 path={`${match.path}/:id`}

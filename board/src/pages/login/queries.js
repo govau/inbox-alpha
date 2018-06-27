@@ -66,7 +66,7 @@ const createNewUser = gql`
         conversations: {
           create: [
             {
-              subject: "Rental Contract required"
+              subject: "Rent Assistance"
               service: { connect: { id: $centrelinkID } }
               messages: {
                 create: [
@@ -179,7 +179,9 @@ const createNewUser = gql`
                         {
                           kind: Document
                           document: {
-                            create: { filename: "2017 Notice of Assessment.pdf" }
+                            create: {
+                              filename: "2017 Notice of Assessment.pdf"
+                            }
                           }
                         }
                       ]

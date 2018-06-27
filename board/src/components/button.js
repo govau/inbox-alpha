@@ -8,10 +8,20 @@ const appearances = {
 }
 
 const colors = {
+  yellow: 'yellow',
+  black: 'black',
   transparent: 'transparent',
 }
 
-const primaryCSS = css`
+// && to fix weird specificity issue. No time to fix.
+const blackCSS = css`
+  && {
+    color: #fff;
+    background-color: #333;
+  }
+`
+
+const yellowCSS = css`
   color: #22201c;
   background-color: #d1e65f;
 `
@@ -26,7 +36,7 @@ const style = css`
   font: inherit;
   border-width: 0;
   outline: 0;
-
+  text-decoration: none;
   display: inline-block;
   text-align: center;
   width: 100%;
@@ -40,11 +50,19 @@ const style = css`
         `
       : css`
           padding: 1rem 1em;
-          ${color === colors.transparent ? transparentCSS : primaryCSS}};
+          ${color === colors.transparent
+            ? transparentCSS
+            : color === colors.black
+              ? blackCSS
+              : yellowCSS}};
         `};
 
   @media screen and (min-width: 768px) {
     width: fit-content;
+  }
+
+  &:hover {
+    text-decoration: none;
   }
 `
 
@@ -58,6 +76,7 @@ const Button = styled(props => <button type="button" {...props} />)`
 
 Button.defaultProps = {
   appearance: appearances.button,
+  color: colors.yellow,
 }
 
 const ButtonLink = styled(Link)`
@@ -71,6 +90,7 @@ const ButtonLink = styled(Link)`
 
 ButtonLink.defaultProps = {
   appearance: appearances.button,
+  color: colors.yellow,
 }
 
 export { Button, ButtonLink }

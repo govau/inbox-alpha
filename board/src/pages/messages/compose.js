@@ -5,9 +5,13 @@ import gql from 'graphql-tag'
 import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
 
-import Editor from '../../components/editor'
+import Master from '../../components/layout'
+import Icon from '../../components/icon'
+import { Button } from '../../components/button'
+import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
-import { Text, Submit } from '../../components/forms'
+import { Submit, inputCSS } from '../../components/forms'
+import { Heading, H1, Sidenav } from './components'
 
 const queryServices = gql`
   query {
@@ -27,6 +31,7 @@ const createConversation = gql`
   mutation(
     $userID: ID!
     $serviceID: ID!
+    $sentAt: String
     $subject: String
     $markdownSource: String
   ) {
@@ -37,6 +42,7 @@ const createConversation = gql`
         subject: $subject
         messages: {
           create: {
+            sentAt: $sentAt
             sender: { create: { source: User } }
             sections: {
               create: {
@@ -53,7 +59,12 @@ const createConversation = gql`
   }
 `
 
-const Wrapper = styled.section``
+const Wrapper = styled.section`
+  @media screen and (min-width: 768px) {
+    margin-left: 2rem;
+    max-width: 50rem;
+  }
+`
 
 const Target = styled.div``
 
@@ -86,26 +97,107 @@ const ActiveService = styled(Service)`
   }
 `
 
-const HiddenText = styled(Text)`
-  position: absolute;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  width: 1px;
-  margin: -1px;
-  padding: 0;
-  border: 0;
+const AutocompleteWrapper = styled.div`
+  input {
+    ${inputCSS};
+  }
 `
 
-const GiveThisABetterName = ({ services = [], serviceID, children }) => {
-  const service = services.find(service => service.id === serviceID)
-  return service ? children({ service }) : null
+const EditorWrapper = styled.div`
+  padding: 2rem;
+  background-color: #eee;
+`
+
+const editorClassName = 'content-editor'
+const toolbarClassName = 'content-editor-toolbar'
+const optionWrapperClassName = 'content-editor-toolbar-option-wrapper'
+const inlineWrapperClassName = 'content-editor-toolbar-inline-wrapper'
+const listWrapperClassName = 'content-editor-toolbar-list-wrapper'
+
+const Editor = styled(CoreEditor).attrs({
+  editorClassName,
+  toolbarClassName,
+  inlineWrapperClassName,
+  listWrapperClassName,
+  optionWrapperClassName,
+})`
+  .${toolbarClassName} {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background-color: #eee;
+  }
+
+  .${inlineWrapperClassName}, .${listWrapperClassName} {
+    margin: 0;
+  }
+
+  .rdw-editor-main {
+    padding: 0 2rem;
+    background-color: #fff;
+    border: 1px solid #ddd;
+  }
+
+  .${optionWrapperClassName} {
+    box-shadow: none;
+    border: 0;
+    background-color: transparent;
+
+    &:hover {
+      box-shadow: none;
+    }
+  }
+`
+
+const AttachDocumentOptionWrapper = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: -1px;
+`
+
+const AttachFileIcon = styled(Icon)`
+  font-size: 17px !important;
+  vertical-align: middle;
+`
+
+class AttachDocumentOption extends Component {
+  handleAttach = () => {}
+
+  render() {
+    return (
+      <AttachDocumentOptionWrapper>
+        <a onClick={this.handleAttach}>
+          <AttachFileIcon>attach_file</AttachFileIcon>
+          attach file
+        </a>
+      </AttachDocumentOptionWrapper>
+    )
+  }
 }
 
-class Compose extends Component {
+export class Page extends Component {
   state = {
-    searchValue: '',
+    serviceLabel: '',
+    service: null,
+    subject: '',
     editorContent: '',
+  }
+
+  setService = (services, serviceLabel) => {
+    // Note: assumes service and agency names do not include a `-`.
+    const [serviceName, agencyName] = serviceLabel.split('-')
+    const service =
+      services.filter(
+        s =>
+          s.name === serviceName.trim() && s.agency.name === agencyName.trim()
+      )[0] || null
+
+    this.setState({
+      ...this.state,
+      serviceLabel,
+      service,
+      subject: serviceName,
+    })
   }
 
   setEditorContent = editorContent => {
@@ -115,128 +207,153 @@ class Compose extends Component {
     })
   }
 
-  setSearchValue = searchValue => {
-    this.setState({
-      ...this.state,
-      searchValue,
-    })
-  }
-
   render() {
+    const { match, history, conversations } = this.props
+
     return (
-      <Wrapper>
-        <Mutation mutation={createConversation}>
-          {(create, { loading, error, data, client }) => (
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                create({
-                  variables: {
-                    userID: this.props.userID,
-                    serviceID: this.state.searchValue,
-                    subject: this.state.subject,
-                    markdownSource: markdownify(this.state.editorContent),
-                  },
-                })
-              }}
-            >
-              <Target>
-                <Query query={queryServices}>
-                  {({ loading, error, data }) =>
-                    loading ? (
-                      <div>loading...</div>
-                    ) : (
-                      <Autocomplete
-                        value={this.state.searchValue}
-                        onChange={e => this.setSearchValue(e.target.value)}
-                        onSelect={this.setSearchValue}
-                        getItemValue={item => item.id}
-                        items={data.services || []}
-                        renderMenu={(items, value, style) => (
-                          <Services style={style} children={items} />
-                        )}
-                        renderInput={({ ref, ...props }) => (
-                          <label>
-                            <span>
-                              To:{' '}
-                              <GiveThisABetterName
-                                services={data.services}
-                                serviceID={this.state.searchValue}
-                              >
-                                {({ service }) => (
-                                  <Fragment>
-                                    <ServiceName>
-                                      {service.name} @ {service.agency.name}
-                                    </ServiceName>
-                                    {service.description && (
-                                      <ServiceDescription>
-                                        {service.description}
-                                      </ServiceDescription>
-                                    )}
-                                  </Fragment>
-                                )}
-                              </GiveThisABetterName>
-                            </span>
-                            <HiddenText
-                              style={{ visibility: 'none' }}
-                              reference={ref}
-                              {...props}
-                            />
-                          </label>
-                        )}
-                        renderItem={(service, active) => {
-                          const ServiceC = active ? ActiveService : Service
+      <Fragment>
+        <Heading>
+          <H1>Message centre</H1>
+        </Heading>
+        <Master
+          side={
+            <Sidenav
+              conversations={conversations}
+              match={match}
+              history={history}
+            />
+          }
+        >
+          <Wrapper>
+            <Mutation mutation={createConversation}>
+              {(create, { loading, error, data, client }) => (
+                <form
+                  onSubmit={e => {
+                    e.preventDefault()
 
-                          return (
-                            <ServiceC key={service.id} active={active}>
-                              <ServiceName>
-                                {service.name} @ {service.agency.name}
-                              </ServiceName>
-                              {service.description && (
-                                <ServiceDescription>
-                                  {service.description}
-                                </ServiceDescription>
-                              )}
-                            </ServiceC>
-                          )
+                    const { service, subject, editorContent } = this.state
+
+                    if (!(service && subject && editorContent)) {
+                      return
+                    }
+
+                    create({
+                      variables: {
+                        sentAt: new Date().toISOString(),
+                        userID: this.props.userID,
+                        serviceID: service.id,
+                        subject: subject,
+                        markdownSource: markdownify(editorContent),
+                      },
+                    })
+                  }}
+                >
+                  <Target>
+                    <Query query={queryServices}>
+                      {({ loading, error, data }) =>
+                        loading ? (
+                          <div>loading...</div>
+                        ) : (
+                          <fieldset>
+                            <label htmlFor="service">Subject</label>
+                            <AutocompleteWrapper>
+                              <Autocomplete
+                                inputProps={{ id: 'service' }}
+                                wrapperStyle={{}}
+                                items={data.services || []}
+                                shouldItemRender={(service, value) =>
+                                  service.name
+                                    .toLowerCase()
+                                    .indexOf(value.toLowerCase()) > -1 ||
+                                  service.agency.name
+                                    .toLowerCase()
+                                    .indexOf(value.toLowerCase()) > -1
+                                }
+                                getItemValue={service =>
+                                  `${service.name} - ${service.agency.name}`
+                                }
+                                renderMenu={(items, value, style) => {
+                                  if (items.length === 0) {
+                                    return <Fragment />
+                                  }
+                                  return (
+                                    <Services style={style} children={items} />
+                                  )
+                                }}
+                                renderItem={(service, active) => {
+                                  const ServiceC = active
+                                    ? ActiveService
+                                    : Service
+
+                                  return (
+                                    <ServiceC key={service.id} active={active}>
+                                      <ServiceName>
+                                        {service.name} - {service.agency.name}
+                                      </ServiceName>
+                                      {service.description && (
+                                        <ServiceDescription>
+                                          {service.description}
+                                        </ServiceDescription>
+                                      )}
+                                    </ServiceC>
+                                  )
+                                }}
+                                value={this.state.serviceLabel}
+                                onChange={e =>
+                                  this.setState({
+                                    serviceLabel: e.target.value,
+                                  })
+                                }
+                                onSelect={value =>
+                                  this.setService(data.services, value)
+                                }
+                              />
+                            </AutocompleteWrapper>
+                          </fieldset>
+                        )
+                      }
+                    </Query>
+                  </Target>
+
+                  <fieldset>
+                    <label htmlFor="content">Write message</label>
+                    <EditorWrapper>
+                      <Editor
+                        id="content"
+                        onContentStateChange={contentState => {
+                          this.setEditorContent(contentState)
                         }}
+                        toolbarCustomButtons={[<AttachDocumentOption />]}
                       />
-                    )
-                  }
-                </Query>
-              </Target>
+                    </EditorWrapper>
+                  </fieldset>
 
-              <Text required placeholder="Subject" />
-              <Editor
-                onContentStateChange={contentState => {
-                  this.setEditorContent(contentState)
-                }}
-              />
-
-              {loading ? (
-                <Submit disabled>loading...</Submit>
-              ) : (
-                <Fragment>
-                  {error ? (
-                    <details>
-                      <summary>there was an error</summary>
-                      {error.message}
-                    </details>
-                  ) : data ? (
-                    <CacheBustingRedirect
-                      client={client}
-                      to={`/messages/${data.createConversation.id}`}
-                    />
-                  ) : null}
-                  <Submit>Send</Submit>
-                </Fragment>
+                  {loading ? (
+                    <Submit disabled>loading...</Submit>
+                  ) : (
+                    <Fragment>
+                      {error ? (
+                        <details>
+                          <summary>there was an error</summary>
+                          {error.message}
+                        </details>
+                      ) : data ? (
+                        <CacheBustingRedirect
+                          client={client}
+                          to={`/messages/${data.createConversation.id}`}
+                        />
+                      ) : null}
+                      <Button type="submit" color="black">
+                        Send
+                      </Button>
+                    </Fragment>
+                  )}
+                </form>
               )}
-            </form>
-          )}
-        </Mutation>
-      </Wrapper>
+            </Mutation>
+          </Wrapper>
+        </Master>
+      </Fragment>
     )
   }
 }
-
-export default Compose
