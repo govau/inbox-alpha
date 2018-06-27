@@ -4,6 +4,8 @@ import styled, { css } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
 import 'react-day-picker/lib/style.css'
+import { Mutation } from 'react-apollo'
+import gql from 'graphql-tag'
 
 import { ScrollToTopOnMount } from '../../../components/scroll-to-top'
 import Master from '../../../components/layout'
@@ -13,6 +15,46 @@ import Radio from '../../../components/radio'
 import Icon from '../../../components/icon'
 import IconLink from '../../../components/icon-link'
 import { Heading, H1 } from '../components'
+import CacheBustingRedirect from '../../../components/cache-busting-redirect'
+
+const createBooking = gql`
+  mutation(
+    $conversationID: ID!
+    $userResponse: String
+    $serviceResponse: String
+  ) {
+    userMessage: createMessage(
+      data: {
+        conversation: { connect: { id: $conversationID } }
+        sender: { create: { source: User } }
+        sections: {
+          create: [
+            { kind: Markdown, markdown: { create: { source: $userResponse } } }
+          ]
+        }
+      }
+    ) {
+      id
+    }
+
+    serviceResponse: createMessage(
+      data: {
+        conversation: { connect: { id: $conversationID } }
+        sender: { create: { source: Service } }
+        sections: {
+          create: [
+            {
+              kind: Markdown
+              markdown: { create: { source: $serviceResponse } }
+            }
+          ]
+        }
+      }
+    ) {
+      id
+    }
+  }
+`
 
 const LegendWrapper = styled.div`
   & * + * {
@@ -406,20 +448,6 @@ class Step2 extends Component {
   }
 }
 
-class Step3 extends Component {
-  componentDidMount() {
-    setTimeout(() => this.props.onSubmit(), 3000)
-  }
-
-  render() {
-    return (
-      <Loader icon="lock">
-        Processing your call back request with Centrelink
-      </Loader>
-    )
-  }
-}
-
 export class Page extends Component {
   state = {
     stepChanges: 0,
@@ -497,15 +525,43 @@ export class Page extends Component {
               <H1>Confirm your call back time</H1>
             </Heading>
             <Master>
-              <Step2
-                id={match.params.id}
-                time={time}
-                timeSlot={timeSlot}
-                caseSubject="Tax Return 2017 (transaction ID: ATO4565TYZ)"
-                onSubmit={this.handleStep2Submit}
-                onBack={this.handleStep2Back}
-              />
-              {step === 3 && <Step3 onSubmit={this.handleStep3Submit} />}
+              <Mutation mutation={createBooking}>
+                {(create, { loading, error, data, client }) => (
+                  <Fragment>
+                    <Step2
+                      id={match.params.id}
+                      time={time}
+                      timeSlot={timeSlot}
+                      caseSubject="Tax Return 2017 (transaction ID: ATO4565TYZ)"
+                      onSubmit={e => {
+                        create({
+                          variables: {
+                            conversationID: match.params.id,
+                            userResponse: `yeah. book me in, go for it. ${timeSlot} works for me. make it happen`,
+                            serviceResponse: `great. ${timeSlot} works here too; we'll see then MATE`,
+                          },
+                        })
+                      }}
+                      onBack={this.handleStep2Back}
+                    />
+                    {loading ? (
+                      <Loader icon="lock">
+                        Processing your call back request with Centrelink
+                      </Loader>
+                    ) : error ? (
+                      <details>
+                        <summary>there was an error</summary>
+                        {error.message}
+                      </details>
+                    ) : data ? (
+                      <CacheBustingRedirect
+                        client={client}
+                        to={`/messages/${match.params.id}`}
+                      />
+                    ) : null}
+                  </Fragment>
+                )}
+              </Mutation>
             </Master>
           </Fragment>
         )
