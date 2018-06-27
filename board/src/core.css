@@ -126,6 +126,11 @@ a:focus {
   text-decoration: underline;
 }
 
+fieldset {
+  border: 0;
+  padding: 0 0 2rem 0;
+}
+
 @media desktop {
   body {
     font-size: 1.8em;

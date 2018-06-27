@@ -13,12 +13,28 @@ import {
   MessageContentWrapper,
 } from './components'
 
+export const NewConversationLine = () => (
+  <Message active={true}>
+    <SenderInfo>
+      <SenderCircle>&nbsp;&nbsp;?&nbsp;&nbsp;</SenderCircle>
+    </SenderInfo>
+
+    <MessageContentWrapper>
+      <MessageContent>
+        <ShortSender>New message</ShortSender>
+        <ShortSubject />
+      </MessageContent>
+    </MessageContentWrapper>
+  </Message>
+)
+
 const ConversationLine = ({ conversation, history }) => (
   <Message
     style={{ cursor: 'pointer' }}
     onClick={e => {
       history.push(`/messages/${conversation.id}`)
     }}
+    active={history.location.pathname === `/messages/${conversation.id}`}
   >
     <SenderInfo>
       <SenderCircle image={conversation.service.agency.logo}>

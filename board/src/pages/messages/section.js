@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import format from 'date-fns/format'
 import styled, { css } from 'styled-components'
 
 import Icon from '../../components/icon'
@@ -127,7 +128,7 @@ const Wrapper = styled.div`
 
 const Message = styled(({ className, conversation, message }) => (
   <Wrapper reversed={message.sender && message.sender.source === 'User'}>
-    <Timestamp>{message.sentAt}</Timestamp>
+    <Timestamp>{format(message.sentAt, 'ddd D MMM YYYY, h:mm a')}</Timestamp>
     <SpeechBubble
       reversed={message.sender && message.sender.source === 'User'}
       className={className}
@@ -142,7 +143,9 @@ const Message = styled(({ className, conversation, message }) => (
         </div>
       ))}
     </SpeechBubble>
-    <Timestamp label="Read">{message.readAt}</Timestamp>
+    <Timestamp label="Read">
+      {format(message.readAt, 'ddd D MMM YYYY, h:mm a')}
+    </Timestamp>
   </Wrapper>
 ))``
 
