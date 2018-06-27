@@ -356,7 +356,7 @@ class Step1 extends Component {
           Back
         </IconLink>
 
-        <p>Choose a time</p>
+        <h2>Choose a time</h2>
         <p>
           First available time is: <strong>Tuesday 1 July 2018</strong>
         </p>

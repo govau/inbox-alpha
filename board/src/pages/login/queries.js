@@ -31,13 +31,9 @@ If you need help submitting your documents, [book a time](/) and we'll call you 
 `
 
 export const centrelinkBody = `
-Hi Alex,
-
-  Transaction ID: CoN3462
-
 Your change of name request has been successfully processed.
 
-If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)
+~~If you did not initiate this request, please get in contact with [Centrelink support](https://google.com)~~
 `
 
 export const assessmentBody = `
@@ -112,6 +108,10 @@ const createNewUser = gql`
                       create: [
                         {
                           kind: Markdown
+                          markdown: { create: { source: "Hi Alex,\\n\\n Transaction ID: CoN3462" }}
+                        }
+                        {
+                          kind: Confirmation
                           markdown: { create: { source: $centrelinkBody } }
                         }
                       ]

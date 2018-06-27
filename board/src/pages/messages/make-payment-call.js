@@ -85,10 +85,16 @@ const Calendar = styled.div`
   }
 `
 
-const transcript = `
+// copypastad. should be in utils somewhere
+const refNo = conversation =>
+  `${conversation.service.agency.name
+    .substring(0, 3)
+    .toUpperCase()}${conversation.id.slice(-8).toUpperCase()}`
+
+const transcript = conversation => `
 **Transcript from call**
 
-Transaction ID: PUT TX ID HERE  
+Case ID: ${refNo(conversation)}  
 Wed 10 June at 18:45 (lasted 4 min 43 seconds)
 
 **Centrelink agent**: *Hi Alex, how are you? Is this still a good time to call?*
@@ -161,7 +167,7 @@ export default ({ conversation }) => {
                         variables: {
                           conversationID: conversation.id,
                           sentAt: new Date().toString(),
-                          transcript,
+                          transcript: transcript(conversation),
                           paymentOptions,
                           makePaymentWith,
                         },
