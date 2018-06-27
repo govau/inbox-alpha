@@ -39,6 +39,28 @@ const RequestCall = ({ conversation, linkText }) => (
   </Link>
 )
 
+const IconSided = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+
+  > * + * {
+    margin-top: 0;
+    margin-left: 1rem;
+  }
+`
+
+const Confirmation = ({ markdown }) => (
+  <IconSided>
+    <Icon style={{ fontSize: '3em', color: '#00653e' }}>check_circle</Icon>
+    <MarkdownComponent
+      source={markdown.source}
+      renderers={{
+        delete: ({ children }) => <p style={{ opacity: '0.7' }}>{children}</p>,
+      }}
+    />
+  </IconSided>
+)
+
 const renderers = {
   Markdown,
   Document,
@@ -48,17 +70,24 @@ const renderers = {
   RequestCall,
   MakePaymentCall,
   MakePayment,
+  Confirmation,
+}
+
+const selectors = {
+  Confirmation: ({ markdown }) => ({ markdown }),
 }
 
 const lowerCase = s => s.charAt(0).toLowerCase() + s.slice(1)
 
 const Section = ({ section, conversation, message }) => {
   const { kind, sender, ...rest } = section
+
   const Renderer = renderers[kind]
+  const selector = selectors[kind] || (section => section[lowerCase(kind)])
 
   return Renderer ? (
     <Renderer
-      {...rest[lowerCase(kind)]}
+      {...selector(rest)}
       conversation={conversation}
       message={message}
     />

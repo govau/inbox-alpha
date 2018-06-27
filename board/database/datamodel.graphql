@@ -64,6 +64,7 @@ enum SectionKind {
 
   MakePaymentCall
   MakePayment
+  Confirmation
 }
 
 enum SenderSource {

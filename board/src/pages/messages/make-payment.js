@@ -4,17 +4,21 @@ import { Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 
 const makePayment = gql`
-  mutation($conversationID: ID!) {
+  mutation(
+    $conversationID: ID!
+    $sentAt: String
+    $paymentAdvice: String
+    $first: String
+    $second: String
+  ) {
     payment: createMessage(
       data: {
         conversation: { connect: { id: $conversationID } }
+        sentAt: $sentAt
         sender: { create: { source: User } }
         sections: {
           create: [
-            {
-              kind: Markdown
-              markdown: { create: { source: "here. take my money" } }
-            }
+            { kind: Markdown, markdown: { create: { source: $paymentAdvice } } }
           ]
         }
       }
@@ -25,13 +29,11 @@ const makePayment = gql`
     firstTransaction: createMessage(
       data: {
         conversation: { connect: { id: $conversationID } }
+        sentAt: "Wed 14 June 2018, 5:52PM"
         sender: { create: { source: Service } }
         sections: {
           create: [
-            {
-              kind: Markdown
-              markdown: { create: { source: "this is the first transaction" } }
-            }
+            { kind: Confirmation, markdown: { create: { source: $first } } }
           ]
         }
       }
@@ -42,13 +44,11 @@ const makePayment = gql`
     secondTransaction: createMessage(
       data: {
         conversation: { connect: { id: $conversationID } }
+        sentAt: "Wed 28 June 2018, 5:52PM"
         sender: { create: { source: Service } }
         sections: {
           create: [
-            {
-              kind: Markdown
-              markdown: { create: { source: "this is the second transaction" } }
-            }
+            { kind: Confirmation, markdown: { create: { source: $second } } }
           ]
         }
       }
@@ -56,6 +56,35 @@ const makePayment = gql`
       id
     }
   }
+`
+
+const paymentAdvice = `
+#### Payment advice
+
+**Pay**: ATO 75556 5679019789900  
+**Amount**: $41.60  
+**Pay with**: Savings account x-6371  
+**Start date**: 14 June 2018  
+**Frequency**: Fortnightly  
+**Last payment**: 20 June 2019
+`
+
+const first = `
+**Transaction ID**: ATO: ATO4565TYZPS1  
+**Payment received**: Wed 14 June 2018, 5:52PM  
+**Amount**: $41.60
+
+
+~~Next payment due: Wed 28 June 2018, 5:52PM~~
+`
+
+const second = `
+**Transaction ID**: ATO: ATO4565TYZPS2  
+**Payment received**: Wed 28 June 2018, 5:52PM  
+**Amount**: $41.60
+
+
+~~Next payment due: Wed 12 July 2018, 5:52PM~~
 `
 
 export default ({ conversation }) => {
@@ -83,6 +112,10 @@ export default ({ conversation }) => {
                       create({
                         variables: {
                           conversationID: conversation.id,
+                          sentAt: new Date().toString(),
+                          paymentAdvice,
+                          first,
+                          second,
                         },
                       })
                     }}
