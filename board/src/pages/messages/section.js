@@ -10,6 +10,7 @@ import { Document as DocumentComponent } from './components'
 
 import MakePayment from './make-payment'
 import MakePaymentCall from './make-payment-call'
+import UploadDocument from './upload-document'
 
 const Markdown = ({ source }) => <MarkdownComponent source={source} />
 
@@ -22,8 +23,8 @@ const Document = ({ filename, location, kind }) => (
   </DocumentComponent>
 )
 
-const RequestDocument = ({ linkText }) => (
-  <Link to="/todo">{linkText || 'Provide a document'}</Link>
+const RequestDocument = ({ conversation, linkText }) => (
+  <UploadDocument conversation={conversation} />
 )
 
 const RequestPayment = ({ amountInCents, linkText }) => (

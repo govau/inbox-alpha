@@ -68,8 +68,7 @@ export const Sidenav = ({ conversations, match, history }) => (
   </Fragment>
 )
 
-export const SenderInfo = styled.div`
-`
+export const SenderInfo = styled.div``
 
 export const SenderCircle = styled.div`
   background-color: #d5d5d5;

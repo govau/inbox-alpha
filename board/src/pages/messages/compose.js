@@ -15,7 +15,7 @@ import { Heading, H1, Sidenav } from './components'
 
 const queryServices = gql`
   query {
-    services {
+    services(orderBy: name_ASC) {
       id
       name
       description
@@ -62,7 +62,6 @@ const createConversation = gql`
 const Wrapper = styled.section`
   @media screen and (min-width: 768px) {
     margin-left: 2rem;
-    max-width: 50rem;
   }
 `
 

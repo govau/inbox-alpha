@@ -17,6 +17,7 @@ import {
 const Timestamp = styled.time`
   opacity: 0.7;
   font-size: 0.8em;
+  margin-top: 0;
 `
 
 export const NewConversationLine = () => (
@@ -61,7 +62,10 @@ const ConversationLine = ({ conversation, history }) => (
 )
 
 const Wrapper = styled.div`
-  padding-left: 1rem;
+  margin-left: 1rem;
+  padding-bottom: 4rem;
+  border: 1px solid #cccccc;
+  min-height: 65vh;
 `
 
 const Subject = styled.div`
