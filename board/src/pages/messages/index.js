@@ -10,7 +10,7 @@ import { ButtonLink } from '../../components/button'
 import { Heading, H1, Sidenav } from './components'
 import { SometimesConversation } from './conversation'
 import * as Compose from './compose'
-import * as RequestCall from './request-call'
+import RequestCall from './request-call'
 
 const queryMe = gql`
   query($userID: ID!) {
@@ -97,9 +97,7 @@ const Homepage = ({ user: { conversations, name, id }, match, history }) => (
     <Route
       exact
       path={`${match.path}/:id/book-a-call`}
-      render={({ match }) => (
-        <RequestCall.Page match={match} history={history} />
-      )}
+      component={RequestCall}
     />
 
     <Route

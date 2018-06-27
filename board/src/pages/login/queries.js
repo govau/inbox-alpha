@@ -33,7 +33,7 @@ If you need help submitting your documents, [book a time](/) and we'll call you 
 export const centrelinkBody = `
 Hi Alex,
 
-  Transaction ID: 22X4423181
+  Transaction ID: CoN3462
 
 Your change of name request has been successfully processed.
 
