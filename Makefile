@@ -4,12 +4,19 @@ CF_ORG   ?= dta
 CF_SPACE ?= notifications
 CF       ?= cf
 
-# Manage dev deploys can respond to STG env variable if they support
-# feature branches
+# deploys can respond to STG env variable if they support
+# feature branches or alternate production builds
+PRD_BRANCH    ?= master
+PRD_STAGE     ?= prd
 STG_PREFIX    ?= feat-
 CIRCLE_BRANCH ?=
 BRANCH  ?= $(CIRCLE_BRANCH)
 FEATURE  = $(BRANCH:$(STG_PREFIX)%=%)
+
+# set prod stage if we're on prod branch
+ifeq ($(BRANCH), $(PRD_BRANCH))
+	export STG ?= $(PRD_STAGE)
+endif
 
 # export stg variable only if we are on a feature branch
 ifneq ($(BRANCH), $(FEATURE))
