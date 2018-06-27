@@ -154,7 +154,15 @@ const GiveThisABetterName = ({ services = [], serviceID, children }) => {
 export class Page extends Component {
   state = {
     searchValue: '',
+    subject: '',
     editorContent: '',
+  }
+
+  setSubject = subject => {
+    this.setState({
+      ...this.state,
+      subject,
+    })
   }
 
   setEditorContent = editorContent => {
@@ -270,7 +278,11 @@ export class Page extends Component {
                     </Query>
                   </Target>
 
-                  <Text required placeholder="Subject" />
+                  <Text
+                    required
+                    placeholder="Subject"
+                    onChange={e => this.setSubject(e.target.value)}
+                  />
                   <EditorWrapper>
                     <Editor
                       onContentStateChange={contentState => {
