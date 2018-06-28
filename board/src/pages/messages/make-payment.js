@@ -64,27 +64,27 @@ const paymentAdvice = `
 **Pay**: ATO 75556 5679019789900  
 **Amount**: $41.60  
 **Pay with**: Savings account x-6371  
-**Start date**: 14 June 2018  
+**Start date**: 14 July 2018  
 **Frequency**: Fortnightly  
 **Last payment**: 20 June 2019
 `
 
 const first = `
 **Transaction ID**: ATO: ATO4565TYZPS1  
-**Payment received**: Wed 14 June 2018, 5:52PM  
+**Payment received**: Wed 14 July 2018, 5:52PM  
 **Amount**: $41.60
 
 
-~~Next payment due: Wed 28 June 2018, 5:52PM~~
+~~Next payment due: Wed 28 July 2018, 5:52PM~~
 `
 
 const second = `
 **Transaction ID**: ATO: ATO4565TYZPS2  
-**Payment received**: Wed 28 June 2018, 5:52PM  
+**Payment received**: Wed 28 July 2018, 5:52PM  
 **Amount**: $41.60
 
 
-~~Next payment due: Wed 12 July 2018, 5:52PM~~
+~~Next payment due: Wed 11 August 2018, 5:52PM~~
 `
 
 export default ({ conversation }) => {
@@ -120,7 +120,7 @@ export default ({ conversation }) => {
                       })
                     }}
                   >
-                    Pay now
+                    Agree and pay
                   </Link>&nbsp;&nbsp;&nbsp;&nbsp;
                   <Link to="/todo">Change</Link>
                 </div>

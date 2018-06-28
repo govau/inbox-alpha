@@ -126,7 +126,7 @@ const makePaymentWith = `
 
 Do you authorise the ATO to use your preferred payment option (set up in myGov) for any future payments?
 
-**First payment**: 14 June 2018  
+**First payment**: 14 July 2018  
 **Frequency**: Fortnightly  
 **Last payment**: 20 June 2019
 `

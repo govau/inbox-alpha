@@ -506,7 +506,7 @@ class Step2 extends Component {
   }
 }
 
-const firstTime = parse('2018-07-06')
+const firstTime = parse('2018-07-02')
 
 class Page extends Component {
   state = {
