@@ -84,7 +84,7 @@ const createNewUser = gql`
                           kind: Markdown
                           markdown: {
                             create: {
-                              source: "Please attach a copy if your new Rental Contract to confirm your new address within 14 days."
+                              source: "Please attach a copy of your new Rental Contract to confirm your new address within 14 days."
                             }
                           }
                         }
@@ -186,7 +186,7 @@ const createNewUser = gql`
                           kind: Markdown
                           markdown: {
                             create: {
-                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jun 2018"
+                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jul 2018"
                             }
                           }
                         }
