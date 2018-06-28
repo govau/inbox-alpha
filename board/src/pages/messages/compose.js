@@ -254,7 +254,7 @@ export class Page extends Component {
                           <div>loading...</div>
                         ) : (
                           <fieldset>
-                            <label htmlFor="service">Subject</label>
+                            <label htmlFor="service">To / subject</label>
                             <AutocompleteWrapper>
                               <Autocomplete
                                 inputProps={{ id: 'service' }}
