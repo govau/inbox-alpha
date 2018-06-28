@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import format from 'date-fns/format'
+import parse from 'date-fns/parse'
 import styled, { css } from 'styled-components'
 import { Flex, Box } from 'grid-styled'
 import ReactDayPicker from 'react-day-picker'
@@ -248,6 +249,10 @@ const isUnavailable = day => {
   if (isWeekend(day)) {
     return true
   }
+  // June unavailable.
+  if (day.getMonth() === 5) {
+    return true
+  }
   // Arbitrary day unavailable.
   return (
     day.getDate() === 25 && day.getMonth() === 6 && day.getFullYear() === 2018
@@ -256,7 +261,7 @@ const isUnavailable = day => {
 
 class Side extends Component {
   state = {
-    selectedDay: null,
+    selectedDay: this.props.defaultTime,
   }
 
   handleDayClick = (day, { selected }) => {
@@ -279,20 +284,38 @@ class Side extends Component {
           selectedDays={selectedDay}
           onDayClick={this.handleDayClick}
           modifiers={{
-            [mostAvailableClassName]: day =>
-              !isWeekend(day) &&
-              ((day.getDate() >= 16 && day.getDate() <= 21) ||
-                day.getDate() === 29),
-            [availableClassName]: day =>
-              !isWeekend(day) &&
-              (day.getDate() === 15 ||
-                day.getDate() === 22 ||
-                day.getDate() === 8),
-            [leastAvailableClassName]: day =>
-              !isWeekend(day) &&
-              ((day.getDate() >= 1 && day.getDate() <= 14) ||
-                (day.getDate() >= 23 && day.getDate() <= 28) ||
-                (day.getDate() >= 30 && day.getDate() <= 31)),
+            [mostAvailableClassName]: day => {
+              if (isUnavailable(day)) {
+                return false
+              }
+              return (
+                !isWeekend(day) &&
+                ((day.getDate() >= 16 && day.getDate() <= 21) ||
+                  day.getDate() === 29)
+              )
+            },
+            [availableClassName]: day => {
+              if (isUnavailable(day)) {
+                return false
+              }
+              return (
+                !isWeekend(day) &&
+                (day.getDate() === 15 ||
+                  day.getDate() === 22 ||
+                  day.getDate() === 8)
+              )
+            },
+            [leastAvailableClassName]: day => {
+              if (isUnavailable(day)) {
+                return false
+              }
+              return (
+                !isWeekend(day) &&
+                ((day.getDate() >= 1 && day.getDate() <= 14) ||
+                  (day.getDate() >= 23 && day.getDate() <= 28) ||
+                  (day.getDate() >= 30 && day.getDate() <= 31))
+              )
+            },
             [unavailableClassName]: day => isUnavailable(day),
           }}
         />
@@ -347,7 +370,7 @@ class Step1 extends Component {
   }
 
   render() {
-    const { id } = this.props
+    const { id, firstTime } = this.props
     const { timeSlot } = this.state
 
     return (
@@ -358,7 +381,8 @@ class Step1 extends Component {
 
         <h2>Choose a time</h2>
         <p>
-          First available time is: <strong>Tuesday 1 July 2018</strong>
+          First available time is:{' '}
+          <strong>{format(firstTime, 'ddd D MMM YYYY')}</strong>
         </p>
 
         <form onSubmit={this.handleSubmit}>
@@ -482,11 +506,13 @@ class Step2 extends Component {
   }
 }
 
+const firstTime = parse('2018-07-06')
+
 class Page extends Component {
   state = {
     stepChanges: 0,
     step: 1,
-    time: null,
+    time: firstTime,
     timeSlot: null,
   }
 
@@ -539,13 +565,20 @@ class Page extends Component {
           <Fragment>
             <ScrollToTopOnMount key={stepChanges} />
             <Heading>
-              <H1>Book a call with {this.props.conversation.service.agency.name}</H1>
+              <H1>
+                Book a call with {this.props.conversation.service.agency.name}
+              </H1>
             </Heading>
-            <Master side={<Side onDayChange={this.handleDayChange} />}>
+            <Master
+              side={
+                <Side onDayChange={this.handleDayChange} defaultTime={time} />
+              }
+            >
               <Step1
                 conversation={this.props.conversation}
                 id={match.params.id}
                 onSubmit={this.handleStep1Submit}
+                firstTime={firstTime}
                 defaultTimeSlot={timeSlot}
               />
             </Master>
