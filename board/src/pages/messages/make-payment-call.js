@@ -104,7 +104,7 @@ Wed 10 June at 18:45 (lasted 4 min 43 seconds)
   ...
 
 
-**Centrelink agent**: *Yes, that's fine we can do fortnightly payments. THat should be about $40 per fortnight, we'll send you a Notice of Assessment payment schedule with all the details. Ok, great. Have a good night. Bye*
+**Centrelink agent**: *Yes, that's fine we can do fortnightly payments. That should be about $40 per fortnight, we'll send you a Notice of Assessment payment schedule with all the details. Ok, great. Have a good night. Bye*
 
 [Read full transcript](/todo)
 `
