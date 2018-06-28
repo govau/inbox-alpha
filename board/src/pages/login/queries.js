@@ -186,7 +186,7 @@ const createNewUser = gql`
                           kind: Markdown
                           markdown: {
                             create: {
-                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jun 2018"
+                              source: "Amount owing: **1086.24**  \\nDue date: 15 Jul 2018"
                             }
                           }
                         }
