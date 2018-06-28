@@ -29,7 +29,7 @@ const makePayment = gql`
     firstTransaction: createMessage(
       data: {
         conversation: { connect: { id: $conversationID } }
-        sentAt: "Wed 14 June 2018, 5:52PM"
+        sentAt: "Wed 14 July 2018, 5:52PM"
         sender: { create: { source: Service } }
         sections: {
           create: [
@@ -44,7 +44,7 @@ const makePayment = gql`
     secondTransaction: createMessage(
       data: {
         conversation: { connect: { id: $conversationID } }
-        sentAt: "Wed 28 June 2018, 5:52PM"
+        sentAt: "Wed 28 July 2018, 5:52PM"
         sender: { create: { source: Service } }
         sections: {
           create: [
