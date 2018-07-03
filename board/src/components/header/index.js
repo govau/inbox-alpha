@@ -94,9 +94,12 @@ const IndicatorLink = styled(Link)`
     background-color: #ff5d81;
     color: #fff;
     font-size: 0.65em;
-    top: -0.5em;
-    right: -1.8em;
-    padding: 0 0.5em;
+    top: -1em;
+    right: -2.5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    text-align: center;
+    padding-top: 0.3rem;
     content: attr(data-count);
   }
 `
@@ -341,7 +344,7 @@ const StickyHeader = ({ user }) => (
                   {({ loading, error, data: { user } }) => {
                     const count = flatMap(conv => conv.messages)(
                       (user && user.conversations) || []
-                    ).filter(msg => msg.readStatus === 'Unread').length
+                    ).filter(msg => msg.readStatus !== 'Read').length
 
                     return user ? (
                       <Navlink

@@ -2,12 +2,13 @@ import React from 'react'
 import format from 'date-fns/format'
 import styled from 'styled-components'
 
+import Counter, { style as counterStyle } from '../../components/counter'
 import { Message as MessageSection } from './section'
 import { Error } from '../../components/error'
 import {
   Message,
-  ShortSubject,
   ShortSender,
+  ShortSubject,
   SenderInfo,
   SenderCircle,
   MessageContent,
@@ -35,6 +36,14 @@ export const NewConversationLine = () => (
   </Message>
 )
 
+/*
+const CounterSubject = styled(ShortSubject)`
+  ${counterStyle};
+`
+*/
+
+const CounterSubject = Counter(ShortSubject)
+
 const ConversationLine = ({ conversation, history }) => (
   <Message
     style={{ cursor: 'pointer' }}
@@ -52,7 +61,14 @@ const ConversationLine = ({ conversation, history }) => (
     <MessageContentWrapper>
       <MessageContent>
         <ShortSender>{conversation.service.agency.name}</ShortSender>
-        <ShortSubject>{conversation.subject}</ShortSubject>
+        <CounterSubject
+          data-count={
+            conversation.messages.filter(msg => msg.readStatus !== 'Read')
+              .length
+          }
+        >
+          {conversation.subject}
+        </CounterSubject>
         <Timestamp dateTime={conversation.createdAt}>
           {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
         </Timestamp>
