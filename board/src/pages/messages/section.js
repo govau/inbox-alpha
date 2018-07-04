@@ -149,7 +149,7 @@ const Message = styled(({ className, conversation, message }) => {
   let latest
 
   setTimeout(() => {
-    latest && false && latest.scrollIntoView({ behavior: 'smooth' })
+    latest && latest.scrollIntoView({ behavior: 'smooth' })
   }, 500)
 
   return (
