@@ -30,7 +30,7 @@ const queryMe = gql`
             name
           }
         }
-        messages {
+        messages(orderBy: createdAt_DESC) {
           readStatus
           sentAt
           readAt
