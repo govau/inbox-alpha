@@ -53,7 +53,6 @@ export const SenderCircle = styled.div`
 export const MessageContentWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  max-width: 35%;
   flex: 1;
 
   @media screen and (min-width: 768px) {
