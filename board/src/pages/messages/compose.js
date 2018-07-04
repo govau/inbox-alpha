@@ -11,7 +11,8 @@ import { Button } from '../../components/button'
 import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
 import { Submit, inputCSS } from '../../components/forms'
-import { Heading, H1, Sidenav } from './components'
+import { Heading, H1 } from './components'
+import Sidenav from './sidenav'
 
 const queryServices = gql`
   query {

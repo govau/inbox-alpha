@@ -1,26 +1,5 @@
 import { Link } from 'react-router-dom'
-import styled, { css } from 'styled-components'
-
-const style = css`
-  position: relative;
-  z-index: 1;
-
-  &::after {
-    position: absolute;
-    z-index: -1;
-    border-radius: 50%;
-    background-color: #ff5d81;
-    color: #fff;
-    font-size: 0.65em;
-    top: -1em;
-    right: -2.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
-    text-align: center;
-    padding-top: 0.3rem;
-    content: attr(data-count);
-  }
-`
+import styled from 'styled-components'
 
 const Counter = Component => styled(Component)`
   position: relative;
@@ -29,20 +8,20 @@ const Counter = Component => styled(Component)`
   &::after {
     position: absolute;
     z-index: -1;
-    border-radius: 50%;
+    border-radius: 1em;
     background-color: #ff5d81;
+    background-color: #e23b3b;
+    font-weight: bold;
     color: #fff;
     font-size: 0.65em;
-    top: -1em;
-    right: -2.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
+    top: 0;
+    right: -2.2rem;
+    min-width: 2rem;
     text-align: center;
-    padding-top: 0.3rem;
     content: attr(data-count);
   }
 `
 
 const CounterLink = Counter(Link)
 
-export { Counter as default, style, CounterLink }
+export { Counter as default, CounterLink }

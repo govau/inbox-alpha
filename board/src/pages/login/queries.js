@@ -104,6 +104,7 @@ const createNewUser = gql`
               messages: {
                 create: [
                   {
+                    readStatus: Read
                     sections: {
                       create: [
                         {
@@ -126,6 +127,7 @@ const createNewUser = gql`
               messages: {
                 create: [
                   {
+                    readStatus: Read
                     sections: {
                       create: [
                         {

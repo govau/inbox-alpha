@@ -1,12 +1,9 @@
-import React, { Fragment } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import React from 'react'
 import styled, { css } from 'styled-components'
 import classnames from 'classnames'
 
 import { Text } from '../../../components/forms'
 import IconLink from '../../../components/icon-link'
-import { NewConversationLine, ConversationLine } from '../conversation'
-
 import attachment from './attachment.png'
 
 export const H1 = styled.h1`
@@ -35,29 +32,11 @@ export const Heading = styled.header`
   }
 `
 
-const Search = styled(Text)`
+export const Search = styled(Text)`
   @media screen and (min-width: 768px) {
     flex: 2;
   }
 `
-
-export const Sidenav = ({ conversations, match, history }) => (
-  <Fragment>
-    <Search placeholder="Search your messages" />
-    <Messages>
-      <Switch>
-        <Route
-          exact
-          path={`${match.path}/compose`}
-          render={({ match }) => <NewConversationLine key={'compose'} />}
-        />
-      </Switch>
-      {conversations.map((conv, i) => (
-        <ConversationLine key={i} conversation={conv} history={history} />
-      ))}
-    </Messages>
-  </Fragment>
-)
 
 export const SenderInfo = styled.div``
 
@@ -74,6 +53,7 @@ export const SenderCircle = styled.div`
 export const MessageContentWrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
+  max-width: 35%;
   flex: 1;
 
   @media screen and (min-width: 768px) {
@@ -86,6 +66,7 @@ export const MessageContent = styled.div`
   display: flex;
   flex-flow: column nowrap;
   flex: 1;
+  align-items: flex-start;
 
   /* hide marked content for testing easter-egg */
   .more-information strong {
@@ -130,6 +111,7 @@ export const Subject = styled.span`
 `
 
 export const ShortSubject = styled.span`
+  font-weight: ${props => (props.unread ? 'bold' : 'normal')};
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -138,9 +120,8 @@ export const ShortSubject = styled.span`
 
 export const ShortSender = styled.span`
   white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: bold;
+  font-weight: ${props => (props.unread ? 'bold' : 'normal')};
 `
 
 export const About = styled.header`

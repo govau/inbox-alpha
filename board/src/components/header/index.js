@@ -7,6 +7,7 @@ import styled, { css, ThemeProvider } from 'styled-components'
 import logo from './mygov.svg'
 import Icon from '../icon'
 import Toggle from '../toggle'
+import { CounterLink } from '../counter'
 import { header as headerTheme, button as buttonTheme } from '../mygov'
 
 const Hamburger = styled(Icon)`
@@ -80,27 +81,6 @@ const Navitem = styled.li`
             padding-top: calc(2rem - 6px);
           `
         : css``};
-  }
-`
-
-const IndicatorLink = styled(Link)`
-  position: relative;
-  z-index: 1;
-
-  &::after {
-    position: absolute;
-    z-index: -1;
-    border-radius: 50%;
-    background-color: #ff5d81;
-    color: #fff;
-    font-size: 0.65em;
-    top: -1em;
-    right: -2.5rem;
-    height: 2.5rem;
-    width: 2.5rem;
-    text-align: center;
-    padding-top: 0.3rem;
-    content: attr(data-count);
   }
 `
 
@@ -350,7 +330,7 @@ const StickyHeader = ({ user }) => (
                       <Navlink
                         onClick={deactivate}
                         to="/messages"
-                        link={IndicatorLink}
+                        link={CounterLink}
                         data-count={count ? count : ''}
                       >
                         Messages

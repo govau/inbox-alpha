@@ -1,8 +1,10 @@
 import React from 'react'
 import format from 'date-fns/format'
 import styled from 'styled-components'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 
-import Counter, { style as counterStyle } from '../../components/counter'
+import Counter from '../../components/counter'
 import { Message as MessageSection } from './section'
 import { Error } from '../../components/error'
 import {
@@ -36,46 +38,75 @@ export const NewConversationLine = () => (
   </Message>
 )
 
-/*
-const CounterSubject = styled(ShortSubject)`
-  ${counterStyle};
+const CounterSender = Counter(ShortSender)
+
+const markAsRead = gql`
+  mutation($conversationID: ID!, $now: String) {
+    updateManyMessages(
+      where: { conversation: { id: $conversationID } }
+      data: { readStatus: Read, readAt: $now }
+    ) {
+      count
+    }
+  }
 `
-*/
 
-const CounterSubject = Counter(ShortSubject)
+const ConversationLine = ({ conversation, history }) => {
+  let c
+  const count = conversation.messages.filter(msg => msg.readStatus !== 'Read')
+    .length
 
-const ConversationLine = ({ conversation, history }) => (
-  <Message
-    style={{ cursor: 'pointer' }}
-    onClick={e => {
-      history.push(`/messages/${conversation.id}`)
-    }}
-    active={history.location.pathname === `/messages/${conversation.id}`}
-  >
-    <SenderInfo>
-      <SenderCircle image={conversation.service.agency.logo}>
-        {conversation.service.agency.name.substring(0, 2)}
-      </SenderCircle>
-    </SenderInfo>
+  return (
+    <Mutation
+      mutation={markAsRead}
+      onCompleted={e => {
+        c.resetStore()
+      }}
+    >
+      {(markAsRead, { loading, error, data, client }) => {
+        c = client
 
-    <MessageContentWrapper>
-      <MessageContent>
-        <ShortSender>{conversation.service.agency.name}</ShortSender>
-        <CounterSubject
-          data-count={
-            conversation.messages.filter(msg => msg.readStatus !== 'Read')
-              .length
-          }
-        >
-          {conversation.subject}
-        </CounterSubject>
-        <Timestamp dateTime={conversation.createdAt}>
-          {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
-        </Timestamp>
-      </MessageContent>
-    </MessageContentWrapper>
-  </Message>
-)
+        return (
+          <Message
+            style={{ cursor: 'pointer' }}
+            onClick={e => {
+              markAsRead({
+                variables: {
+                  conversationID: conversation.id,
+                  now: new Date().toString(),
+                },
+              })
+              history.push(`/messages/${conversation.id}`)
+            }}
+            active={
+              history.location.pathname === `/messages/${conversation.id}`
+            }
+          >
+            <SenderInfo>
+              <SenderCircle image={conversation.service.agency.logo}>
+                {conversation.service.agency.name.substring(0, 2)}
+              </SenderCircle>
+            </SenderInfo>
+
+            <MessageContentWrapper>
+              <MessageContent>
+                <CounterSender unread={!!count} data-count={count ? count : ''}>
+                  {conversation.service.agency.name}
+                </CounterSender>
+                <ShortSubject unread={!!count}>
+                  {conversation.subject}
+                </ShortSubject>
+                <Timestamp dateTime={conversation.createdAt}>
+                  {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
+                </Timestamp>
+              </MessageContent>
+            </MessageContentWrapper>
+          </Message>
+        )
+      }}
+    </Mutation>
+  )
+}
 
 const Wrapper = styled.div`
   margin-left: 1rem;
