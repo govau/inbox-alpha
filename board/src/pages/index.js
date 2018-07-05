@@ -10,6 +10,7 @@ import Loader from '../components/loader'
 import { theme } from '../components/mygov'
 import { AuthenticatedRoute } from '../components/auth'
 
+import Support from './support'
 import Home from './messages'
 import { Logout, StandaloneLogin } from './login'
 
@@ -30,6 +31,7 @@ const IndexPage = props => (
                   <Switch>
                     <AuthenticatedRoute exact path="/" component={Home} />
                     <AuthenticatedRoute path="/messages" component={Home} />
+                    <AuthenticatedRoute path="/support" component={Support} />
                     <Route exact path="/logout" component={Logout} />
                     <Route exact path="/profile" component={Err} />
                     <Route exact path="/permissions" component={Err} />

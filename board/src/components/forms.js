@@ -20,6 +20,15 @@ const GreatJob = styled(Input)`
   ${inputCSS};
 `
 
+const Label = styled.label`
+  ${props =>
+    props.block
+      ? css`
+          display: block;
+        `
+      : css``};
+`
+
 const Text = styled(props => <GreatJob type="text" {...props} />)``
 
 const Password = styled(props => <GreatJob type="password" {...props} />)``
@@ -28,8 +37,16 @@ const Submit = styled(({ children, ...props }) => (
   <GreatJob type="submit" value={children} {...props} />
 ))`
   border: 0;
-  background-color: #f0f3f5;
+  background-color: #d1e65f;
   cursor: pointer;
+
+  &:disabled {
+    background-color: #f0f3f5;
+  }
 `
 
-export { Text, Password, Submit }
+const Textarea = styled.textarea`
+  ${inputCSS};
+`
+
+export { Text, Password, Submit, Textarea, Label }

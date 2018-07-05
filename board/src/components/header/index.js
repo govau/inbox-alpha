@@ -333,11 +333,11 @@ const StickyHeader = ({ user }) => (
                         link={CounterLink}
                         data-count={count ? count : ''}
                       >
-                        Messages
+                        Message centre
                       </Navlink>
                     ) : (
                       <Navlink onClick={deactivate} to="/messages">
-                        Messages
+                        Message centre
                       </Navlink>
                     )
                   }}

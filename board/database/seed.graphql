@@ -1,264 +1,99 @@
 mutation {
-  benefit: createService(
+  centrelink: createAgency(
     data: {
-      name: "Benefit EFT"
-      contactNo: "1300 186 912"
-      agency: { create: { name: "Medicare" } }
+      name: "Centrelink"
+      services: {
+        create: [
+          { name: "Rent Assistance" }
+          { name: "Help with Austudy payments" }
+          { name: "Family Tax Benefits" }
+          { name: "Parental Leave Pay" }
+          { name: "Help with Youth Allowance form" }
+          { name: "Help with Newstart Allowance form" }
+          { name: "Repayment of a Centrelink debt" }
+          { name: "Low income health care card" }
+          { name: "Apply for early release of Superannuation" }
+        ]
+      }
     }
   ) {
     id
     name
-    description
+    services {
+      name
+    }
   }
 
-  rentAssistance: createService(
+  medicare: createAgency(
     data: {
-      name: "Rent Assistance"
-      agency: { create: { name: "Centrelink" } }
+      name: "Medicare"
+      services: {
+        create: [
+          { name: "Benefit EFT", contactNo: "1300 186 912" }
+          { name: "Claim question" }
+          { name: "My child's immunisation history" }
+          { name: "Compensation recovery question" }
+          { name: "Pharmaceuticals Benefits Scheme" }
+        ]
+      }
     }
   ) {
     id
     name
-    description
+    services {
+      name
+    }
   }
 
-  taxReturn: createService(
+  ato: createAgency(
     data: {
-      name: "Tax return"
-      description: "Lodge your tax return online"
-      agency: { create: { name: "Australian Taxation Office" } }
+      name: "Australian Taxation Office"
+      services: {
+        create: [
+          { name: "Tax return", description: "Lodge your tax return online" }
+          { name: "Lost TFN" }
+          { name: "Report identity fraud" }
+          { name: "Amend a tax return" }
+        ]
+      }
     }
   ) {
     id
     name
-    description
+    services {
+      name
+    }
   }
 
-  lostTFN: createService(
+  ndis: createAgency(
     data: {
-      name: "Lost TFN"
-      description: ""
-      agency: { create: { name: "Australian Taxation Office" } }
+      name: "NDIS"
+      services: {
+        create: [
+          { name: "Help understanding my plan" }
+          { name: "NDIS payment question" }
+          { name: "Accessing the NDIS" }
+        ]
+      }
     }
   ) {
     id
     name
-    description
+    services {
+      name
+    }
   }
 
-  reportIdentityFraud: createService(
+  childSupport: createAgency(
     data: {
-      name: "Report identity fraud"
-      description: ""
-      agency: { create: { name: "Australian Taxation Office" } }
+      name: "Child Support"
+      services: { create: [{ name: "Changes in circumstances" }] }
     }
   ) {
     id
     name
-    description
-  }
-
-  amendTaxReturn: createService(
-    data: {
-      name: "Amend a tax return"
-      description: ""
-      agency: { create: { name: "Australian Taxation Office" } }
+    services {
+      name
     }
-  ) {
-    id
-    name
-    description
-  }
-
-  helpWithAustudyPayments: createService(
-    data: {
-      name: "Help with Austudy payments"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  familyTaxBenefits: createService(
-    data: {
-      name: "Family Tax Benefits"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  parentalLeavePay: createService(
-    data: {
-      name: "Parental Leave Pay"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  helpWithYouthAllowanceForm: createService(
-    data: {
-      name: "Help with Youth Allowance form"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  helpWithNewstartAllowanceForm: createService(
-    data: {
-      name: "Help with Newstart Allowance form"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  repaymentOfCentrelinkDebt: createService(
-    data: {
-      name: "Repayment of a Centrelink debt"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  lowIncomeHealthCareCard: createService(
-    data: {
-      name: "Low income health care card"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  applyForEarlyReleaseOfSuperannuation: createService(
-    data: {
-      name: "Apply for early release of Superannuation"
-      description: ""
-      agency: { create: { name: "Centrelink" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  claimQuestion: createService(
-    data: {
-      name: "Claim question"
-      description: ""
-      agency: { create: { name: "Medicare" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  myChildsImmunisationHistory: createService(
-    data: {
-      name: "My child's immunisation history"
-      description: ""
-      agency: { create: { name: "Medicare" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  compensationRecoveryQuestion: createService(
-    data: {
-      name: "Compensation recovery question"
-      description: ""
-      agency: { create: { name: "Medicare" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  pharmaceuticalsBenefitsScheme: createService(
-    data: {
-      name: "Pharmaceuticals Benefits Scheme"
-      description: ""
-      agency: { create: { name: "Medicare" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  changesInCircumstances: createService(
-    data: {
-      name: "Changes in circumstances"
-      description: ""
-      agency: { create: { name: "Child Support" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  ndisPaymentQuestion: createService(
-    data: {
-      name: "NDIS payment question"
-      description: ""
-      agency: { create: { name: "NDIS" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  accessingTheNDIS: createService(
-    data: {
-      name: "Accessing the NDIS"
-      description: ""
-      agency: { create: { name: "NDIS" } }
-    }
-  ) {
-    id
-    name
-    description
-  }
-
-  helpUnderstandingMyPlan: createService(
-    data: {
-      name: "Help understanding my plan"
-      description: ""
-      agency: { create: { name: "NDIS" } }
-    }
-  ) {
-    id
-    name
-    description
   }
 }

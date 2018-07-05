@@ -29,6 +29,10 @@ const Panel = styled.div`
     font-weight: normal;
   }
 
+  ${Submit} {
+    background-color: #f0f3f5;
+  }
+
   ${Text}:valid ~ ${Password}:valid ~ ${Submit} {
     background-color: #D1E65F;
   }

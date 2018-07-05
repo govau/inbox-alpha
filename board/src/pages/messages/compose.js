@@ -10,18 +10,36 @@ import Icon from '../../components/icon'
 import { Button } from '../../components/button'
 import CoreEditor from '../../components/editor'
 import CacheBustingRedirect from '../../components/cache-busting-redirect'
-import { Submit, inputCSS } from '../../components/forms'
+import { Submit, Label, inputCSS } from '../../components/forms'
 import { Heading, H1 } from './components'
 import Sidenav from './sidenav'
 
 const queryServices = gql`
   query {
-    services(orderBy: name_ASC) {
+    agencies(orderBy: name_ASC) {
+      id
+      name
+      services(orderBy: name_ASC) {
+        id
+        name
+        description
+        contactNo
+
+        agency {
+          id
+          name
+        }
+      }
+    }
+
+    services {
       id
       name
       description
       contactNo
+
       agency {
+        id
         name
       }
     }
@@ -45,6 +63,7 @@ const createConversation = gql`
           create: {
             sentAt: $sentAt
             sender: { create: { source: User } }
+            readStatus: Read
             sections: {
               create: {
                 kind: Markdown
@@ -79,8 +98,12 @@ const Service = styled.li`
 
   & + & {
     margin-top: 0;
-    border-top: 1px solid #eee;
   }
+`
+
+const Agency = styled(Service)`
+  color: #7d7d7d;
+  border-top: 1px solid #eee;
 `
 
 const ServiceName = styled.div``
@@ -92,21 +115,28 @@ const ServiceDescription = styled.div`
 `
 
 const ActiveService = styled(Service)`
+  background-color: #eee;
+
   ${ServiceName} {
     font-weight: bold;
   }
 `
 
 const AutocompleteWrapper = styled.div`
+  margin-top: 0.75rem;
+
   input {
     ${inputCSS};
   }
 `
 
-const EditorWrapper = styled.div`
-  padding: 2rem;
-  background-color: #eee;
+const H2 = styled.h2`
+  & + * {
+    margin-top: 1rem;
+  }
 `
+
+const EditorWrapper = styled.div``
 
 const editorClassName = 'content-editor'
 const toolbarClassName = 'content-editor-toolbar'
@@ -125,7 +155,10 @@ const Editor = styled(CoreEditor).attrs({
     position: relative;
     padding: 0;
     border: 0;
-    background-color: #eee;
+  }
+
+  .${editorClassName} {
+    height: 20rem;
   }
 
   .${inlineWrapperClassName}, .${listWrapperClassName} {
@@ -159,6 +192,12 @@ const AttachFileIcon = styled(Icon)`
   font-size: 17px !important;
   vertical-align: middle;
 `
+
+const Sub = styled.p`
+  color: #7d7d7d;
+`
+
+const flatMap = fx => xs => Array.prototype.concat(...xs.map(fx))
 
 class AttachDocumentOption extends Component {
   handleAttach = () => {}
@@ -255,22 +294,31 @@ export class Page extends Component {
                           <div>loading...</div>
                         ) : (
                           <fieldset>
-                            <label htmlFor="service">To / subject</label>
+                            <H2>What is your message about?</H2>
+                            <Label block htmlFor="service">
+                              <p>
+                                Enter a topic, department name, or any other
+                                keyword
+                              </p>
+                              <Sub>eg. Release my superannuation early</Sub>
+                            </Label>
                             <AutocompleteWrapper>
                               <Autocomplete
                                 inputProps={{ id: 'service' }}
                                 wrapperStyle={{}}
-                                items={data.services || []}
-                                shouldItemRender={(service, value) =>
-                                  service.name
-                                    .toLowerCase()
-                                    .indexOf(value.toLowerCase()) > -1 ||
-                                  service.agency.name
-                                    .toLowerCase()
-                                    .indexOf(value.toLowerCase()) > -1
-                                }
-                                getItemValue={service =>
-                                  `${service.name} - ${service.agency.name}`
+                                items={flatMap(agency => [
+                                  { agency },
+                                  ...agency.services.map(service => ({
+                                    service,
+                                    agency: service.agency,
+                                  })),
+                                ])(data.agencies || [])}
+                                getItemValue={item =>
+                                  item.service
+                                    ? `${item.service.name} - ${
+                                        item.agency.name
+                                      }`
+                                    : `${item.agency.name}`
                                 }
                                 renderMenu={(items, value, style) => {
                                   if (items.length === 0) {
@@ -280,21 +328,29 @@ export class Page extends Component {
                                     <Services style={style} children={items} />
                                   )
                                 }}
-                                renderItem={(service, active) => {
+                                renderItem={(item, active) => {
+                                  if (!item.service) {
+                                    return <Agency>{item.agency.name}</Agency>
+                                  }
+
                                   const ServiceC = active
                                     ? ActiveService
                                     : Service
 
                                   return (
-                                    <ServiceC key={service.id} active={active}>
+                                    <ServiceC
+                                      key={item.service.id}
+                                      active={active}
+                                    >
                                       <ServiceName>
-                                        {service.name} - {service.agency.name}
+                                        {item.service.name}
                                       </ServiceName>
-                                      {service.description && (
-                                        <ServiceDescription>
-                                          {service.description}
-                                        </ServiceDescription>
-                                      )}
+                                      {item.service.description &&
+                                        false && (
+                                          <ServiceDescription>
+                                            {item.service.description}
+                                          </ServiceDescription>
+                                        )}
                                     </ServiceC>
                                   )
                                 }}
@@ -307,6 +363,7 @@ export class Page extends Component {
                                 onSelect={value =>
                                   this.setService(data.services, value)
                                 }
+                                isItemSelectable={item => !!item.service}
                               />
                             </AutocompleteWrapper>
                           </fieldset>
@@ -316,7 +373,14 @@ export class Page extends Component {
                   </Target>
 
                   <fieldset>
-                    <label htmlFor="content">Write message</label>
+                    <H2>Tell us more</H2>
+                    <Label block htmlFor="content">
+                      <p>
+                        Please include any and all details relevant to your
+                        enquiry
+                      </p>
+                      <Sub>note: limit is 600 characters</Sub>
+                    </Label>
                     <EditorWrapper>
                       <Editor
                         id="content"
@@ -344,7 +408,7 @@ export class Page extends Component {
                         />
                       ) : null}
                       <Button type="submit" color="black">
-                        Send
+                        Send message
                       </Button>
                     </Fragment>
                   )}
