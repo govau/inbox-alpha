@@ -38,7 +38,7 @@ export const NewConversationLine = () => (
   </Message>
 )
 
-const CounterSender = Counter(ShortSender)
+const CounterSenderCircle = Counter(SenderCircle)
 
 const markAsRead = gql`
   mutation($conversationID: ID!, $now: String) {
@@ -83,16 +83,20 @@ const ConversationLine = ({ conversation, history }) => {
             }
           >
             <SenderInfo>
-              <SenderCircle image={conversation.service.agency.logo}>
+              <CounterSenderCircle
+                reversed
+                image={conversation.service.agency.logo}
+                data-count={count ? count : ''}
+              >
                 {conversation.service.agency.name.substring(0, 2)}
-              </SenderCircle>
+              </CounterSenderCircle>
             </SenderInfo>
 
             <MessageContentWrapper>
               <MessageContent>
-                <CounterSender unread={!!count} data-count={count ? count : ''}>
+                <ShortSender unread={!!count}>
                   {conversation.service.agency.name}
-                </CounterSender>
+                </ShortSender>
                 <ShortSubject unread={!!count}>
                   {conversation.subject}
                 </ShortSubject>
