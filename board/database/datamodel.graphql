@@ -123,6 +123,11 @@ type Message {
   readAt: String
 }
 
+enum Label {
+  Starred
+  Archived
+}
+
 type Conversation {
   id: ID! @unique
   createdAt: DateTime!
@@ -130,4 +135,5 @@ type Conversation {
   user: User!
   subject: String
   messages: [Message!]!
+  labels: [Label!]!
 }

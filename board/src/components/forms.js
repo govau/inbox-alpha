@@ -53,4 +53,40 @@ const Textarea = styled.textarea`
   ${inputCSS};
 `
 
-export { Text, Password, Submit, Textarea, Label }
+const FormGroup = styled.section`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const Checkbox = styled(({ label, className, ...props }) => (
+  <label className={className}>
+    <Input type="checkbox" {...props} />
+    {label}
+  </label>
+))`
+  & * + * {
+    margin-top: 0;
+  }
+
+  ${Input} {
+    width: auto;
+    display: inline-block;
+  }
+`
+
+const Dropdown = styled.select``
+
+const Option = styled.option``
+
+export {
+  Text,
+  Password,
+  Submit,
+  Textarea,
+  Label,
+  Checkbox,
+  Dropdown,
+  Option,
+  FormGroup,
+}

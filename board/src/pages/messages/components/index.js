@@ -1,5 +1,5 @@
 import React from 'react'
-import styled  from 'styled-components'
+import styled from 'styled-components'
 
 import { Text } from '../../../components/forms'
 import IconLink from '../../../components/icon-link'
@@ -20,8 +20,10 @@ export const Heading = styled.header`
   @media screen and (min-width: 768px) {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
-    * + * {
+    align-items: flex-end;
+    justify-content: space-between;
+
+    > * + * {
       margin-top: 0;
     }
   }

@@ -8,6 +8,7 @@
     "date-fns": "^1.29.0",
     "draft-js": "^0.10.5",
     "draftjs-to-markdown": "^0.5.1",
+    "fuse.js": "^3.2.1",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
     "grid-styled": "^4.2.0",

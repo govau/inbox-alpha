@@ -56,6 +56,7 @@ const createConversation = gql`
   ) {
     createConversation(
       data: {
+        labels: { set: [Starred, Archived] }
         user: { connect: { id: $userID } }
         service: { connect: { id: $serviceID } }
         subject: $subject
