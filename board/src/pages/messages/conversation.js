@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import format from 'date-fns/format'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
@@ -7,6 +7,8 @@ import { Mutation } from 'react-apollo'
 import Counter from '../../components/counter'
 import { Message as MessageSection } from './section'
 import { Error } from '../../components/error'
+import IconLink from '../../components/icon-link'
+import Icon from '../../components/icon'
 import {
   Message,
   ShortSender,
@@ -143,36 +145,130 @@ const Conversations = styled.div`
   }
 `
 
+const setLabels = gql`
+  mutation($conversationID: ID!, $labels: [Label!]!) {
+    updateConversation(
+      where: { id: $conversationID }
+      data: { labels: { set: $labels } }
+    ) {
+      id
+      subject
+      labels
+    }
+  }
+`
+
 // generate a bogus case number for this conversation
 const refNo = conversation =>
   `${conversation.service.agency.name
     .substring(0, 3)
     .toUpperCase()}${conversation.id.slice(-8).toUpperCase()}`
 
-const Conversation = ({ className, conversation }) => (
-  <Wrapper>
-    <Subject className={className}>
-      <SenderCircle image={conversation.service.agency.logo}>
-        {conversation.service.agency.name.substring(0, 2)}
-      </SenderCircle>
+const union = (a, b) => {
+  let _union = new Set(a)
+  for (var elem of b) {
+    _union.add(elem)
+  }
 
-      <MessageContentWrapper>
-        <MessageContent>
-          <ShortSender>{conversation.service.agency.name}</ShortSender>
-          <ShortSubject>
-            {conversation.subject} Case ID: {refNo(conversation)}
-          </ShortSubject>
-        </MessageContent>
-      </MessageContentWrapper>
-    </Subject>
+  return _union
+}
 
-    <Conversations>
-      {conversation.messages.map((msg, i) => (
-        <MessageSection key={i} conversation={conversation} message={msg} />
-      ))}
-    </Conversations>
-  </Wrapper>
-)
+const difference = (a, b) => {
+  let _difference = new Set(a)
+  for (var elem of b) {
+    _difference.delete(elem)
+  }
+
+  return _difference
+}
+
+const xor = (a, b) => union(difference(a, b), difference(b, a))
+
+const ConversationLabel = ({
+  conversation,
+  setLabels,
+  label,
+  icon,
+  inverse,
+  children,
+}) => {
+  const labels = new Set(conversation.labels)
+
+  return (
+    <IconLink
+      to={`/messages/${conversation.id}`}
+      onClick={e => {
+        e.preventDefault()
+        setLabels({
+          variables: {
+            conversationID: conversation.id,
+            labels: [...xor(labels, new Set([label]))],
+          },
+        })
+      }}
+      icon={<Icon>{labels.has(label) ? icon : inverse}</Icon>}
+    />
+  )
+}
+
+const Conversation = ({ className, conversation }) => {
+  let c
+
+  return (
+    <Wrapper>
+      <Subject className={className}>
+        <SenderCircle image={conversation.service.agency.logo}>
+          {conversation.service.agency.name.substring(0, 2)}
+        </SenderCircle>
+
+        <MessageContentWrapper>
+          <MessageContent>
+            <ShortSender>{conversation.service.agency.name}</ShortSender>
+            <ShortSubject>
+              {conversation.subject} Case ID: {refNo(conversation)}
+            </ShortSubject>
+          </MessageContent>
+        </MessageContentWrapper>
+
+        <Mutation
+          mutation={setLabels}
+          onCompleted={e => {
+            c.resetStore()
+          }}
+        >
+          {(setLabels, { loading, error, data, client }) => {
+            c = client
+
+            return (
+              <Fragment>
+                <ConversationLabel
+                  conversation={conversation}
+                  setLabels={setLabels}
+                  label="Starred"
+                  icon="star"
+                  inverse="star_border"
+                />
+                <ConversationLabel
+                  conversation={conversation}
+                  setLabels={setLabels}
+                  label="Archived"
+                  icon="archive"
+                  inverse="unarchive"
+                />
+              </Fragment>
+            )
+          }}
+        </Mutation>
+      </Subject>
+
+      <Conversations>
+        {conversation.messages.map((msg, i) => (
+          <MessageSection key={i} conversation={conversation} message={msg} />
+        ))}
+      </Conversations>
+    </Wrapper>
+  )
+}
 
 const SometimesConversation = props => {
   return props.conversation ? <Conversation {...props} /> : <Error />
