@@ -95,6 +95,7 @@ const Services = styled.ul`
 
 const Service = styled.li`
   padding: 1rem 2rem;
+  padding-left: 4rem;
 
   & + & {
     margin-top: 0;
@@ -102,6 +103,7 @@ const Service = styled.li`
 `
 
 const Agency = styled(Service)`
+  padding: 1rem 2rem;
   color: #7d7d7d;
   border-top: 1px solid #eee;
 `
@@ -159,6 +161,10 @@ const Editor = styled(CoreEditor).attrs({
 
   .${editorClassName} {
     height: 20rem;
+
+    &:focus {
+      outline: 3px solid #d1e65f;
+    }
   }
 
   .${inlineWrapperClassName}, .${listWrapperClassName} {
@@ -330,7 +336,11 @@ export class Page extends Component {
                                 }}
                                 renderItem={(item, active) => {
                                   if (!item.service) {
-                                    return <Agency>{item.agency.name}</Agency>
+                                    return (
+                                      <Agency key={item.agency.id}>
+                                        {item.agency.name}
+                                      </Agency>
+                                    )
                                   }
 
                                   const ServiceC = active
@@ -407,7 +417,17 @@ export class Page extends Component {
                           to={`/messages/${data.createConversation.id}`}
                         />
                       ) : null}
-                      <Button type="submit" color="black">
+                      <Button
+                        disabled={
+                          !(
+                            this.state.service &&
+                            this.state.subject &&
+                            this.state.editorContent
+                          )
+                        }
+                        type="submit"
+                        color="black"
+                      >
                         Send message
                       </Button>
                     </Fragment>

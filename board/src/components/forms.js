@@ -1,8 +1,6 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
-const Input = ({ reference, ...props }) => <input ref={reference} {...props} />
-
 export const inputCSS = css`
   display: block;
   width: 100%;
@@ -14,9 +12,15 @@ export const inputCSS = css`
   &:focus {
     outline: 3px solid #d1e65f;
   }
+
+  @media screen and (min-width: 768px) {
+    //width: auto;
+  }
 `
 
-const GreatJob = styled(Input)`
+const Input = styled(({ reference, ...props }) => (
+  <input ref={reference} {...props} />
+))`
   ${inputCSS};
 `
 
@@ -29,12 +33,12 @@ const Label = styled.label`
       : css``};
 `
 
-const Text = styled(props => <GreatJob type="text" {...props} />)``
+const Text = styled(props => <Input type="text" {...props} />)``
 
-const Password = styled(props => <GreatJob type="password" {...props} />)``
+const Password = styled(props => <Input type="password" {...props} />)``
 
 const Submit = styled(({ children, ...props }) => (
-  <GreatJob type="submit" value={children} {...props} />
+  <Input type="submit" value={children} {...props} />
 ))`
   border: 0;
   background-color: #d1e65f;
