@@ -1,6 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
-import classnames from 'classnames'
+import styled  from 'styled-components'
 
 import { Text } from '../../../components/forms'
 import IconLink from '../../../components/icon-link'
