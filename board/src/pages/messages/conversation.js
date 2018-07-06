@@ -58,6 +58,8 @@ const ConversationLine = ({ conversation, history }) => {
   const count = conversation.messages.filter(msg => msg.readStatus !== 'Read')
     .length
 
+  const labels = new Set(conversation.labels)
+
   return (
     <Mutation
       mutation={markAsRead}
@@ -107,6 +109,10 @@ const ConversationLine = ({ conversation, history }) => {
                 </Timestamp>
               </MessageContent>
             </MessageContentWrapper>
+
+            {labels.has('Starred') ? (
+              <Icon>star</Icon>
+            ) : null}
           </Message>
         )
       }}
