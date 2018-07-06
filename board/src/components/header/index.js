@@ -320,28 +320,34 @@ const StickyHeader = ({ user }) => (
                 <Navlink onClick={deactivate} to="/activity">
                   Activity
                 </Navlink>
-                <Query query={queryMessages} variables={{ userID: user.id }}>
-                  {({ loading, error, data: { user } }) => {
-                    const count = flatMap(conv => conv.messages)(
-                      (user && user.conversations) || []
-                    ).filter(msg => msg.readStatus !== 'Read').length
+                {user ? (
+                  <Query query={queryMessages} variables={{ userID: user.id }}>
+                    {({ loading, error, data: { user } }) => {
+                      const count = flatMap(conv => conv.messages)(
+                        (user && user.conversations) || []
+                      ).filter(msg => msg.readStatus !== 'Read').length
 
-                    return user ? (
-                      <Navlink
-                        onClick={deactivate}
-                        to="/messages"
-                        link={CounterLink}
-                        data-count={count ? count : ''}
-                      >
-                        Message centre
-                      </Navlink>
-                    ) : (
-                      <Navlink onClick={deactivate} to="/messages">
-                        Message centre
-                      </Navlink>
-                    )
-                  }}
-                </Query>
+                      return user ? (
+                        <Navlink
+                          onClick={deactivate}
+                          to="/messages"
+                          link={CounterLink}
+                          data-count={count ? count : ''}
+                        >
+                          Message centre
+                        </Navlink>
+                      ) : (
+                        <Navlink onClick={deactivate} to="/messages">
+                          Message centre
+                        </Navlink>
+                      )
+                    }}
+                  </Query>
+                ) : (
+                  <Navlink onClick={deactivate} to="/messages">
+                    Message centre
+                  </Navlink>
+                )}
               </SecondaryNavlist>
             </Nav>
           </HeaderWrapper>
