@@ -252,8 +252,8 @@ const Conversation = ({ className, conversation }) => {
                   conversation={conversation}
                   setLabels={setLabels}
                   label="Archived"
-                  icon="archive"
-                  inverse="unarchive"
+                  icon="unarchive"
+                  inverse="archive"
                 />
               </Fragment>
             )
