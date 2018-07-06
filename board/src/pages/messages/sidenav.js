@@ -13,11 +13,9 @@ class Sidenav extends Component {
     const { conversations, search, match, history } = this.props
     let filtered = conversations
 
-    if (this.state.label) {
-      filtered = filtered.filter(conv =>
-        conv.labels.find(label => label === this.state.label)
-      )
-    }
+    filtered = this.state.label
+      ? filtered.filter(conv => new Set(conv.labels).has(this.state.label))
+      : filtered.filter(conv => !new Set(conv.labels).has('Archived'))
 
     filtered = search
       ? new Fuse(filtered, {
