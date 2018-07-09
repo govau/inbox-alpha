@@ -39,7 +39,13 @@ class Sidenav extends Component {
       <Fragment>
         <form>
           <FormGroup>
-            <Checkbox label="Select conversation" />
+            <Checkbox
+              onChange={e => {
+                const editModeActive = e.target.checked
+                this.setState(() => ({ editModeActive }))
+              }}
+              label="Select conversation"
+            />
             <Dropdown
               onChange={e => {
                 const label =
@@ -52,6 +58,7 @@ class Sidenav extends Component {
               <Option value="Archived">Archived</Option>
             </Dropdown>
           </FormGroup>
+          {this.state.editModeActive ? <FormGroup>edit mode</FormGroup> : null}
         </form>
         <Messages>
           <Switch>

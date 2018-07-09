@@ -1,6 +1,8 @@
 import React from 'react'
 import styled, { css } from 'styled-components'
 
+import Icon from './icon'
+
 export const inputCSS = css`
   display: block;
   width: 100%;
@@ -75,9 +77,81 @@ const Checkbox = styled(({ label, className, ...props }) => (
   }
 `
 
-const Dropdown = styled.select``
+const Select = styled.select`
+  ${inputCSS};
+  appearance: none;
+`
 
 const Option = styled.option``
+
+const DropdownWrapper = styled.span`
+  position: relative;
+
+  ${Select} {
+    padding-right: 4rem;
+  }
+
+  & * + * {
+    margin-top: 0;
+  }
+`
+
+const DropdownIndicator = styled(Icon)`
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+`
+
+const Dropdown = props => (
+  <DropdownWrapper>
+    <Select {...props} />
+    <DropdownIndicator>arrow_downward</DropdownIndicator>
+  </DropdownWrapper>
+)
+
+/*
+
+.Dropdown {
+  composes: fieldWrapper from './field.scss';
+}
+
+.fieldIconContainer {
+  composes: fieldIconContainer from './field.scss';
+}
+
+.carrot {
+  transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: units(1);
+}
+
+.field {
+  composes: field from './field.scss';
+  padding-right: columns(1);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    &::-ms-expand {
+      display: none;
+    }
+  }
+}
+
+.fieldInvalid {
+  composes: fieldInvalid from './field.scss';
+}
+
+.fieldValid {
+  composes: fieldValid from './field.scss';
+}
+
+*/
 
 export {
   Text,
