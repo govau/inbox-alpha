@@ -2,6 +2,8 @@ import React, { Fragment, Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import Fuse from 'fuse.js'
+import gql from 'graphql-tag'
+import { Mutation } from 'react-apollo'
 
 import { Messages } from './components'
 import { NewConversationLine, ConversationLine } from './conversation'
@@ -20,12 +22,24 @@ const FlexFormGroup = styled(FormGroup)`
   }
 `
 
+const setLabels = gql`
+  mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
+    updateManyConversations(
+      where: { id_in: $conversationIDs }
+      data: { starred: $starred, archived: $archived }
+    ) {
+      count
+    }
+  }
+`
+
 class Sidenav extends Component {
   state = {}
 
   render() {
     const { conversations, search, match, history } = this.props
     let filtered = conversations
+    let c
 
     filtered = this.state.label
       ? filtered.filter(conv => conv[this.state.label])
@@ -74,30 +88,59 @@ class Sidenav extends Component {
           </FlexFormGroup>
         </form>
         {this.state.editModeActive ? (
-          <section>
-            <div>
-              <IconLink
-                to={`/messages`}
-                onClick={e => {
-                  e.preventDefault()
-                }}
-                icon={<Icon>star_outline</Icon>}
-              >
-                Star
-              </IconLink>
-            </div>
-            <div>
-              <IconLink
-                to={`/messages`}
-                onClick={e => {
-                  e.preventDefault()
-                }}
-                icon={<Icon>archive</Icon>}
-              >
-                Archive
-              </IconLink>
-            </div>
-          </section>
+          <Mutation
+            mutation={setLabels}
+            onCompleted={e => {
+              c.resetStore()
+            }}
+          >
+            {(change, { loading, error, data, client }) => {
+              c = client
+              return (
+                <section>
+                  <div>
+                    <IconLink
+                      to={`/messages`}
+                      onClick={e => {
+                        e.preventDefault()
+                        change({
+                          variables: {
+                            conversationIDs: filtered.map(
+                              ({ item: conv }) => conv.id
+                            ),
+                            starred: true,
+                          },
+                        })
+                      }}
+                      icon={<Icon>star_outline</Icon>}
+                    >
+                      Star
+                    </IconLink>
+                  </div>
+                  <div>
+                    <IconLink
+                      to={`/messages`}
+                      onClick={e => {
+                        e.preventDefault()
+                        change({
+                          variables: {
+                            conversationIDs: filtered.map(
+                              ({ item: conv }) => conv.id
+                            ),
+                            archived: true,
+                            starred: false,
+                          },
+                        })
+                      }}
+                      icon={<Icon>archive</Icon>}
+                    >
+                      Archive
+                    </IconLink>
+                  </div>
+                </section>
+              )
+            }}
+          </Mutation>
         ) : null}
         <Messages>
           <Switch>

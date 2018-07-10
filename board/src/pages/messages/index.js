@@ -8,6 +8,7 @@ import Master from '../../components/layout'
 import { ButtonLink } from '../../components/button'
 import { Heading, Search, H1 } from './components'
 import Sidenav from './sidenav'
+import Messages from './messages'
 import { SometimesConversation } from './conversation'
 import * as Compose from './compose'
 import RequestCall from './request-call'
@@ -78,12 +79,6 @@ const queryMe = gql`
   }
 `
 
-const Help = styled.section`
-  text-align: center;
-  margin: 5em 0;
-  opacity: 0.6;
-`
-
 class Homepage extends Component {
   state = {}
 
@@ -115,59 +110,11 @@ class Homepage extends Component {
 
             <Route
               render={() => (
-                <Fragment>
-                  <Heading>
-                    <div>
-                      <H1>Message centre</H1>
-                      <Search
-                        onChange={e => {
-                          const search = e.target.value ? e.target.value : null
-                          this.setState(() => ({ search }))
-                        }}
-                        placeholder="Search for a conversation"
-                      />
-                    </div>
-                    <ButtonLink to={`${match.path}/compose`} color="black">
-                      Start new message
-                    </ButtonLink>
-                  </Heading>
-
-                  <Master
-                    side={
-                      <Sidenav
-                        search={this.state.search}
-                        conversations={conversations}
-                        match={match}
-                        history={history}
-                      />
-                    }
-                  >
-                    <Switch>
-                      <Route
-                        exact
-                        path={`${match.path}/:id`}
-                        render={({ match }) => (
-                          <SometimesConversation
-                            conversation={conversations.find(
-                              conv => conv.id === match.params.id
-                            )}
-                          />
-                        )}
-                      />
-                      <Route
-                        render={props => (
-                          <Help>
-                            <h2>No conversation selected</h2>
-                            <p>
-                              Choose a conversation from the side bar to get
-                              started.
-                            </p>
-                          </Help>
-                        )}
-                      />
-                    </Switch>
-                  </Master>
-                </Fragment>
+                <Messages
+                  match={match}
+                  history={history}
+                  conversations={conversations}
+                />
               )}
             />
           </Switch>

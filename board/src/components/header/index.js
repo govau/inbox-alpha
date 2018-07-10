@@ -262,6 +262,11 @@ const LoggedOutHeader = () => (
   </Toggle>
 )
 
+const getCount = data =>
+  flatMap(conv => conv.messages)(
+    (data && data.user && data.user.conversations) || []
+  ).filter(msg => msg.readStatus !== 'Read').length || ''
+
 const StickyHeader = ({ user }) => (
   <Toggle>
     {({ on, toggle, deactivate }) => (
@@ -322,26 +327,22 @@ const StickyHeader = ({ user }) => (
                 </Navlink>
                 {user ? (
                   <Query query={queryMessages} variables={{ userID: user.id }}>
-                    {({ loading, error, data: { user } }) => {
-                      const count = flatMap(conv => conv.messages)(
-                        (user && user.conversations) || []
-                      ).filter(msg => msg.readStatus !== 'Read').length
-
-                      return user ? (
+                    {({ loading, error, data }) =>
+                      loading || error ? (
+                        <Navlink onClick={deactivate} to="/messages">
+                          Message centre
+                        </Navlink>
+                      ) : (
                         <Navlink
                           onClick={deactivate}
                           to="/messages"
                           link={CounterLink}
-                          data-count={count ? count : ''}
+                          data-count={getCount(data)}
                         >
                           Message centre
                         </Navlink>
-                      ) : (
-                        <Navlink onClick={deactivate} to="/messages">
-                          Message centre
-                        </Navlink>
                       )
-                    }}
+                    }
                   </Query>
                 ) : (
                   <Navlink onClick={deactivate} to="/messages">

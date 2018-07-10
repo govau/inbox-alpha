@@ -35,7 +35,7 @@ export const Heading = styled.header`
 
 export const Search = styled(Text)`
   @media screen and (min-width: 768px) {
-    flex: 2;
+    max-width: 40rem;
   }
 `
 

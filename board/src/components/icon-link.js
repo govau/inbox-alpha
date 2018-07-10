@@ -59,7 +59,12 @@ export default styled(props => {
   }
 
   & > i.material-icons {
-    font-size: 2rem;
+    font-size: 1.6em;
+  }
+
+  ${Contents} + i.material-icons,
+  i.material-icons + ${Contents} {
+    margin-left: 0.5em;
   }
 
   ${props =>

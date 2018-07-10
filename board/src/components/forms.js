@@ -57,10 +57,12 @@ const Textarea = styled.textarea`
 
 const FormGroup = styled.section``
 
+const BoxLabel = styled.span``
+
 const Checkbox = styled(({ label, className, ...props }) => (
   <label className={className}>
     <Input type="checkbox" {...props} />
-    {label}
+    <BoxLabel>{label}</BoxLabel>
   </label>
 ))`
   & * + * {
@@ -70,25 +72,96 @@ const Checkbox = styled(({ label, className, ...props }) => (
   ${Input} {
     width: auto;
     display: inline-block;
+
+    opacity: 0;
+    visibility: visible;
+    position: absolute;
+    left: -10000px;
   }
+
+  ${Input} + ${BoxLabel} {
+    position: relative;
+    padding: 0 0 0 calc(1rem + 24px);
+  }
+
+  ${Input} + ${BoxLabel}:before {
+    margin: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 2px solid black;
+    content: "";
+    height: 24px;
+    width: 24px;
+    }
+
+  ${Input} + ${BoxLabel}:after {
+    top: 0;
+    left: 0;
+    margin: 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background: transparent;
+    content: "";
+    }
+
+  ${Input}:checked + ${BoxLabel}:after {
+    top: 0;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    content: "";
+    margin-top: 6px;
+    margin-left: 5px;
+    border: solid;
+    border-width: 0px 0px 4px 4px;
+    background: transparent;
+    width: 14px;
+    height: 9px;
+    transform: rotate(-45deg);
+    }
+
+
 `
 
 const Select = styled.select`
   ${inputCSS};
   appearance: none;
+
+  ${props =>
+    props.lite
+      ? css`
+          background-color: transparent;
+          border: 0;
+        `
+      : css``};
 `
 
 const Option = styled.option``
 
-const DropdownWrapper = styled.span`
+const DropdownWrapper = styled.div`
   position: relative;
 
   ${Select} {
-    padding-right: 4rem;
+    padding-left: 4rem;
   }
 
   & * + * {
     margin-top: 0;
+  }
+`
+
+const LabelWrapper = styled.label`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+
+  > * + * {
+    margin-top: 0;
+    margin-left: 1rem;
   }
 `
 
@@ -98,15 +171,24 @@ const DropdownIndicator = styled(Icon)`
   transform: translateY(-50%);
   position: absolute;
   top: 50%;
-  right: 1rem;
+  left: 1rem;
 `
 
-const Dropdown = props => (
-  <DropdownWrapper>
-    <Select {...props} />
-    <DropdownIndicator>arrow_downward</DropdownIndicator>
-  </DropdownWrapper>
-)
+const Dropdown = ({ label = null, lite = false, className, ...props }) =>
+  label ? (
+    <LabelWrapper className={className}>
+      <span>{label}</span>
+      <DropdownWrapper>
+        <Select lite={lite} {...props} />
+        <DropdownIndicator>keyboard_arrow_down</DropdownIndicator>
+      </DropdownWrapper>
+    </LabelWrapper>
+  ) : (
+    <DropdownWrapper className={className}>
+      <Select lite={lite} {...props} />
+      <DropdownIndicator>keyboard_arrow_down</DropdownIndicator>
+    </DropdownWrapper>
+  )
 
 /*
 
