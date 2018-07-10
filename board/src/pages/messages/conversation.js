@@ -150,30 +150,6 @@ const Conversations = styled.div`
   }
 `
 
-const setStarred = gql`
-  mutation($conversationID: ID!, $starred: Boolean) {
-    updateConversation(
-      where: { id: $conversationID }
-      data: { starred: $starred }
-    ) {
-      id
-      starred
-    }
-  }
-`
-
-const setArchived = gql`
-  mutation($conversationID: ID!, $archived: Boolean) {
-    updateConversation(
-      where: { id: $conversationID }
-      data: { archived: $archived }
-    ) {
-      id
-      archived
-    }
-  }
-`
-
 const setLabels = gql`
   mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
     updateManyConversations(
@@ -191,26 +167,6 @@ const refNo = conversation =>
     .substring(0, 3)
     .toUpperCase()}${conversation.id.slice(-8).toUpperCase()}`
 
-const union = (a, b) => {
-  let _union = new Set(a)
-  for (var elem of b) {
-    _union.add(elem)
-  }
-
-  return _union
-}
-
-const difference = (a, b) => {
-  let _difference = new Set(a)
-  for (var elem of b) {
-    _difference.delete(elem)
-  }
-
-  return _difference
-}
-
-const xor = (a, b) => union(difference(a, b), difference(b, a))
-
 const ConversationLabel = ({
   conversation,
   mutation,
@@ -218,25 +174,21 @@ const ConversationLabel = ({
   icon,
   inverse,
   children,
-}) => {
-  let c
-
-  return (
-    <IconLink
-      to={`/messages/${conversation.id}`}
-      onClick={e => {
-        e.preventDefault()
-        mutation({
-          variables: {
-            conversationIDs: conversation.id,
-            [label]: !conversation[label],
-          },
-        })
-      }}
-      icon={<Icon>{conversation[label] ? icon : inverse}</Icon>}
-    />
-  )
-}
+}) => (
+  <IconLink
+    to={`/messages/${conversation.id}`}
+    onClick={e => {
+      e.preventDefault()
+      mutation({
+        variables: {
+          conversationIDs: conversation.id,
+          [label]: !conversation[label],
+        },
+      })
+    }}
+    icon={<Icon>{conversation[label] ? icon : inverse}</Icon>}
+  />
+)
 
 const Conversation = ({ className, conversation }) => {
   let c
