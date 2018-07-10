@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import gql from 'graphql-tag'
 import { Mutation } from 'react-apollo'
 
+import { Checkbox } from '../../components/forms'
 import Counter from '../../components/counter'
 import { Message as MessageSection } from './section'
 import { Error } from '../../components/error'
@@ -53,12 +54,10 @@ const markAsRead = gql`
   }
 `
 
-const ConversationLine = ({ conversation, history }) => {
+const ConversationLine = ({ conversation, history, open = true }) => {
   let c
   const count = conversation.messages.filter(msg => msg.readStatus !== 'Read')
     .length
-
-  const labels = new Set(conversation.labels)
 
   return (
     <Mutation
@@ -86,6 +85,8 @@ const ConversationLine = ({ conversation, history }) => {
               history.location.pathname === `/messages/${conversation.id}`
             }
           >
+            {open ? <Checkbox /> : null}
+
             <SenderInfo>
               <CounterSenderCircle
                 reversed
@@ -110,9 +111,7 @@ const ConversationLine = ({ conversation, history }) => {
               </MessageContent>
             </MessageContentWrapper>
 
-            {labels.has('Starred') ? (
-              <Icon>star</Icon>
-            ) : null}
+            {conversation.starred ? <Icon>star</Icon> : null}
           </Message>
         )
       }}
@@ -151,15 +150,37 @@ const Conversations = styled.div`
   }
 `
 
-const setLabels = gql`
-  mutation($conversationID: ID!, $labels: [Label!]!) {
+const setStarred = gql`
+  mutation($conversationID: ID!, $starred: Boolean) {
     updateConversation(
       where: { id: $conversationID }
-      data: { labels: { set: $labels } }
+      data: { starred: $starred }
     ) {
       id
-      subject
-      labels
+      starred
+    }
+  }
+`
+
+const setArchived = gql`
+  mutation($conversationID: ID!, $archived: Boolean) {
+    updateConversation(
+      where: { id: $conversationID }
+      data: { archived: $archived }
+    ) {
+      id
+      archived
+    }
+  }
+`
+
+const setLabels = gql`
+  mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
+    updateManyConversations(
+      where: { id_in: $conversationIDs }
+      data: { starred: $starred, archived: $archived }
+    ) {
+      count
     }
   }
 `
@@ -192,27 +213,27 @@ const xor = (a, b) => union(difference(a, b), difference(b, a))
 
 const ConversationLabel = ({
   conversation,
-  setLabels,
+  mutation,
   label,
   icon,
   inverse,
   children,
 }) => {
-  const labels = new Set(conversation.labels)
+  let c
 
   return (
     <IconLink
       to={`/messages/${conversation.id}`}
       onClick={e => {
         e.preventDefault()
-        setLabels({
+        mutation({
           variables: {
-            conversationID: conversation.id,
-            labels: [...xor(labels, new Set([label]))],
+            conversationIDs: conversation.id,
+            [label]: !conversation[label],
           },
         })
       }}
-      icon={<Icon>{labels.has(label) ? icon : inverse}</Icon>}
+      icon={<Icon>{conversation[label] ? icon : inverse}</Icon>}
     />
   )
 }
@@ -242,22 +263,22 @@ const Conversation = ({ className, conversation }) => {
             c.resetStore()
           }}
         >
-          {(setLabels, { loading, error, data, client }) => {
+          {(change, { loading, error, data, client }) => {
             c = client
 
             return (
               <Fragment>
                 <ConversationLabel
                   conversation={conversation}
-                  setLabels={setLabels}
-                  label="Starred"
+                  mutation={change}
+                  label="starred"
                   icon="star"
                   inverse="star_border"
                 />
                 <ConversationLabel
                   conversation={conversation}
-                  setLabels={setLabels}
-                  label="Archived"
+                  mutation={change}
+                  label="archived"
                   icon="unarchive"
                   inverse="archive"
                 />

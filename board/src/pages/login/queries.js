@@ -151,8 +151,8 @@ const createNewUser = gql`
               }
             }
             {
-              labels: {set:[Starred]}
               subject: "Tax Assessment 2017"
+              starred: true
               service: { connect: { id: $taxID } }
               messages: {
                 create: [

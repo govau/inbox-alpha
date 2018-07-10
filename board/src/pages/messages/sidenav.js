@@ -1,10 +1,24 @@
 import React, { Fragment, Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
+import styled from 'styled-components'
 import Fuse from 'fuse.js'
 
 import { Messages } from './components'
 import { NewConversationLine, ConversationLine } from './conversation'
 import { Checkbox, Dropdown, FormGroup, Option } from '../../components/forms'
+import IconLink from '../../components/icon-link'
+import Icon from '../../components/icon'
+
+const FlexFormGroup = styled(FormGroup)`
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  align-items: center;
+
+  & * + * {
+    margin-top: 0;
+  }
+`
 
 class Sidenav extends Component {
   state = {}
@@ -14,8 +28,8 @@ class Sidenav extends Component {
     let filtered = conversations
 
     filtered = this.state.label
-      ? filtered.filter(conv => new Set(conv.labels).has(this.state.label))
-      : filtered.filter(conv => !new Set(conv.labels).has('Archived'))
+      ? filtered.filter(conv => conv[this.state.label])
+      : filtered.filter(conv => !conv.archived)
 
     filtered = search
       ? new Fuse(filtered, {
@@ -38,7 +52,7 @@ class Sidenav extends Component {
     return (
       <Fragment>
         <form>
-          <FormGroup>
+          <FlexFormGroup>
             <Checkbox
               onChange={e => {
                 const editModeActive = e.target.checked
@@ -49,17 +63,42 @@ class Sidenav extends Component {
             <Dropdown
               onChange={e => {
                 const label =
-                  e.target.value === 'Default' ? null : e.target.value
+                  e.target.value === 'default' ? null : e.target.value
                 this.setState(() => ({ label }))
               }}
             >
-              <Option value="Default">Default</Option>
-              <Option value="Starred">Starred</Option>
-              <Option value="Archived">Archived</Option>
+              <Option value="default">Default</Option>
+              <Option value="starred">Starred</Option>
+              <Option value="archived">Archived</Option>
             </Dropdown>
-          </FormGroup>
-          {this.state.editModeActive ? <FormGroup>edit mode</FormGroup> : null}
+          </FlexFormGroup>
         </form>
+        {this.state.editModeActive ? (
+          <section>
+            <div>
+              <IconLink
+                to={`/messages`}
+                onClick={e => {
+                  e.preventDefault()
+                }}
+                icon={<Icon>star_outline</Icon>}
+              >
+                Star
+              </IconLink>
+            </div>
+            <div>
+              <IconLink
+                to={`/messages`}
+                onClick={e => {
+                  e.preventDefault()
+                }}
+                icon={<Icon>archive</Icon>}
+              >
+                Archive
+              </IconLink>
+            </div>
+          </section>
+        ) : null}
         <Messages>
           <Switch>
             <Route
@@ -70,6 +109,7 @@ class Sidenav extends Component {
           </Switch>
           {filtered.map(({ score, item: conv }, i) => (
             <ConversationLine
+              open={this.state.editModeActive}
               data-score={score}
               key={i}
               conversation={conv}

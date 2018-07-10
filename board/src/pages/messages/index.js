@@ -21,7 +21,8 @@ const queryMe = gql`
         id
         createdAt
         subject
-        labels
+        starred
+        archived
         service {
           name
           description

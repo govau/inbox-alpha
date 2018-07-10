@@ -55,11 +55,7 @@ const Textarea = styled.textarea`
   ${inputCSS};
 `
 
-const FormGroup = styled.section`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
+const FormGroup = styled.section``
 
 const Checkbox = styled(({ label, className, ...props }) => (
   <label className={className}>
