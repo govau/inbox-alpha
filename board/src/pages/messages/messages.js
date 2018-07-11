@@ -20,7 +20,7 @@ const Help = styled.section`
 `
 
 const FilterPanel = styled.section`
-  background-color: #eee;
+  background-color: #f3f5f5;
   padding: 1.5rem;
 
   ${Search} + * {
@@ -29,7 +29,6 @@ const FilterPanel = styled.section`
 `
 
 const FilterPanelSection = styled.section`
-  background-color: #eee;
   display: flex;
   flex-flow: row nowrap;
   justify-content: flex-start;

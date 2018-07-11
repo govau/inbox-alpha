@@ -132,7 +132,7 @@ const ConversationLine = ({
 }
 
 const Wrapper = styled.div`
-  margin-left: 1rem;
+  margin-left: 1em;
   padding-bottom: 4rem;
   border: 1px solid #cccccc;
   min-height: 65vh;

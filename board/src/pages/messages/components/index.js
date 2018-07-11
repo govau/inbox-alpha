@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { Text } from '../../../components/forms'
 import Icon from '../../../components/icon'
@@ -43,7 +43,7 @@ const SearchWrapper = styled.div`
 
   width: 100%;
   @media screen and (min-width: 768px) {
-    max-width: 40rem;
+    max-width: 37rem;
   }
 
   & * + * {
@@ -102,22 +102,32 @@ export const MessageContent = styled.div`
   }
 `
 
-export const Message = styled.li`
-  background-color: ${({ active }) => (active ? '#f3f5f5' : '#fff')};
+export const SimpleMessage = styled.li`
+  background-color: #fff;
   margin-top: 0;
   padding: 1rem 2rem;
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
+  border-top: 1px solid #d5d5d5;
 
-  & + & {
-    border-top: 1px solid #d5d5d5;
+  &:last-child {
+    border-bottom: 1px solid #d5d5d5;
   }
 
   > * + * {
     margin-top: 0;
     margin-left: 1rem;
   }
+`
+
+export const Message = styled(SimpleMessage)`
+  ${props =>
+    props.active
+      ? css`
+          background-color: #f3f5f5;
+        `
+      : css``};
 `
 
 export const ShortSubject = styled.span`
