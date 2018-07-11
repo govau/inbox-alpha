@@ -205,7 +205,7 @@ const createNewUser = gql`
                 create: [
                   {
                     sender: { create: { source: Service } }
-                    sentAt: "Tue 19 June 2018, 5:30pm"
+                    sentAt: "Fri 26 April 2018, 2:30pm"
                     sections: {
                       create: [
                         {
@@ -244,6 +244,7 @@ const createNewUser = gql`
               messages: {
                 create: [
                   {
+                    sentAt: "Fri 03 May 2018, 2:00pm"
                     readStatus: Read
                     sections: {
                       create: [
@@ -267,6 +268,7 @@ const createNewUser = gql`
               messages: {
                 create: [
                   {
+                    sentAt: "Tue 10 May 2018, 5:30pm"
                     readStatus: Read
                     sections: {
                       create: [

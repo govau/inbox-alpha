@@ -26,6 +26,25 @@ const Timestamp = styled.time`
   margin-top: 0;
 `
 
+const ConversationTimestamp = ({ conversation }) => {
+  const message = conversation.messages.find(() => true)
+
+  if (message && message.sentAt) {
+    const date =
+      format(message.sentAt, 'ddd D MMM YYYY, h:mm a') !== 'Invalid Date'
+        ? format(message.sentAt, 'ddd D MMM YYYY, h:mm a')
+        : message.sentAt
+
+    return <Timestamp dateTime={conversation.createdAt}>{date}</Timestamp>
+  }
+
+  return (
+    <Timestamp dateTime={conversation.createdAt}>
+      {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
+    </Timestamp>
+  )
+}
+
 export const NewConversationLine = () => (
   <Message active={true}>
     <SenderInfo>
@@ -117,9 +136,7 @@ const ConversationLine = ({
                 <ShortSubject unread={!!count}>
                   {conversation.subject}
                 </ShortSubject>
-                <Timestamp dateTime={conversation.createdAt}>
-                  {format(conversation.createdAt, 'ddd D MMM YYYY, h:mm a')}
-                </Timestamp>
+                <ConversationTimestamp conversation={conversation} />
               </MessageContent>
             </MessageContentWrapper>
 
