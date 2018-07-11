@@ -169,6 +169,7 @@ class Messages extends Component {
                     editModeActive: false,
                     selectedConversationIDs: new Set(),
                   }))
+                  history.push(match.path)
                 }}
                 conversations={conversations}
                 selectedConversationIDs={this.state.selectedConversationIDs}
@@ -234,10 +235,12 @@ class Messages extends Component {
             <Route
               exact
               path={`${match.path}/:id`}
-              render={({ match }) => (
+              render={({ match: innerMatch }) => (
                 <SometimesConversation
+                  prefix={match.path}
+                  history={history}
                   conversation={conversations.find(
-                    conv => conv.id === match.params.id
+                    conv => conv.id === innerMatch.params.id
                   )}
                 />
               )}

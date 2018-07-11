@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import format from 'date-fns/format'
 import styled from 'styled-components'
 import gql from 'graphql-tag'
@@ -170,12 +170,14 @@ const BlackIconLink = styled(IconLink)`
 `
 
 const setLabels = gql`
-  mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
-    updateManyConversations(
-      where: { id_in: $conversationIDs }
+  mutation($conversationID: ID!, $archived: Boolean, $starred: Boolean) {
+    updateConversation(
+      where: { id: $conversationID }
       data: { starred: $starred, archived: $archived }
     ) {
-      count
+      id
+      starred
+      archived
     }
   }
 `
@@ -189,86 +191,85 @@ const refNo = conversation =>
 // to={`${match.path}/${conversation.id}`}
 const ConversationLabel = ({
   conversation,
-  mutation,
   label,
   icon,
   inverse,
   match,
+  onCompleted,
   children,
-}) => (
-  <BlackIconLink
-    to="/messages"
-    onClick={e => {
-      e.preventDefault()
-      mutation({
-        variables: {
-          conversationIDs: conversation.id,
-          [label]: !conversation[label],
-        },
-      })
-    }}
-    icon={<Icon>{conversation[label] ? icon : inverse}</Icon>}
-  />
-)
-
-const Conversation = ({ className, conversation }) => {
+}) => {
   let c
-
   return (
-    <Wrapper>
-      <Subject className={className}>
-        <SenderCircle image={conversation.service.agency.logo}>
-          {conversation.service.agency.name.substring(0, 2)}
-        </SenderCircle>
+    <Mutation
+      mutation={setLabels}
+      onCompleted={data => {
+        c.resetStore()
+        onCompleted && onCompleted(data)
+      }}
+    >
+      {(change, { loading, error, data, client }) => {
+        c = client
 
-        <MessageContentWrapper>
-          <MessageContent>
-            <ShortSender>{conversation.service.agency.name}</ShortSender>
-            <ShortSubject>
-              {conversation.subject} Case ID: {refNo(conversation)}
-            </ShortSubject>
-          </MessageContent>
-        </MessageContentWrapper>
-
-        <Mutation
-          mutation={setLabels}
-          onCompleted={e => {
-            c.resetStore()
-          }}
-        >
-          {(change, { loading, error, data, client }) => {
-            c = client
-
-            return (
-              <Fragment>
-                <ConversationLabel
-                  conversation={conversation}
-                  mutation={change}
-                  label="starred"
-                  icon="star"
-                  inverse="star_border"
-                />
-                <ConversationLabel
-                  conversation={conversation}
-                  mutation={change}
-                  label="archived"
-                  icon="vertical_align_top"
-                  inverse="vertical_align_bottom"
-                />
-              </Fragment>
-            )
-          }}
-        </Mutation>
-      </Subject>
-
-      <Conversations>
-        {conversation.messages.map((msg, i) => (
-          <MessageSection key={i} conversation={conversation} message={msg} />
-        ))}
-      </Conversations>
-    </Wrapper>
+        return (
+          <BlackIconLink
+            to="/messages"
+            onClick={e => {
+              e.preventDefault()
+              change({
+                variables: {
+                  conversationID: conversation.id,
+                  [label]: !conversation[label],
+                },
+              })
+            }}
+            icon={<Icon>{conversation[label] ? icon : inverse}</Icon>}
+          />
+        )
+      }}
+    </Mutation>
   )
 }
+
+const Conversation = ({ className, prefix, history, conversation }) => (
+  <Wrapper>
+    <Subject className={className}>
+      <SenderCircle image={conversation.service.agency.logo}>
+        {conversation.service.agency.name.substring(0, 2)}
+      </SenderCircle>
+
+      <MessageContentWrapper>
+        <MessageContent>
+          <ShortSender>{conversation.service.agency.name}</ShortSender>
+          <ShortSubject>
+            {conversation.subject} Case ID: {refNo(conversation)}
+          </ShortSubject>
+        </MessageContent>
+      </MessageContentWrapper>
+
+      <ConversationLabel
+        conversation={conversation}
+        label="starred"
+        icon="star"
+        inverse="star_border"
+      />
+      <ConversationLabel
+        conversation={conversation}
+        onCompleted={() => {
+          history.push(prefix)
+        }}
+        label="archived"
+        icon="vertical_align_top"
+        inverse="vertical_align_bottom"
+      />
+    </Subject>
+
+    <Conversations>
+      {conversation.messages.map((msg, i) => (
+        <MessageSection key={i} conversation={conversation} message={msg} />
+      ))}
+    </Conversations>
+  </Wrapper>
+)
 
 const SometimesConversation = props => {
   return props.conversation ? <Conversation {...props} /> : <Error />
