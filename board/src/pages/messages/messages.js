@@ -200,11 +200,11 @@ class Messages extends Component {
                 >
                   {(selected, ActionIconLink) =>
                     selected ? (
-                      <ActionIconLink icon="vertical_align_top">
+                      <ActionIconLink icon="unarchive">
                         Unarchive
                       </ActionIconLink>
                     ) : (
-                      <ActionIconLink icon="vertical_align_bottom">
+                      <ActionIconLink icon="archive">
                         Archive
                       </ActionIconLink>
                     )

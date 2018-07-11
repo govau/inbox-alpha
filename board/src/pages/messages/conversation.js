@@ -275,8 +275,8 @@ const Conversation = ({ className, prefix, history, conversation }) => (
           history.push(prefix)
         }}
         label="archived"
-        icon="vertical_align_top"
-        inverse="vertical_align_bottom"
+        icon="unarchive"
+        inverse="archive"
       />
     </Subject>
 
