@@ -54,7 +54,12 @@ const markAsRead = gql`
   }
 `
 
-const ConversationLine = ({ conversation, history, open = true }) => {
+const ConversationLine = ({
+  conversation,
+  history,
+  onSelectItem,
+  open = false,
+}) => {
   let c
   const count = conversation.messages.filter(msg => msg.readStatus !== 'Read')
     .length
@@ -71,21 +76,16 @@ const ConversationLine = ({ conversation, history, open = true }) => {
 
         return (
           <Message
-            style={{ cursor: 'pointer' }}
-            onClick={e => {
-              markAsRead({
-                variables: {
-                  conversationID: conversation.id,
-                  now: new Date().toString(),
-                },
-              })
-              history.push(`/messages/${conversation.id}`)
-            }}
             active={
               history.location.pathname === `/messages/${conversation.id}`
             }
           >
-            {open ? <Checkbox /> : null}
+            {open ? (
+              <Checkbox
+                checked={conversation.selected}
+                onChange={onSelectItem}
+              />
+            ) : null}
 
             <SenderInfo>
               <CounterSenderCircle
@@ -97,7 +97,18 @@ const ConversationLine = ({ conversation, history, open = true }) => {
               </CounterSenderCircle>
             </SenderInfo>
 
-            <MessageContentWrapper>
+            <MessageContentWrapper
+              style={{ cursor: 'pointer' }}
+              onClick={e => {
+                markAsRead({
+                  variables: {
+                    conversationID: conversation.id,
+                    now: new Date().toString(),
+                  },
+                })
+                history.push(`/messages/${conversation.id}`)
+              }}
+            >
               <MessageContent>
                 <ShortSender unread={!!count}>
                   {conversation.service.agency.name}

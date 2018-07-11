@@ -1,13 +1,31 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link as ReactRouterLink } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 
 const Contents = styled.span``
 
 const Plaintext = styled.span``
 
-const Mimic = styled(Plaintext)`
+const linkCSS = css`
   color: #246add;
+  text-decoration: none;
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+`
+
+const Link = styled(ReactRouterLink)`
+  ${linkCSS};
+`
+
+const A = styled.a`
+  ${linkCSS};
+`
+
+const Mimic = styled(Plaintext)`
+  ${linkCSS};
 `
 
 /* A link with a material icon next to it.
@@ -71,7 +89,7 @@ export default styled(props => {
     props.plain_text
       ? css``
       : css`
-          & > ${Contents} {
+          &:hover > ${Contents} {
             text-decoration: underline;
           }
         `};

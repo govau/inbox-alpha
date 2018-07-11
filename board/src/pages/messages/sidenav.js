@@ -37,12 +37,20 @@ class Sidenav extends Component {
   state = {}
 
   render() {
-    const { conversations, search, match, history } = this.props
+    const {
+      conversations,
+      search,
+      editModeActive,
+      label,
+      onSelectConversation,
+      match,
+      history,
+    } = this.props
     let filtered = conversations
     let c
 
-    filtered = this.state.label
-      ? filtered.filter(conv => conv[this.state.label])
+    filtered = label
+      ? filtered.filter(conv => conv[label])
       : filtered.filter(conv => !conv.archived)
 
     filtered = search
@@ -53,8 +61,8 @@ class Sidenav extends Component {
           includeScore: true,
           keys: [
             'subject',
-            'messages.sender.name',
-            'messages.sender.agency.name',
+            'service.name',
+            'service.agency.name',
             'messages.sections.markdown.source',
             'messages.sections.document.filename',
             'messages.sections.markdown.source',
@@ -65,83 +73,6 @@ class Sidenav extends Component {
 
     return (
       <Fragment>
-        <form>
-          <FlexFormGroup>
-            <Checkbox
-              onChange={e => {
-                const editModeActive = e.target.checked
-                this.setState(() => ({ editModeActive }))
-              }}
-              label="Select conversation"
-            />
-            <Dropdown
-              onChange={e => {
-                const label =
-                  e.target.value === 'default' ? null : e.target.value
-                this.setState(() => ({ label }))
-              }}
-            >
-              <Option value="default">Default</Option>
-              <Option value="starred">Starred</Option>
-              <Option value="archived">Archived</Option>
-            </Dropdown>
-          </FlexFormGroup>
-        </form>
-        {this.state.editModeActive ? (
-          <Mutation
-            mutation={setLabels}
-            onCompleted={e => {
-              c.resetStore()
-            }}
-          >
-            {(change, { loading, error, data, client }) => {
-              c = client
-              return (
-                <section>
-                  <div>
-                    <IconLink
-                      to={`/messages`}
-                      onClick={e => {
-                        e.preventDefault()
-                        change({
-                          variables: {
-                            conversationIDs: filtered.map(
-                              ({ item: conv }) => conv.id
-                            ),
-                            starred: true,
-                          },
-                        })
-                      }}
-                      icon={<Icon>star_outline</Icon>}
-                    >
-                      Star
-                    </IconLink>
-                  </div>
-                  <div>
-                    <IconLink
-                      to={`/messages`}
-                      onClick={e => {
-                        e.preventDefault()
-                        change({
-                          variables: {
-                            conversationIDs: filtered.map(
-                              ({ item: conv }) => conv.id
-                            ),
-                            archived: true,
-                            starred: false,
-                          },
-                        })
-                      }}
-                      icon={<Icon>archive</Icon>}
-                    >
-                      Archive
-                    </IconLink>
-                  </div>
-                </section>
-              )
-            }}
-          </Mutation>
-        ) : null}
         <Messages>
           <Switch>
             <Route
@@ -152,11 +83,17 @@ class Sidenav extends Component {
           </Switch>
           {filtered.map(({ score, item: conv }, i) => (
             <ConversationLine
-              open={this.state.editModeActive}
               data-score={score}
               key={i}
               conversation={conv}
               history={history}
+              open={editModeActive}
+              onSelectItem={e => {
+                onSelectConversation({
+                  selected: e.target.checked,
+                  conversation: conv,
+                })
+              }}
             />
           ))}
         </Messages>

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import { Route, Switch } from 'react-router-dom'
+import { Mutation } from 'react-apollo'
 
 import { Query } from '../../components/with-data'
 import Master from '../../components/layout'
@@ -43,10 +44,81 @@ const PullRightDropdown = styled(Dropdown)`
   margin-left: auto;
 `
 
+const setLabels = gql`
+  mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
+    updateManyConversations(
+      where: { id_in: $conversationIDs }
+      data: { starred: $starred, archived: $archived }
+    ) {
+      count
+    }
+  }
+`
+
+const isEmpty = set => [...set].length === 0
+
+const doNothing = () => {}
+
+const BlackIconLink = styled(IconLink)`
+  color: black;
+
+  &:visited {
+    color: black;
+  }
+`
+
+const ApplyLabel = ({
+  label,
+  children,
+  conversations,
+  onCompleted = doNothing,
+  selectedConversationIDs = new Set(),
+}) => {
+  let c
+
+  const selected = [...selectedConversationIDs].every(
+    conversationID =>
+      (conversations.find(conversation => conversation.id === conversationID) ||
+        {})[label]
+  )
+
+  return (
+    <Mutation
+      mutation={setLabels}
+      onCompleted={e => {
+        c.resetStore()
+        onCompleted()
+      }}
+    >
+      {(change, { loading, error, data, client }) => {
+        c = client
+
+        return children(selected, ({ icon, ...props }) => (
+          <BlackIconLink
+            to="/messages"
+            onClick={e => {
+              e.preventDefault()
+              change({
+                variables: {
+                  conversationIDs: [...selectedConversationIDs],
+                  [label]: !selected,
+                },
+              })
+            }}
+            icon={<Icon>{icon}</Icon>}
+            {...props}
+          />
+        ))
+      }}
+    </Mutation>
+  )
+}
+
 class Messages extends Component {
-  state = {}
+  state = { selectedConversationIDs: new Set() }
 
   render() {
+    let c
     const { conversations, match, history } = this.props
 
     return (
@@ -69,15 +141,61 @@ class Messages extends Component {
             placeholder="Search for a conversation"
           />
 
-          <Checkbox label="Select messages" />
-          <IconLink to={`/messages`} icon={<Icon>star_outline</Icon>}>
-            Star
-          </IconLink>
-          <IconLink to={`/messages`} icon={<Icon>archive</Icon>}>
-            Archive
-          </IconLink>
+          <Checkbox
+            onChange={e => {
+              const editModeActive = e.target.checked
+              this.setState(() => ({ editModeActive }))
+            }}
+            checked={this.state.editModeActive || false}
+            label="Select messages"
+          />
 
-          <PullRightDropdown lite label="View by">
+          {isEmpty(this.state.selectedConversationIDs) ? null : (
+            <Fragment>
+              <ApplyLabel
+                label="starred"
+                conversations={conversations}
+                selectedConversationIDs={this.state.selectedConversationIDs}
+              >
+                {(selected, ActionIconLink) =>
+                  selected ? (
+                    <ActionIconLink icon="star">Unstar</ActionIconLink>
+                  ) : (
+                    <ActionIconLink icon="star_outline">Star</ActionIconLink>
+                  )
+                }
+              </ApplyLabel>
+
+              <ApplyLabel
+                label="archived"
+                onCompleted={() => {
+                  this.setState(() => ({
+                    editModeActive: false,
+                    selectedConversationIDs: new Set(),
+                  }))
+                }}
+                conversations={conversations}
+                selectedConversationIDs={this.state.selectedConversationIDs}
+              >
+                {(selected, ActionIconLink) =>
+                  selected ? (
+                    <ActionIconLink icon="unarchive">Unarchive</ActionIconLink>
+                  ) : (
+                    <ActionIconLink icon="archive">Archive</ActionIconLink>
+                  )
+                }
+              </ApplyLabel>
+            </Fragment>
+          )}
+
+          <PullRightDropdown
+            lite
+            label="View by"
+            onChange={e => {
+              const label = e.target.value === 'default' ? null : e.target.value
+              this.setState(() => ({ label }))
+            }}
+          >
             <Option value="default">Default</Option>
             <Option value="starred">Starred</Option>
             <Option value="archived">Archived</Option>
@@ -88,9 +206,25 @@ class Messages extends Component {
           side={
             <Sidenav
               search={this.state.search}
-              conversations={conversations}
+              label={this.state.label}
+              conversations={conversations.map(c => ({
+                selected: this.state.selectedConversationIDs.has(c.id),
+                ...c,
+              }))}
               match={match}
               history={history}
+              editModeActive={this.state.editModeActive}
+              onSelectConversation={({ selected, conversation }) => {
+                const selectedConversationIDs = new Set(
+                  this.state.selectedConversationIDs
+                )
+
+                selected
+                  ? selectedConversationIDs.add(conversation.id)
+                  : selectedConversationIDs.delete(conversation.id)
+
+                this.setState(() => ({ selectedConversationIDs }))
+              }}
             />
           }
         >

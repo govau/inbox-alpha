@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import markdownify from 'draftjs-to-markdown'
 import { Query, Mutation } from 'react-apollo'
+import Fuse from 'fuse.js'
 import gql from 'graphql-tag'
 import styled from 'styled-components'
 import Autocomplete from 'react-autocomplete'
@@ -145,6 +146,16 @@ const toolbarClassName = 'content-editor-toolbar'
 const optionWrapperClassName = 'content-editor-toolbar-option-wrapper'
 const inlineWrapperClassName = 'content-editor-toolbar-inline-wrapper'
 const listWrapperClassName = 'content-editor-toolbar-list-wrapper'
+
+const filterServices = (services, search) =>
+  search
+    ? new Fuse(services, {
+        shouldSort: true,
+        tokenize: true,
+        threshold: 0.02,
+        keys: ['name', 'agency.name'],
+      }).search(search)
+    : services
 
 const Editor = styled(CoreEditor).attrs({
   editorClassName,
@@ -312,13 +323,22 @@ export class Page extends Component {
                               <Autocomplete
                                 inputProps={{ id: 'service' }}
                                 wrapperStyle={{}}
-                                items={flatMap(agency => [
-                                  { agency },
-                                  ...agency.services.map(service => ({
-                                    service,
-                                    agency: service.agency,
-                                  })),
-                                ])(data.agencies || [])}
+                                items={flatMap(agency => {
+                                  const services = filterServices(
+                                    agency.services,
+                                    this.state.serviceLabel
+                                  )
+
+                                  return services.length
+                                    ? [
+                                        { agency },
+                                        ...services.map(service => ({
+                                          service,
+                                          agency: service.agency,
+                                        })),
+                                      ]
+                                    : []
+                                })(data.agencies || [])}
                                 getItemValue={item =>
                                   item.service
                                     ? `${item.service.name} - ${
