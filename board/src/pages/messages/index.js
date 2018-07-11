@@ -1,15 +1,9 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import gql from 'graphql-tag'
-import styled from 'styled-components'
 import { Route, Switch } from 'react-router-dom'
 
 import { Query } from '../../components/with-data'
-import Master from '../../components/layout'
-import { ButtonLink } from '../../components/button'
-import { Heading, Search, H1 } from './components'
-import Sidenav from './sidenav'
 import Messages from './messages'
-import { SometimesConversation } from './conversation'
 import * as Compose from './compose'
 import RequestCall from './request-call'
 

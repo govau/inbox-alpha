@@ -1,37 +1,9 @@
 import React, { Fragment, Component } from 'react'
 import { Route, Switch } from 'react-router-dom'
-import styled from 'styled-components'
 import Fuse from 'fuse.js'
-import gql from 'graphql-tag'
-import { Mutation } from 'react-apollo'
 
 import { Messages } from './components'
 import { NewConversationLine, ConversationLine } from './conversation'
-import { Checkbox, Dropdown, FormGroup, Option } from '../../components/forms'
-import IconLink from '../../components/icon-link'
-import Icon from '../../components/icon'
-
-const FlexFormGroup = styled(FormGroup)`
-  display: flex;
-  flex-flow: row;
-  justify-content: space-between;
-  align-items: center;
-
-  & * + * {
-    margin-top: 0;
-  }
-`
-
-const setLabels = gql`
-  mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
-    updateManyConversations(
-      where: { id_in: $conversationIDs }
-      data: { starred: $starred, archived: $archived }
-    ) {
-      count
-    }
-  }
-`
 
 class Sidenav extends Component {
   state = {}
@@ -47,7 +19,6 @@ class Sidenav extends Component {
       history,
     } = this.props
     let filtered = conversations
-    let c
 
     filtered = label
       ? filtered.filter(conv => conv[label])

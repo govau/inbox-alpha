@@ -50,7 +50,7 @@ export default styled(props => {
       ? Mimic
       : Plaintext
     : !!props.href
-      ? 'a'
+      ? A
       : Link
   const link = <Element {...rest}>{children}</Element>
 

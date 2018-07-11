@@ -4,15 +4,12 @@ import styled from 'styled-components'
 import { Route, Switch } from 'react-router-dom'
 import { Mutation } from 'react-apollo'
 
-import { Query } from '../../components/with-data'
 import Master from '../../components/layout'
 import { ButtonLink } from '../../components/button'
 import { Heading, Search, H1 } from './components'
 import Sidenav from './sidenav'
-import { Checkbox, Dropdown, FormGroup, Option } from '../../components/forms'
+import { Checkbox, Dropdown, Option } from '../../components/forms'
 import { SometimesConversation } from './conversation'
-import * as Compose from './compose'
-import RequestCall from './request-call'
 import IconLink from '../../components/icon-link'
 import Icon from '../../components/icon'
 
@@ -118,7 +115,6 @@ class Messages extends Component {
   state = { selectedConversationIDs: new Set() }
 
   render() {
-    let c
     const { conversations, match, history } = this.props
 
     return (
