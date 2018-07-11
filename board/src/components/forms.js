@@ -89,7 +89,8 @@ const Checkbox = styled(({ label, className, ...props }) => (
     position: absolute;
     top: 0;
     left: 0;
-    border: 2px solid black;
+    border: 1px solid #ccc;
+    background-color: white;
     content: "";
     height: 24px;
     width: 24px;

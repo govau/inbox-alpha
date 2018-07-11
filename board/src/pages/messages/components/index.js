@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { Text } from '../../../components/forms'
+import Icon from '../../../components/icon'
 import IconLink from '../../../components/icon-link'
 import attachment from './attachment.png'
 
@@ -33,11 +34,38 @@ export const Heading = styled.header`
   }
 `
 
-export const Search = styled(Text)`
+const SearchWrapper = styled.div`
+  position: relative;
+
+  ${Text} {
+    padding-right: 4rem;
+  }
+
+  width: 100%;
   @media screen and (min-width: 768px) {
     max-width: 40rem;
   }
+
+  & * + * {
+    margin-top: 0;
+  }
 `
+
+const SearchIndicator = styled(Icon)`
+  pointer-events: none;
+  position: absolute;
+  transform: translateY(-50%);
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+`
+
+export const Search = styled(({ className, ...props }) => (
+  <SearchWrapper className={className}>
+    <Text {...props} />
+    <SearchIndicator>search</SearchIndicator>
+  </SearchWrapper>
+))``
 
 export const SenderInfo = styled.div``
 

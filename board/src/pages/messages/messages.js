@@ -21,19 +21,27 @@ const Help = styled.section`
 
 const FilterPanel = styled.section`
   background-color: #eee;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  padding: 1rem;
+  padding: 1.5rem;
 
   ${Search} + * {
     margin-left: 3rem;
   }
+`
+
+const FilterPanelSection = styled.section`
+  background-color: #eee;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
 
   > * + * {
     margin-top: 0;
     margin-left: 2rem;
+  }
+
+  & + & {
+    margin-top: 0.5rem;
   }
 `
 
@@ -129,80 +137,88 @@ class Messages extends Component {
         </Heading>
 
         <FilterPanel>
-          <Search
-            onChange={e => {
-              const search = e.target.value ? e.target.value : null
-              this.setState(() => ({ search }))
-            }}
-            placeholder="Search for a conversation"
-          />
+          <FilterPanelSection>
+            <label htmlFor="service-search">
+              Search by service, agency, or keyword
+            </label>
+          </FilterPanelSection>
+          <FilterPanelSection>
+            <Search
+              id="service-search"
+              onChange={e => {
+                const search = e.target.value ? e.target.value : null
+                this.setState(() => ({ search }))
+              }}
+              label="search for some stuff in this box"
+            />
 
-          <Checkbox
-            onChange={e => {
-              const editModeActive = e.target.checked
-              this.setState(() => ({ editModeActive }))
-            }}
-            checked={this.state.editModeActive || false}
-            label="Select messages"
-          />
+            <Checkbox
+              onChange={e => {
+                const editModeActive = e.target.checked
+                this.setState(() => ({ editModeActive }))
+              }}
+              checked={this.state.editModeActive || false}
+              label="Select messages"
+            />
 
-          {isEmpty(this.state.selectedConversationIDs) ? null : (
-            <Fragment>
-              <ApplyLabel
-                label="starred"
-                conversations={conversations}
-                selectedConversationIDs={this.state.selectedConversationIDs}
-              >
-                {(selected, ActionIconLink) =>
-                  selected ? (
-                    <ActionIconLink icon="star">Unstar</ActionIconLink>
-                  ) : (
-                    <ActionIconLink icon="star_outline">Star</ActionIconLink>
-                  )
-                }
-              </ApplyLabel>
+            {isEmpty(this.state.selectedConversationIDs) ? null : (
+              <Fragment>
+                <ApplyLabel
+                  label="starred"
+                  conversations={conversations}
+                  selectedConversationIDs={this.state.selectedConversationIDs}
+                >
+                  {(selected, ActionIconLink) =>
+                    selected ? (
+                      <ActionIconLink icon="star">Unstar</ActionIconLink>
+                    ) : (
+                      <ActionIconLink icon="star_outline">Star</ActionIconLink>
+                    )
+                  }
+                </ApplyLabel>
 
-              <ApplyLabel
-                label="archived"
-                onCompleted={() => {
-                  this.setState(() => ({
-                    editModeActive: false,
-                    selectedConversationIDs: new Set(),
-                  }))
-                  history.push(match.path)
-                }}
-                conversations={conversations}
-                selectedConversationIDs={this.state.selectedConversationIDs}
-              >
-                {(selected, ActionIconLink) =>
-                  selected ? (
-                    <ActionIconLink icon="vertical_align_top">
-                      Unarchive
-                    </ActionIconLink>
-                  ) : (
-                    <ActionIconLink icon="vertical_align_bottom">
-                      Archive
-                    </ActionIconLink>
-                  )
-                }
-              </ApplyLabel>
-            </Fragment>
-          )}
+                <ApplyLabel
+                  label="archived"
+                  onCompleted={() => {
+                    this.setState(() => ({
+                      editModeActive: false,
+                      selectedConversationIDs: new Set(),
+                    }))
+                    history.push(match.path)
+                  }}
+                  conversations={conversations}
+                  selectedConversationIDs={this.state.selectedConversationIDs}
+                >
+                  {(selected, ActionIconLink) =>
+                    selected ? (
+                      <ActionIconLink icon="vertical_align_top">
+                        Unarchive
+                      </ActionIconLink>
+                    ) : (
+                      <ActionIconLink icon="vertical_align_bottom">
+                        Archive
+                      </ActionIconLink>
+                    )
+                  }
+                </ApplyLabel>
+              </Fragment>
+            )}
 
-          <PullRightDropdown
-            lite
-            label="View by"
-            value={label ? label : 'default'}
-            onChange={e => {
-              e.target.value === 'default'
-                ? history.push('/messages')
-                : history.push(`/messages/${e.target.value}`)
-            }}
-          >
-            <Option value="default">Default</Option>
-            <Option value="starred">Starred</Option>
-            <Option value="archived">Archived</Option>
-          </PullRightDropdown>
+            <PullRightDropdown
+              lite
+              label="View by"
+              value={label ? label : 'default'}
+              onChange={e => {
+                e.target.value === 'default'
+                  ? history.push('/messages')
+                  : history.push(`/messages/${e.target.value}`)
+              }}
+            >
+              <Option value="default">Default</Option>
+              <Option value="starred">Starred</Option>
+              <Option value="archived">Archived</Option>
+            </PullRightDropdown>
+          </FilterPanelSection>
         </FilterPanel>
 
         <Master
