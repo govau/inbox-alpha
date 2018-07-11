@@ -48,7 +48,7 @@ class Sidenav extends Component {
           <Switch>
             <Route
               exact
-              path={`${match.path}/compose`}
+              path="/messages/compose"
               render={({ match }) => <NewConversationLine key={'compose'} />}
             />
           </Switch>
@@ -57,6 +57,7 @@ class Sidenav extends Component {
               data-score={score}
               key={i}
               conversation={conv}
+              match={match}
               history={history}
               open={editModeActive}
               onSelectItem={e => {

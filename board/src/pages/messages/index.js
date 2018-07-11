@@ -103,6 +103,30 @@ class Homepage extends Component {
             />
 
             <Route
+              path={`${match.path}/archived`}
+              render={({ match, history }) => (
+                <Messages
+                  match={match}
+                  history={history}
+                  label="archived"
+                  conversations={conversations}
+                />
+              )}
+            />
+
+            <Route
+              path={`${match.path}/starred`}
+              render={({ match, history }) => (
+                <Messages
+                  match={match}
+                  history={history}
+                  label="starred"
+                  conversations={conversations}
+                />
+              )}
+            />
+
+            <Route
               render={() => (
                 <Messages
                   match={match}

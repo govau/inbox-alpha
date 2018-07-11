@@ -56,6 +56,7 @@ const markAsRead = gql`
 
 const ConversationLine = ({
   conversation,
+  match,
   history,
   onSelectItem,
   open = false,
@@ -77,7 +78,7 @@ const ConversationLine = ({
         return (
           <Message
             active={
-              history.location.pathname === `/messages/${conversation.id}`
+              history.location.pathname === `${match.path}/${conversation.id}`
             }
           >
             {open ? (
@@ -106,7 +107,7 @@ const ConversationLine = ({
                     now: new Date().toString(),
                   },
                 })
-                history.push(`/messages/${conversation.id}`)
+                history.push(`${match.path}/${conversation.id}`)
               }}
             >
               <MessageContent>
@@ -185,16 +186,18 @@ const refNo = conversation =>
     .substring(0, 3)
     .toUpperCase()}${conversation.id.slice(-8).toUpperCase()}`
 
+// to={`${match.path}/${conversation.id}`}
 const ConversationLabel = ({
   conversation,
   mutation,
   label,
   icon,
   inverse,
+  match,
   children,
 }) => (
   <BlackIconLink
-    to={`/messages/${conversation.id}`}
+    to="/messages"
     onClick={e => {
       e.preventDefault()
       mutation({

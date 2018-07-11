@@ -115,7 +115,7 @@ class Messages extends Component {
   state = { selectedConversationIDs: new Set() }
 
   render() {
-    const { conversations, match, history } = this.props
+    const { conversations, label = null, match, history } = this.props
 
     return (
       <Fragment>
@@ -123,7 +123,7 @@ class Messages extends Component {
           <div>
             <H1>Message centre</H1>
           </div>
-          <ButtonLink to={`${match.path}/compose`} color="black">
+          <ButtonLink to="/messages/compose" color="black">
             Start new message
           </ButtonLink>
         </Heading>
@@ -175,9 +175,13 @@ class Messages extends Component {
               >
                 {(selected, ActionIconLink) =>
                   selected ? (
-                    <ActionIconLink icon="vertical_align_top">Unarchive</ActionIconLink>
+                    <ActionIconLink icon="vertical_align_top">
+                      Unarchive
+                    </ActionIconLink>
                   ) : (
-                    <ActionIconLink icon="vertical_align_bottom">Archive</ActionIconLink>
+                    <ActionIconLink icon="vertical_align_bottom">
+                      Archive
+                    </ActionIconLink>
                   )
                 }
               </ApplyLabel>
@@ -187,9 +191,11 @@ class Messages extends Component {
           <PullRightDropdown
             lite
             label="View by"
+            value={label ? label : 'default'}
             onChange={e => {
-              const label = e.target.value === 'default' ? null : e.target.value
-              this.setState(() => ({ label }))
+              e.target.value === 'default'
+                ? history.push('/messages')
+                : history.push(`/messages/${e.target.value}`)
             }}
           >
             <Option value="default">Default</Option>
@@ -202,7 +208,7 @@ class Messages extends Component {
           side={
             <Sidenav
               search={this.state.search}
-              label={this.state.label}
+              label={label}
               conversations={conversations.map(c => ({
                 selected: this.state.selectedConversationIDs.has(c.id),
                 ...c,
