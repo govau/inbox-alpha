@@ -12,6 +12,8 @@ import { Checkbox, Dropdown, Option } from '../../components/forms'
 import { SometimesConversation } from './conversation'
 import IconLink from '../../components/icon-link'
 import Icon from '../../components/icon'
+import { AuthenticatedRoute } from '../../components/auth'
+import ComposeMaster from './compose-master'
 
 const Help = styled.section`
   text-align: center;
@@ -130,9 +132,17 @@ class Messages extends Component {
           <div>
             <H1>Message centre</H1>
           </div>
-          <ButtonLink to="/messages/compose" color="black">
-            Start new message
-          </ButtonLink>
+
+          <Switch>
+            <Route exact path={`${match.path}/compose`} render={() => null} />
+            <Route
+              render={() => (
+                <ButtonLink to="/messages/compose" color="black">
+                  Start new message
+                </ButtonLink>
+              )}
+            />
+          </Switch>
         </Heading>
 
         <FilterPanel>
@@ -246,6 +256,11 @@ class Messages extends Component {
           }
         >
           <Switch>
+            <AuthenticatedRoute
+              exact
+              path={`${match.path}/compose`}
+              component={ComposeMaster}
+            />
             <Route
               exact
               path={`${match.path}/:id`}

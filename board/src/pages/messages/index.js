@@ -4,7 +4,6 @@ import { Route, Switch } from 'react-router-dom'
 
 import { Query } from '../../components/with-data'
 import Messages from './messages'
-import * as Compose from './compose'
 import RequestCall from './request-call'
 
 const queryMe = gql`
@@ -83,19 +82,6 @@ class Homepage extends Component {
       <Query query={queryMe} variables={{ userID: user.id }}>
         {({ user: { conversations, name, id } }) => (
           <Switch>
-            <Route
-              exact
-              path={`${match.path}/compose`}
-              render={() => (
-                <Compose.Page
-                  match={match}
-                  history={history}
-                  userID={id}
-                  conversations={conversations}
-                />
-              )}
-            />
-
             <Route
               exact
               path={`${match.path}/:id/book-a-call`}
