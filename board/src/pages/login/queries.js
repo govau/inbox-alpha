@@ -59,6 +59,146 @@ const createNewUser = gql`
         conversations: {
           create: [
             {
+              subject: "Tax Assessment 2013"
+              service: { connect: { id: $taxID } }
+              messages: {
+                create: [
+                  {
+                    readStatus: Read
+                    sentAt: "Wed 15 June 2013, 2:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readStatus: Read
+                    sections: {
+                      create: [
+                        {
+                          kind: Document
+                          document: {
+                            create: {
+                              filename: "2013 Notice of Assessment.pdf"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+            {
+              subject: "Tax Assessment 2014"
+              service: { connect: { id: $taxID } }
+              messages: {
+                create: [
+                  {
+                    readStatus: Read
+                    sentAt: "Thurs 23 June 2014, 2:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readStatus: Read
+                    sections: {
+                      create: [
+                        {
+                          kind: Document
+                          document: {
+                            create: {
+                              filename: "2014 Notice of Assessment.pdf"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+            {
+              subject: "Tax Assessment 2015"
+              service: { connect: { id: $taxID } }
+              messages: {
+                create: [
+                  {
+                    readStatus: Read
+                    sentAt: "Tue 2 Aug 2015, 2:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readStatus: Read
+                    sections: {
+                      create: [
+                        {
+                          kind: Document
+                          document: {
+                            create: {
+                              filename: "2015 Notice of Assessment.pdf"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+            {
+              subject: "Tax Assessment 2016"
+              service: { connect: { id: $taxID } }
+              messages: {
+                create: [
+                  {
+                    readStatus: Read
+                    sentAt: "Tue 15 Aug 2016, 2:30pm"
+                    sections: {
+                      create: [
+                        {
+                          kind: Markdown
+                          markdown: { create: { source: $assessmentBody } }
+                        }
+                      ]
+                    }
+                  }
+                  {
+                    readStatus: Read
+                    sections: {
+                      create: [
+                        {
+                          kind: Document
+                          document: {
+                            create: {
+                              filename: "2016 Notice of Assessment.pdf"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+            {
               subject: "Rent Assistance"
               service: { connect: { id: $centrelinkID } }
               messages: {
