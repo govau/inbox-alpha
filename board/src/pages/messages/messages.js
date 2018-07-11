@@ -205,7 +205,6 @@ class Messages extends Component {
             )}
 
             <PullRightDropdown
-              lite
               label="View by"
               value={label ? label : 'default'}
               onChange={e => {
