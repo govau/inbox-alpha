@@ -160,6 +160,13 @@ const Conversations = styled.div`
     max-width: 55rem;
   }
 `
+const BlackIconLink = styled(IconLink)`
+  color: black;
+
+  &:visited {
+    color: black;
+  }
+`
 
 const setLabels = gql`
   mutation($conversationIDs: [ID!]!, $archived: Boolean, $starred: Boolean) {
@@ -186,7 +193,7 @@ const ConversationLabel = ({
   inverse,
   children,
 }) => (
-  <IconLink
+  <BlackIconLink
     to={`/messages/${conversation.id}`}
     onClick={e => {
       e.preventDefault()
@@ -242,8 +249,8 @@ const Conversation = ({ className, conversation }) => {
                   conversation={conversation}
                   mutation={change}
                   label="archived"
-                  icon="unarchive"
-                  inverse="archive"
+                  icon="vertical_align_top"
+                  inverse="vertical_align_bottom"
                 />
               </Fragment>
             )
